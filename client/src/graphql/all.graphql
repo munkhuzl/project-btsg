@@ -1,0 +1,25 @@
+query GetUser {
+  getUser {
+    _id
+    email
+    password
+    firstname
+    lastname
+    role
+    phoneNumber
+    otp
+    passwordResetToken
+    passwordResetTokenExpire
+    createdAt
+    updatedAt
+  }
+}
+mutation CreatesOTP($email: String!) {
+  createsOTP(email: $email) {
+    email
+    expirationDate
+  }
+}
+mutation CheckOTP($email: String!, $otp: String!) {
+  checkOTP(email: $email, OTP: $otp)
+}
