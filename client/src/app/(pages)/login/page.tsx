@@ -1,11 +1,9 @@
-'use server'
+"use server";
 
-import LoginPage from "@/components/Login"
-
-
+import Login from "@/components/Login";
 
 const Page = () => {
-  return <LoginPage/>
-}
+  return <Login />;
+};
 
-export default Page
+export default Page;

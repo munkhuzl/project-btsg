@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useCreatesOtpMutation } from '@/generated';
 
 
-const Login = () => {
+const SignUp = () => {
   const { setEmail, setExpirationDate } = useLogin();
   const router = useRouter();
   const [createOtp, { error, loading }] = useCreatesOtpMutation();
@@ -32,9 +32,11 @@ const Login = () => {
     }
   };
 
-  const validationSchema = Yup.object({
+  const validationSchema = Yup.object(
+    {
     email: Yup.string()
       .email('И-мэйл хаяг буруу байна') 
+        .email('И-мэйл хаяг буруу байна') 
       .required('И-мэйл хаяг оруулна уу') 
       .matches(
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -42,9 +44,11 @@ const Login = () => {
       )
       .min(5, 'И-мэйл хаяг хамгийн багадаа 5 тэмдэгт байх ёстой')
       .max(50, 'И-мэйл хаяг хамгийн ихдээ 50 тэмдэгт байх ёстой'),
-  });
 
 
+  }, 
+    
+);
   return (
     <div className="mt-24" >
       <Card className="bg-white w-[500px] h-full m-auto mx-auto p-12">
@@ -55,9 +59,11 @@ const Login = () => {
             <Form onSubmit={handleSubmit}>
               <div className="mt-8 mx-4 flex flex-col gap-2">
                 <Label className="mt-4">И-мэйл хаяг</Label>
-                <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} data-testid="email-input" />
+                <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} />
                 {touched.email && errors.email && <span className="text-red-500">{errors.email}</span>}
                 {error && values.email == oldEmail && <span className="text-red-500">{error.message}</span>}
+                <Label className='mt-3' >Нууц үг</Label>
+                <Input className="" placeholder='нууц үг' id='password'></Input>
               </div>
               <Button type="submit" className="mt-6 mx-4 w-[375px] mb-6" disabled={loading} >
                 Нэвтрэх
@@ -70,4 +76,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

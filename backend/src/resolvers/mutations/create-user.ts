@@ -1,6 +1,6 @@
 import { MutationResolvers } from "@/generated";
 import { UserModel } from "@/models";
-
+import bcrypt from 'bcrypt';
 
 
 export const signUp: MutationResolvers["signUp"] = async (
@@ -9,6 +9,7 @@ export const signUp: MutationResolvers["signUp"] = async (
 ) => {
   const findUser = await UserModel.findOne({ email });
   if (findUser) throw new Error("User already signed up.");
-  const createUser = await UserModel.create({ email, password });
-  return createUser;
+  const hashedPassword = await bcrypt.hash(password, 10)
+  const newUser = await UserModel.create({ email, password:hashedPassword });
+  return newUser;
 };
