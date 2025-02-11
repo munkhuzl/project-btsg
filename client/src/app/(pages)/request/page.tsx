@@ -1,11 +1,14 @@
 "use server";
 
+import MyRequest from "@/components/myrequest";
+import RequestPage from "@/components/request";
 
-const Page = ()=> {
-    return
-    <>
-        <div className="bg-slate-200 max-w-[608px] w-full" >vsf</div>
-        <h1>fer</h1>
-    </>
+const Page = () => {
+  return (
+    <div>
+      <RequestPage />;
+      <MyRequest />
+    </div>
+  );
 };
 export default Page;
