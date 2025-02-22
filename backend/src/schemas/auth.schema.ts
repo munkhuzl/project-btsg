@@ -8,7 +8,7 @@ scalar Date
     password: String!
     firstname:String
     lastname:String
-    role: String
+    position: String
     phoneNumber: String
     otp: String
     passwordResetToken: String
