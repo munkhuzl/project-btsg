@@ -3,9 +3,25 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-
+import { useFormik } from "formik";
+import { useCreateRequestQuery, useCreatesRequestMutation } from '@/generated';
 import Image from "next/image";
 import { Send } from "lucide-react";
+export interface RequestFormValues{
+  requestDate:string,
+  startTime: string,
+  endTime:string,
+  email:string,
+  workPlace:string,
+  principalName:string,
+  position:string,
+  optionalFile:string,
+  optionalFileMeduuleg:string,
+  result:string,
+  _id: string,
+
+}
+
 const RequestSuccessDiv = () => {
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
@@ -23,7 +39,51 @@ const RequestSuccessDiv = () => {
   );
 };
 
-const CreateNewRequest = () => {
+const CreateNewRequest = ({email}: {email:string}) => {
+const { data } =useCreateRequestQuery({variables:{email}});
+const {createRequest} = useCreatesRequestMutation();
+// const {setMessage} = useMessage();
+const formik = useFormik<RequestFormValues>({
+  initialValues: {
+    requestDate:'',
+    startTime:'',
+    endTime:'',
+    email: '',
+    workPlace:'',
+    principalName:'',
+    position:'',
+    optionalFile:'',
+    optionalFileMeduuleg:'',
+    result:'',
+    _id: '',
+    },
+    onSubmit: async () => {
+      try {
+        const optionalFileUrl = formik.values.optionalFile ? await uploadFilesInCloudinary(formik.values.optionalFile) : '';
+
+        const { requestDate, startTime, endTime,  } = formik.values;
+
+        const variables = {
+
+          requestDate,
+          startTime,
+          endTime,
+          email,
+          optionalFile: optionalFileUrl,
+        };
+
+        await createRequest({ variables });
+
+        formik.resetForm();
+
+        <RequestSuccessDiv />
+      } catch (error) {
+        console.error('Submission error:', error);
+      }
+    },
+  }
+
+);
   return (
     <div className="text-[#000000] text-sm max-w-[680px] mx-auto bg-white mt-12 h-full p-8 rounded-md">
       <div className="font-bold pt-4 text-2xl">Чөлөөний хүсэлт</div>

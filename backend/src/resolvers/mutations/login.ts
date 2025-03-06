@@ -1,5 +1,5 @@
 import { MutationResolvers } from "@/generated";
-import UserModel from "../../models/userModel";
+import { UserModel } from "@/models";
 import bcrypt from "bcrypt";
 import { generateToken } from "@/utils/generate-token";
 

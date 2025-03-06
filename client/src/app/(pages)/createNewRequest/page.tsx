@@ -4,7 +4,7 @@ import CreateNewRequest from "@/components/createNewRequest";
 
 
 const Page = () => {
-  return <CreateNewRequest />;
+  return <CreateNewRequest email={""} />;
 };
 
 export default Page;

@@ -1,6 +1,7 @@
-import { MutationResolvers } from "@/generated";
+
+import { MutationResolvers } from "@/generated/graphql";
 import { RequestModel } from "@/models/request.model";
-export const createsRequest:MutationResolvers['createsRequest']= async(_,{email, requestType, requestDate,workPlace, principalName, startDate, endDate, optionalFile, optionalFileMeduuleg,result})=>{
-    const newRequest = await RequestModel.create({email, requestType, requestDate,workPlace, principalName, startDate, endDate, optionalFile, optionalFileMeduuleg,result })
+export const createsRequest:MutationResolvers['createsRequest']= async(_,{email,workPlace, principalName, startDate, endDate, optionalFile, optionalFileMeduuleg,result})=>{
+    const newRequest = await RequestModel.create({email,workPlace, principalName, startDate, endDate, optionalFile, optionalFileMeduuleg,result ,})
     return newRequest;
 }
