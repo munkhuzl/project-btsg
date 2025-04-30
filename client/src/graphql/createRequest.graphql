@@ -1,27 +1,3 @@
-query GetUser {
-  getUser {
-    _id
-    email
-    password
-    firstname
-    lastname
-    phoneNumber
-    otp
-    passwordResetToken
-    passwordResetTokenExpire
-    createdAt
-    updatedAt
-  }
-}
-mutation CreatesOTP($email: String!) {
-  createsOTP(email: $email) {
-    email
-    expirationDate
-  }
-}
-mutation CheckOTP($email: String!, $otp: String!) {
-  checkOTP(email: $email, OTP: $otp)
-}
 # Query to fetch request details based on email
 query GetRequests($email: String!) {
   getRequests(email: $email) {

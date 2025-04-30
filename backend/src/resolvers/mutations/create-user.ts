@@ -10,6 +10,6 @@ export const signUp: MutationResolvers["signUp"] = async (
   const findUser = await UserModel.findOne({ email });
   if (findUser) throw new Error("User already signed up.");
   const hashedPassword = await bcrypt.hash(password, 10)
-  const newUser = await UserModel.create({ email, password:hashedPassword });
+  const newUser = await UserModel.create({ email, password: hashedPassword });
   return newUser;
 };

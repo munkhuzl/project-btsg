@@ -8,7 +8,6 @@ import { Send } from "lucide-react";
 import { UploadFilesInCloudinary } from "@/lib/uploadfiles";
 import { useState } from 'react';
 
-
 export interface RequestFormValues {
   requestDate: string;
   startTime: string;
@@ -40,7 +39,7 @@ const RequestSuccessDiv = () => {
   );
 };
 
-const CreateNewRequest = ({ email }: { email: string }) => {
+export const CreateNewRequest = ({ email }: { email: string }) => {
   const { data } = useCreateRequestQuery({ variables: { email } });
   const { createRequest } = useCreatesRequestMutation();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -182,12 +181,12 @@ const CreateNewRequest = ({ email }: { email: string }) => {
   );
 };
 
-export default CreateNewRequest;
-function useCreateRequestQuery({}: { variables: { email: string; }; }): { data: any; } {
-  throw new Error("Function not implemented.");
-}
+// export default CreateNewRequest;
+// function useCreateRequestQuery({}: { variables: { email: string; }; }): { data: unknown; } {
+//   throw console.log(error)
+// }
 
-function useCreatesRequestMutation(): { createRequest: any; } {
-  throw new Error("Function not implemented.");
-}
+// function useCreatesRequestMutation(): { createRequest: unknown; } {
+//   throw new Error("Function not implemented.");
+// }
 

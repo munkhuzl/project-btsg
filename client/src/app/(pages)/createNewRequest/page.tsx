@@ -1,6 +1,8 @@
 "use server";
 
-import CreateNewRequest from "@/components/createNewRequest";
+import { CreateNewRequest } from "@/components/createNewRequest";
+
+
 
 
 const Page = () => {
