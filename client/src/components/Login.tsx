@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useLogin } from '@/context/LoginContext';
 import { useRouter } from 'next/navigation';
 import { useCreatesOtpMutation } from '@/generated';
+import SignUp from './signUp';
 
 
 const Login = () => {
@@ -59,6 +60,7 @@ const Login = () => {
                 {touched.email && errors.email && <span className="text-red-500">{errors.email}</span>}
                 {error && values.email == oldEmail && <span className="text-red-500">{error.message}</span>}
               </div>
+              <div className='text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4' onClick={()=> {router.push('/signUp')}} >Бүртгүүлэх</div>
               <Button type="submit" className="mt-6 mx-4 w-[375px] mb-6" disabled={loading} >
                 Нэвтрэх
               </Button>
