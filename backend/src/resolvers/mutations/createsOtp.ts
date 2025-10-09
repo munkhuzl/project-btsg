@@ -1,4 +1,4 @@
-import { MutationResolvers } from '@/generated';
+import { MutationResolvers } from '@/generated/graphql';
 import { OTPModel, UserModel } from '@/models';
 import { generateHtmlTemplate } from '@/utils/generate-html-template';
 import nodemailer from 'nodemailer';
@@ -10,6 +10,7 @@ export const createsOTP: MutationResolvers['createsOTP'] = async (_, { email }) 
     throw new Error('User not found');
   }
   const oldOTP = await OTPModel.findOne({ email });
+  console.log(oldOTP);
   if (oldOTP) {
     if (oldOTP.expirationDate > new Date()) {
       return oldOTP;
@@ -52,5 +53,6 @@ const mailOptions = {
 };
 
 const sendEmail = (otp: string, email: string) => {
-  transporter.sendMail({ ...mailOptions, html: generateHtmlTemplate(otp), to: email });
+  console.log(otp)
+  transporter.sendMail({ ...mailOptions, html: generateHtmlTemplate(otp), to: email }).then(()=> console.log(otp));
 };

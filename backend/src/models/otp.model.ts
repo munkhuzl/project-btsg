@@ -8,7 +8,7 @@ export type OTP = {
     expirationDate:Date
 }
 
-const OTPScheama = new Schema<OTP>(
+const OTPSchema = new Schema<OTP>(
     {
         email:{
             type:String,
@@ -20,11 +20,11 @@ const OTPScheama = new Schema<OTP>(
         },
         expirationDate:{
             type:Date,
-            required:true
+            required:true,
         }
     },
     {
         timestamps: true,
       }
 )
-export const OTPModel = models.OTP || model<OTP>('OTP', OTPScheama)
+export const OTPModel = models.OTP || model<OTP>('OTP', OTPSchema)

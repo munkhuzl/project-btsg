@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Send } from "lucide-react";
 import { UploadFilesInCloudinary } from "@/lib/uploadfiles";
 import { useState } from 'react';
+import {useSentRequestMutation} from "@/generated";
 
 export interface RequestFormValues {
   requestDate: string;
@@ -40,8 +41,7 @@ const RequestSuccessDiv = () => {
 };
 
 export const CreateNewRequest = ({ email }: { email: string }) => {
-  const { data } = useCreateRequestQuery({ variables: { email } });
-  const { createRequest } = useCreatesRequestMutation();
+  const [ sentRequestMutation ] = useSentRequestMutation();
   const [showSuccess, setShowSuccess] = useState(false);
 
   const formik = useFormik<RequestFormValues>({
@@ -71,7 +71,7 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
           email,
           optionalFile: optionalFileUrl,
         };
-        await createRequest({ variables });
+        await sentRequestMutation({ ...variables });
         formik.resetForm();
         setShowSuccess(true); // Show success message
       } catch (error) {

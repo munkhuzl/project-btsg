@@ -16,7 +16,10 @@ export const checkOTP = async (_:unknown,{email, OTP}: { email: string, OTP: str
   
     const token = createToken(user);
   
-    return token;
+    return {
+        message: 'OTP check OTP',
+        otp: token
+    };
   };
   
   

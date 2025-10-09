@@ -22,24 +22,40 @@ mutation CreatesOTP($email: String!) {
 mutation CheckOTP($email: String!, $otp: String!) {
   checkOTP(email: $email, OTP: $otp)
 }
-# Query to fetch request details based on email
-query GetRequests($email: String!) {
-  getRequests(email: $email) {
+## Query to fetch request details based on email
+query GetAllRequests {
+  getAllRequests {
+    _id
     email
-    userName
+    firstname
+    lastname
+    requestDate
+    position
+    requestType
+    startTime
+    endTime
+    optionalFile
+    optionalFileMeduuleg
+    result
+    school {
+      city
+      state
+      school_number
+      class
+    }
+    updated_at
+    workPlace {
+      city
+      state
+      company_name
+      principal_name
+    }
   }
 }
 
 # Mutation to create a request
-mutation CreatesRequests($email: String!, $requestType: String, $requestDate: Date!, $startTime: String!, $endTime: String) {
-  createsRequest(
-    email: $email, 
-    requestType: $requestType, 
-    requestDate: $requestDate, 
-    startTime: $startTime, 
-    endTime: $endTime
-  ) {
-    requestType
-    email
+mutation SentRequest($input: SendRequestInput!) {
+  sentRequest(input: $input) {
+    message
   }
 }

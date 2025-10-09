@@ -11,8 +11,6 @@ import { useState } from 'react';
 import { useLogin } from '@/context/LoginContext';
 import { useRouter } from 'next/navigation';
 import { useCreatesOtpMutation } from '@/generated';
-import SignUp from './signUp';
-
 
 const Login = () => {
   const { setEmail, setExpirationDate } = useLogin();

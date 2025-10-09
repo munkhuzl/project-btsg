@@ -4,8 +4,8 @@ export const MutationTypeDefs = gql`
     type Mutation {
         signUp(input: SignUpInput!): User!
         login(input: LoginInput!): AuthResponse!
-        createsOTP(email: String!): OTPType
-        checkOTP(email: String!, OTP: String!): String
+        createsOTP(email: String!): OTPType!
+        checkOTP(email: String!, OTP: String!): OTPResponse!
         sentRequest(input: SendRequestInput!): RequestSentRespone!
     }
 

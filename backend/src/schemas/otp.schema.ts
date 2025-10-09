@@ -7,4 +7,9 @@ export const OTPTypeDefs = gql`
     email: String!
     expirationDate: Date!
   }
+  
+  type OTPResponse {
+    message: String
+    otp: String
+  }
 `;
