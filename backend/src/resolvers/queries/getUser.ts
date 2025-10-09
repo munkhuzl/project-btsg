@@ -1,9 +1,9 @@
-import { QueryResolvers } from "@/generated";
+import { QueryResolvers } from "@/generated/graphql";
 import { UserModel } from "@/models";
 
 
-export const getUser:QueryResolvers['getUser']= async (_, __, {userId})=>{
+export const getUser:QueryResolvers['getUser']=async(_, __, {userId})=>{
     if(!userId) throw new Error('User not found');
-        const user=await UserModel.findById(userId);
-        return user;
+    const [user] = await Promise.all([UserModel.findById(userId)]);
+    return user;
 };

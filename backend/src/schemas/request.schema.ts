@@ -5,57 +5,48 @@ export const RequestTypeDefs = gql`
     _id: ID!
     email: String!
     firstname: String!
-    lastName: String!
-    workPlace: String!
-    principalName: String!
-    position: String!
-    optionalFile: String!
-    optionalFileMeduuleg: String!
-    startDate: String!
-    endDate: String!
-    result: String!
-  }
-  type User {
-    _id: ID!
-    email: String!
-    password: String!
-    firstname: String
-    lastname: String
+    lastname: String!
+    workPlace: WorkPlaceType
+    school: SchoolType
+    requestDate: String
     position: String
-    phoneNumber: String
-    otp: String
-    passwordResetToken: String
-    passwordResetTokenExpire: String
-    createdAt: Date!
-    updatedAt: Date!
+    requestType: String
+    startTime: String
+    endTime: String
+    optionalFile: String
+    optionalFileMeduuleg: String
+    result: String
+    detailAboutRequest: String!
+    created_at: Date!
+    updated_at: Date!
   }
   type RequestTypePop {
     _id: ID!
     email: User!
     requestType: String!
-    message: String!
-    requestDate: Date!
+    message: String
     startTime: Date!
     endTime: Date!
-    supervisorEmail: String!
-    result: String!
-    comment: String!
-    optionalFile: String!
+    supervisorEmail: String
+    result: String
+    detailAboutRequest: String!
+    comment: String
+    optionalFile: String
+    createdAt: Date!
+    updatedAt: Date!
   }
 
   type OpenRequestType {
     _id: ID!
     email: String!
     requestType: String!
-    message: String!
-    requestDate: Date!
     startTime: Date
     endTime: Date
     supervisorEmail: String!
     result: String
     comment: String
     optionalFile: String
-    userName: String!
+    detailAboutRequest: String!
     createdAt: Date!
     updatedAt: Date!
   }
@@ -69,29 +60,23 @@ export const RequestTypeDefs = gql`
     month: Int!
     requests: [RequestType]!
   }
-  type Mutation {
-    createsRequest(
-      email: String!
-      firstName: String
-      lastName: String!
-      workPlace: String!
-      principalName: String!
-      position: String!
-      optionalFile: String!
-      optionalFileMeduuleg: String!
-      startDate: String!
-      endDate: String!
-      result: String!
-    ): RequestType
+
+  input SendRequestInput {
+    email: String!
+    firstname: String!
+    lastname: String!
+    workPlace: WorkPlaceInput
+    requestDate: String
+    school: SchoolInput
+    position: String
+    requestType: String
+    startTime: String
+    endTime: String
+    optionalFile: String
+    optionalFileMeduuleg: String
+    detailAboutRequest: String!
   }
-  type Query {
-    getRequestById(_id: ID): RequestType
-    getRequests(
-      email: String
-      startDate: Date
-      endDate: Date
-      status: String
-    ): [GroupedRequests!]
-    openRequest(_id: ID): OpenRequestType
+ type RequestSentRespone {
+  message: String
   }
 `;

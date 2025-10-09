@@ -7,9 +7,4 @@ export const OTPTypeDefs = gql`
     email: String!
     expirationDate: Date!
   }
-
-  type Mutation {
-    createsOTP(email: String!): OTPType
-    checkOTP(email: String!, OTP: String!): String
-  }
 `;
