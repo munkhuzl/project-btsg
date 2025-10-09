@@ -71,7 +71,7 @@ const RequestSchema = new Schema<Request>(
     result: {
         type: String,
         enum: ['pending', 'sent', 'failed', 'success'],
-        default: 'sent',
+        default: 'pending',
       },
       supervisorEmail: String,
       detailAboutRequest: {
