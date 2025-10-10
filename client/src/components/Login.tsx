@@ -7,27 +7,30 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { useState } from 'react';
-import { useLogin } from '@/context/LoginContext';
 import { useRouter } from 'next/navigation';
-import { useCreatesOtpMutation } from '@/generated';
+import { useLoginMutation } from '@/generated';
+import {toast} from "react-toastify";
+import {useLogin} from "@/context/LoginContext";
 
 const Login = () => {
-  const { setEmail, setExpirationDate } = useLogin();
   const router = useRouter();
-  const [createOtp, { error, loading }] = useCreatesOtpMutation();
-  const [oldEmail, setOldEmail] = useState<string>();
+  const { setEmail } = useLogin();
+  const [loginMutation, { loading, error }] = useLoginMutation();
+
   const sendEmail = async (values: { email: string }) => {
-    setOldEmail(values.email);
     try {
-      const response = await createOtp({ variables: { email: values.email.toLowerCase() } });
-      if (response.data) {
-        setEmail(response.data.createsOTP!.email.toLowerCase());
-        setExpirationDate(response.data.createsOTP!.expirationDate);
+      setEmail(values.email);
+      await loginMutation({ variables: {
+        input: {
+          email: values.email,
+        },
+        }})
+        toast.success('Таны имэйл рүү нэг удаагийн код илгээлээ.');
+        console.log('success');
         router.push('/sendOtp');
-      }
     } catch (err) {
-      console.error('Error creating OTP:', err);
+      toast.error('Алдаа гарлаа');
+      console.error('Алдаа гарлаа:', err, error?.message);
     }
   };
 
@@ -56,9 +59,8 @@ const Login = () => {
                 <Label className="mt-4">И-мэйл хаяг</Label>
                 <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} data-testid="email-input" />
                 {touched.email && errors.email && <span className="text-red-500">{errors.email}</span>}
-                {error && values.email == oldEmail && <span className="text-red-500">{error.message}</span>}
               </div>
-              <div className='text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4' onClick={()=> {router.push('/signUp')}} >Бүртгүүлэх</div>
+              <div className='text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4' onClick={()=> {router.push('/signup')}} >Бүртгүүлэх</div>
               <Button type="submit" className="mt-6 mx-4 w-[375px] mb-6" disabled={loading} >
                 Нэвтрэх
               </Button>

@@ -32,10 +32,10 @@ const SendOtp = () => {
     if (response?.data?.checkOTP) {
       setIsVerified(true);
       toast.success("OTP Verified Successfully");
-      setToken(response.data.checkOTP);
-      router.push("./");
+      setToken(response.data.checkOTP.token);
+      router.push("/createNewRequest");
     }
-  }, [email, otp, checkOtp]);
+  }, [email, otp, checkOtp, router]);
 
   useEffect(() => {
     if (otp.length === 4) {

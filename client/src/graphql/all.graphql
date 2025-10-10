@@ -13,14 +13,24 @@ query GetUser {
     updatedAt
   }
 }
-mutation CreatesOTP($email: String!) {
-  createsOTP(email: $email) {
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    user {
+      email
+    }
+    message
+  }
+}
+mutation SignUp($input: SignUpInput!) {
+  signUp(input: $input) {
     email
-    expirationDate
   }
 }
 mutation CheckOTP($email: String!, $otp: String!) {
-  checkOTP(email: $email, OTP: $otp)
+  checkOTP(email: $email, OTP: $otp) {
+    message
+    token
+  }
 }
 ## Query to fetch request details based on email
 query GetAllRequests {

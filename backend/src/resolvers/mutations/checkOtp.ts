@@ -12,7 +12,7 @@ export const checkOTP:MutationResolvers['checkOTP'] = async (_:unknown,{email, O
       throw new Error('OTP is expired')
     }
   
-    await OTPModel.deleteOne({email})
+    await OTPModel.deleteOne({email});
   
     const user = await UserModel.findOne({ email });
     if (!user) {

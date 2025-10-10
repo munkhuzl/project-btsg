@@ -7,28 +7,30 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { useState } from 'react';
-import { useLogin } from '@/context/LoginContext';
 import { useRouter } from 'next/navigation';
-import { useCreatesOtpMutation } from '@/generated';
+import { useSignUpMutation } from '@/generated';
+import {toast} from "react-toastify";
 
 
 const SignUp = () => {
-  const { setEmail, setExpirationDate } = useLogin();
   const router = useRouter();
-  const [createOtp, { error, loading }] = useCreatesOtpMutation();
-  const [oldEmail, setOldEmail] = useState<string>();
-  const sendEmail = async (values: { email: string }) => {
-    setOldEmail(values.email);
+  const [signUpMutation, { loading }] = useSignUpMutation();
+
+  const register = async (values: { password: string, email: string }) => {
+
     try {
-      const response = await createOtp({ variables: { email: values.email.toLowerCase() } });
-      if (response.data) {
-        setEmail(response.data.createsOTP!.email.toLowerCase());
-        setExpirationDate(response.data.createsOTP!.expirationDate);
-        router.push('/sendOtp');
-      }
+      await signUpMutation({variables: {
+        input: {
+          email: values.email,
+          password: values.password,
+        }
+        }}).then(()=>{
+          toast.success('Хэрэглэгч амжилттай бүртгэгдлээ.');
+          router.push('/login');
+      })
     } catch (err) {
-      console.error('Error creating OTP:', err);
+      toast.error('Алдаа гарлаа');
+      console.error('Алдаа гарлаа', err);
     }
   };
 
@@ -54,19 +56,18 @@ const SignUp = () => {
       <Card className="bg-white w-[500px] h-full m-auto mx-auto p-12">
         <h1 className="font-bold text-center mb-6 mx-4">Нэвтрэх</h1>
         <Image src={"/logo.png"} alt="logo" width={150} height={150} className="mx-auto" />
-        <Formik initialValues={{ email: '' }} validationSchema={validationSchema} onSubmit={sendEmail}>
-          {({ handleSubmit, handleChange, values, errors, touched }) => (
+        <Formik initialValues={{ password: '', email: '' }} validationSchema={validationSchema} onSubmit={register}>
+          {({ handleSubmit, handleChange, values }) => (
             <Form onSubmit={handleSubmit}>
               <div className="mt-8 mx-4 flex flex-col gap-2">
                 <Label className="mt-4">И-мэйл хаяг</Label>
                 <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} />
-                {touched.email && errors.email && <span className="text-red-500">{errors.email}</span>}
-                {error && values.email == oldEmail && <span className="text-red-500">{error.message}</span>}
+
                 <Label className='mt-3' >Нууц үг</Label>
-                <Input className="" placeholder='нууц үг' id='password'></Input>
+                <Input className="" placeholder='нууц үг' onChange={handleChange} value={values.password} id='password'/>
               </div>
               <Button type="submit" className="mt-6 mx-4 w-[375px] mb-6" disabled={loading} >
-                Нэвтрэх
+                Бүртгүүлэх
               </Button>
             </Form>
           )}
