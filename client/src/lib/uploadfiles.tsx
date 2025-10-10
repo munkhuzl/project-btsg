@@ -1,7 +1,7 @@
 const CLOUDINARY_CLOUD_NAME = 'dozicpox6';
 const CLOUDINARY_UPLOAD_PRESET = 'btsg';
 
-export const UploadFilesInCloudinary = async (file: File) => {
+export const UploadFilesInCloudinary = async (file: string) => {
   console.log(`Uploading: `, file);
 
   const data = new FormData();

@@ -10,17 +10,31 @@ import { useState } from 'react';
 import {useSentRequestMutation} from "@/generated";
 
 export interface RequestFormValues {
+  _id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  workPlace: {
+    city: string;
+    state: string;
+    company_name: string;
+    principal_name: string;
+  }
   requestDate: string;
+  school: {
+    city: string;
+    state: string;
+    school_number: string;
+    class: string;
+  }
+  position: string;
+  requestType: string;
   startTime: string;
   endTime: string;
-  email: string;
-  workPlace: string;
-  principalName: string;
-  position: string;
   optionalFile: string;
   optionalFileMeduuleg: string;
-  result: string;
-  _id: string;
+  optionalFilePublicId: string;
+  detailAboutRequest: string;
 }
 
 const RequestSuccessDiv = () => {
@@ -48,15 +62,29 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
     initialValues: {
       startTime: "",
       endTime: "",
+      firstname: '',
+      lastname: '',
       email,
-      workPlace: "",
-      principalName: "",
+      workPlace: {
+        city: '',
+        state: '',
+        company_name: '',
+        principal_name: '',
+      },
+      school: {
+        city: '',
+        state: '',
+        school_number: '',
+        class: ''
+      },
       position: "",
       optionalFile: "",
       optionalFileMeduuleg: "",
-      result: "",
+      optionalFilePublicId: '',
       _id: "",
-      requestDate: ""
+      requestDate: "",
+      requestType: '',
+      detailAboutRequest: '',
     },
     onSubmit: async (values) => {
       try {
@@ -71,7 +99,34 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
           email,
           optionalFile: optionalFileUrl,
         };
-        await sentRequestMutation({ ...variables });
+        console.log(variables, values);
+        await sentRequestMutation({ variables: {
+          input: {
+            email: variables.email,
+            firstname: values.firstname,
+            lastname: 'values.lastname',
+            workPlace: {
+              city: values.workPlace.city,
+              state: values.workPlace.state,
+              company_name: values.workPlace.company_name,
+              principal_name: values.workPlace.principal_name
+            },
+            requestDate: requestDate,
+            school: {
+              city: values.school.city,
+              state: values.school.state,
+              school_number: values.school.school_number,
+              class: values.school.class
+            },
+            requestType: 'mediumterm',
+            startTime: variables.startTime,
+            endTime: variables.endTime,
+            optionalFile: variables.optionalFile,
+            optionalFileMeduuleg: values.optionalFileMeduuleg,
+            detailAboutRequest: 'values.detailAboutRequest',
+            optionalFilePublicId: values.optionalFilePublicId,
+          }
+          }});
         formik.resetForm();
         setShowSuccess(true); // Show success message
       } catch (error) {
@@ -133,18 +188,18 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
             <div className="flex">
               <div className="flex-1 mt-2 pr-3">
                 <Label>Ажлын (Сургууль) газар</Label>
-                <Input
-                  name="workPlace"
-                  value={formik.values.workPlace}
-                  onChange={formik.handleChange}
-                  placeholder="Жишээ нь: Биеийн тамир, спортын газар"
-                />
+                {/*<Input*/}
+                {/*  name="workPlace"*/}
+                {/*  value={formik.values.workPlace}*/}
+                {/*  onChange={formik.handleChange}*/}
+                {/*  placeholder="Жишээ нь: Биеийн тамир, спортын газар"*/}
+                {/*/>*/}
               </div>
               <div className="flex-1 mt-2">
                 <Label>Захирлын (дарга) нэр</Label>
                 <Input
                   name="principalName"
-                  value={formik.values.principalName}
+                  value={formik.values.workPlace.principal_name}
                   onChange={formik.handleChange}
                   placeholder="Жишээ нь: О.Болдбаатар"
                 />
@@ -164,12 +219,21 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
                 <Label>Тамирчны нэр</Label>
                 <Input
                   name="_id"
-                  value={formik.values._id}
+                  value={formik.values.firstname}
                   onChange={formik.handleChange}
                   placeholder="Жишээ нь: О.Бат"
                 />
               </div>
-   s         </div>
+              <div className="flex-1 mt-2">
+                <Label>Тамирчны овог</Label>
+                <Input
+                    name="_id"
+                    value={formik.values.lastname}
+                    onChange={formik.handleChange}
+                    placeholder="Жишээ нь: О.Бат"
+                />
+              </div>
+            </div>
           </div>
           <Button className="w-full mt-6" type="submit">
             <Send size={14} />
