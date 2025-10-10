@@ -1,24 +1,29 @@
 import { OTPModel, UserModel } from "@/models";
-import { createToken } from "@/utils/create-token";
+import { generateToken } from "@/utils/generate-token";
+import {MutationResolvers} from "@/generated/graphql";
 
-export const checkOTP = async (_:unknown,{email, OTP}: { email: string, OTP: string }) => {
-    const otp = await OTPModel.findOne({ email, OTP });
-    if(!otp){
-      throw new Error('User not found')
+export const checkOTP:MutationResolvers['checkOTP'] = async (_:unknown,{email, OTP}: { email: string, OTP: string }) => {
+    const findOtp = await OTPModel.findOne({ OTP });
+
+    if(!findOtp){
+      throw new Error('Invalid OTP')
     }
-    if (otp.expirationDate < new Date()) {
+    if (findOtp.created_at < new Date()) {
       throw new Error('OTP is expired')
     }
   
     await OTPModel.deleteOne({email})
   
     const user = await UserModel.findOne({ email });
+    if (!user) {
+        throw new Error('User not found');
+    }
   
-    const token = createToken(user);
+    const token = generateToken({id: user._id});
   
     return {
-        message: 'OTP check OTP',
-        otp: token
+        message: 'Welcome',
+        token: token,
     };
   };
   

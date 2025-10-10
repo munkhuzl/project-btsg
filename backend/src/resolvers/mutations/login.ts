@@ -1,20 +1,61 @@
 import { MutationResolvers } from "@/generated/graphql";
-import { UserModel } from "@/models";
-import bcrypt from "bcrypt";
-import { generateToken } from "@/utils/generate-token";
-
+import { UserModel, OTPModel } from "@/models";
+import { generateHtmlTemplate } from "@/utils/generate-html-template";
+import nodemailer from "nodemailer";
 
 export const login: MutationResolvers['login'] = async (_:unknown, {input}) => {
-    const {email, password}=input;
-    const user=await UserModel.findOne({email});
+    const {email} = input;
+    const user = await UserModel.findOne({email});
 
-    if(!user)throw new Error('User not found');
+    if(!user) throw new Error('User not found');
 
-    const isCheckPass= bcrypt.compare(password, user.password);
+    // Check if there's an existing valid OTP
+    const oldOTP = await OTPModel.findOne({ email });
+    if (oldOTP && oldOTP.expirationDate > new Date()) {
+        return {user, token: null}; // Return user but no token since OTP is already sent
+    }
 
-    if(!isCheckPass) throw new Error('Email or password is incorrect');
+    // Delete expired OTP if exists
+    if (oldOTP) {
+        await OTPModel.deleteOne({ email });
+    }
 
-    const token=generateToken({id:user._id});
+    // Generate and send new OTP
+    const otp = generateOTP();
+    await sendEmail(otp, email);
 
-    return {user, token};
-}
+    // Save OTP to database
+    await OTPModel.create({
+        email,
+        OTP: otp,
+        expirationDate: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+    });
+
+    return {user, message: 'Welcome'}; // Return user but no token since OTP needs to be verified
+};
+
+const generateOTP = () => {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+};
+
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.SEND_GRID_EMAIL_KEY,
+    },
+});
+
+const sendEmail = (otp: string, email: string) => {
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Your Login OTP',
+        html: generateHtmlTemplate(otp),
+    };
+    
+    transporter.sendMail(mailOptions).then(() => console.log(`OTP sent to ${email}: ${otp}`));
+};

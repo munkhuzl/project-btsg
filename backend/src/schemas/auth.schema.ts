@@ -51,7 +51,6 @@ input WorkPlaceInput {
 
 input LoginInput {
   email: String!
-  password: String!
 }
 
 input SignUpInput {
@@ -61,6 +60,6 @@ input SignUpInput {
 
   type AuthResponse {
     user: User!
-    token: String!
+    message: String
   }
 `;
