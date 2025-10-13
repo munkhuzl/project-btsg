@@ -8,6 +8,7 @@ import { Send } from "lucide-react";
 import { UploadFilesInCloudinary } from "@/lib/uploadfiles";
 import { useState } from 'react';
 import {useSentRequestMutation} from "@/generated";
+import {User} from "@/context/AuthProvider";
 
 export interface RequestFormValues {
   _id: string;
@@ -54,7 +55,7 @@ const RequestSuccessDiv = () => {
   );
 };
 
-export const CreateNewRequest = ({ email }: { email: string }) => {
+export const CreateNewRequest = ({ user }: { user: User }) => {
   const [ sentRequestMutation ] = useSentRequestMutation();
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -62,26 +63,26 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
     initialValues: {
       startTime: "",
       endTime: "",
-      firstname: '',
-      lastname: '',
-      email,
+      firstname: user.firstname || '',
+      lastname: user.lastname || '',
+      email: user.email,
       workPlace: {
-        city: '',
-        state: '',
-        company_name: '',
-        principal_name: '',
+        city: user.workPlace?.city || '',
+        state: user.workPlace?.state || '',
+        company_name: user.workPlace?.company_name || '',
+        principal_name: user.workPlace?.principal_name || '',
       },
       school: {
-        city: '',
-        state: '',
-        school_number: '',
-        class: ''
+        city: user.school?.city || '',
+        state: user.school?.state || '',
+        school_number: user.school?.school_number || '',
+        class: user.school?.class || ''
       },
-      position: "",
+      position: user.position || "",
       optionalFile: "",
       optionalFileMeduuleg: "",
       optionalFilePublicId: '',
-      _id: "",
+      _id: user._id,
       requestDate: "",
       requestType: '',
       detailAboutRequest: '',
@@ -96,15 +97,15 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
           requestDate,
           startTime,
           endTime,
-          email,
+          email: user.email,
           optionalFile: optionalFileUrl,
         };
         console.log(variables, values);
         await sentRequestMutation({ variables: {
           input: {
-            email: variables.email,
+            email: user.email,
             firstname: values.firstname,
-            lastname: 'values.lastname',
+            lastname: values.lastname,
             workPlace: {
               city: values.workPlace.city,
               state: values.workPlace.state,
@@ -123,7 +124,7 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
             endTime: variables.endTime,
             optionalFile: variables.optionalFile,
             optionalFileMeduuleg: values.optionalFileMeduuleg,
-            detailAboutRequest: 'values.detailAboutRequest',
+            detailAboutRequest: values.detailAboutRequest,
             optionalFilePublicId: values.optionalFilePublicId,
           }
           }});
@@ -198,7 +199,7 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
               <div className="flex-1 mt-2">
                 <Label>Захирлын (дарга) нэр</Label>
                 <Input
-                  name="principalName"
+                  name="workPlace.principal_name"
                   value={formik.values.workPlace.principal_name}
                   onChange={formik.handleChange}
                   placeholder="Жишээ нь: О.Болдбаатар"
@@ -218,7 +219,7 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
               <div className="flex-1 mt-2">
                 <Label>Тамирчны нэр</Label>
                 <Input
-                  name="_id"
+                  name="firstname"
                   value={formik.values.firstname}
                   onChange={formik.handleChange}
                   placeholder="Жишээ нь: О.Бат"
@@ -227,7 +228,7 @@ export const CreateNewRequest = ({ email }: { email: string }) => {
               <div className="flex-1 mt-2">
                 <Label>Тамирчны овог</Label>
                 <Input
-                    name="_id"
+                    name="lastname"
                     value={formik.values.lastname}
                     onChange={formik.handleChange}
                     placeholder="Жишээ нь: О.Бат"

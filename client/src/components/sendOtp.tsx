@@ -98,6 +98,7 @@ const SendOtp = () => {
 };
 
 const setToken = (token: string) => {
+  localStorage.setItem('token', token);
   fetch(`/token?token=${token}`);
 };
 
