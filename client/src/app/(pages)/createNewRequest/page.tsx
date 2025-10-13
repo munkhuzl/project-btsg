@@ -12,7 +12,7 @@ const Page = () => {
     skip: !token,
     context: {
       headers: {
-        authorization: token || '',
+        authorization: token,
       },
     },
   });

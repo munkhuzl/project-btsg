@@ -10,7 +10,7 @@ export const MutationTypeDefs = gql`
     }
 
     type Query {
-        getUser: [User!]!
+        getUser(_id: ID!): User!
         getRequestById(_id: ID!): RequestType!
         getRequests(
             email: String

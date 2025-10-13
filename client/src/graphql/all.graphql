@@ -1,14 +1,31 @@
-query GetUser {
-  getUser {
+query GetUser($id: ID!) {
+  getUser(_id: $id) {
     _id
     email
     password
     firstname
     lastname
+    role
+    position
     phoneNumber
     otp
     passwordResetToken
     passwordResetTokenExpire
+    age
+    birthDate
+    home_address
+    workPlace {
+      city
+      state
+      company_name
+      principal_name
+    }
+    school {
+      city
+      state
+      school_number
+      class
+    }
     createdAt
     updatedAt
   }
