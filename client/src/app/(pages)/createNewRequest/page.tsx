@@ -2,23 +2,21 @@
 
 import { CreateNewRequest } from "@/components/createNewRequest";
 import {useAuth} from "@/context/AuthProvider";
-import {useGetUserQuery} from "@/generated";
+import {toast} from "react-toastify";
 
 const Page = () => {
-  const { isAuth } = useAuth();
-  const token = localStorage.getItem('token');
+  const { isAuth, user, isLoading } = useAuth();
 
-  const { data: userData } = useGetUserQuery({
-    skip: !token,
-    context: {
-      headers: {
-        authorization: token,
-      },
-    },
-  });
-  console.log(isAuth, token, userData);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (!user || !isAuth) {
+    toast.error('User must be logged in to sent request');
+    return
+  }
 
-  return <CreateNewRequest user={userData || 's'} />;
+  return <CreateNewRequest user={user} />;
 };
 
 export default Page;

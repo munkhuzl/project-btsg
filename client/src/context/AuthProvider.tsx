@@ -1,9 +1,10 @@
 'use client';
 
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {useApolloClient} from "@apollo/client";
-import {toast} from "react-toastify";
-import {useGetUserQuery} from "@/generated";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useApolloClient } from "@apollo/client";
+import { toast } from "react-toastify";
+import { useGetUserQuery } from "@/generated";
+import { getUserIdFromToken } from "@/lib/decode-token";
 
 export interface User {
     _id: string;
@@ -30,53 +31,73 @@ export interface AuthContextValue {
     isAuth: boolean;
     user: User | null;
     token: string | null;
+    isLoading: boolean;
     logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextValue>({} as AuthContextValue);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [isAuth, setAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState(false);
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const client = useApolloClient();
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    // Get user data query
-    const { data: userData } = useGetUserQuery({
-        skip: !isAuth || !token,
-        context: {
-            headers: {
-                authorization: token || '',
-            },
-        },
+    // Decode user ID from token
+    const userId = token ? getUserIdFromToken(token) : null;
+
+    // Apollo query: fetch user only if we have a valid userId
+    const { data, loading, error } = useGetUserQuery({
+        skip: !userId,
+        variables: { _id: userId || "" },
     });
 
+    // Handle authentication state
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            setToken(storedToken);
-            setAuth(true);
+        if (token) {
+            setIsAuth(true);
+        } else {
+            setIsAuth(false);
+            setUser(null);
         }
-    }, []);
+    }, [token]);
 
     // Update user data when query completes
     useEffect(() => {
-        if (userData?.getUser && userData.getUser.length > 0) {
-            setUser(userData.getUser[0]);
+        if (data?.getUser) {
+            setUser(data.getUser);
         }
-    }, [userData]);
+        setIsLoading(loading);
+    }, [data, loading]);
+
+    // Handle query errors gracefully
+    useEffect(() => {
+        if (error) {
+            console.error("Error fetching user:", error);
+            toast.error("Failed to load user data.");
+            setIsAuth(false);
+            setUser(null);
+            setIsLoading(false);
+        }
+    }, [error]);
 
     const logout = async () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('order');
-        setAuth(false);
+        localStorage.removeItem("token");
+        localStorage.removeItem("order");
+        setIsAuth(false);
         setUser(null);
-        setToken(null);
-        await client.resetStore().then(() => toast.success(`Account logged out`));
+        setIsLoading(false);
+        await client.resetStore();
+        toast.success("Logged out successfully");
     };
 
-    return <AuthContext.Provider value={{ isAuth, user, token, logout }}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ isAuth, user, token, isLoading, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export const useAuth = () => useContext(AuthContext);

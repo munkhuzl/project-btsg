@@ -79,4 +79,7 @@ export const RequestTypeDefs = gql`
  type RequestSentRespone {
   message: String
   }
+  type StatusChangedResponse {
+    message: String
+  }
 `;

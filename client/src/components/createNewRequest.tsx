@@ -55,7 +55,7 @@ const RequestSuccessDiv = () => {
   );
 };
 
-export const CreateNewRequest = ({ user }: { user: User }) => {
+export const CreateNewRequest = ({ user }: { user: User}) => {
   const [ sentRequestMutation ] = useSentRequestMutation();
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -125,7 +125,6 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             optionalFile: variables.optionalFile,
             optionalFileMeduuleg: values.optionalFileMeduuleg,
             detailAboutRequest: values.detailAboutRequest,
-            optionalFilePublicId: values.optionalFilePublicId,
           }
           }});
         formik.resetForm();
@@ -220,7 +219,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                 <Label>Тамирчны нэр</Label>
                 <Input
                   name="firstname"
-                  value={formik.values.firstname}
+                  value={user.firstname || formik.values.firstname}
                   onChange={formik.handleChange}
                   placeholder="Жишээ нь: О.Бат"
                 />
@@ -229,9 +228,9 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                 <Label>Тамирчны овог</Label>
                 <Input
                     name="lastname"
-                    value={formik.values.lastname}
+                    value={user.lastname || formik.values.lastname}
                     onChange={formik.handleChange}
-                    placeholder="Жишээ нь: О.Бат"
+                    placeholder={user.firstname}
                 />
               </div>
             </div>

@@ -70,7 +70,7 @@ const RequestSchema = new Schema<Request>(
       optionalFileMeduuleg: String,
     result: {
         type: String,
-        enum: ['pending', 'sent', 'failed', 'success'],
+        enum: ['pending', 'declined', 'success'],
         default: 'pending',
       },
       supervisorEmail: String,

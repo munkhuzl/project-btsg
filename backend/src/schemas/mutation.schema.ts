@@ -7,6 +7,7 @@ export const MutationTypeDefs = gql`
         createsOTP(email: String!): OTPType!
         checkOTP(email: String!, OTP: String!): OTPResponse!
         sentRequest(input: SendRequestInput!): RequestSentRespone!
+        changeReStatus(result: String!): StatusChangedResponse!
     }
 
     type Query {

@@ -1,2 +1,4 @@
 JWT_SECRET="pass@123"
 MONGO_URI=mongodb+srv://e69808220_db_user:QZuD1xlGStqW5Oio@btsg.nawowaw.mongodb.net/?retryWrites=true&w=majority&appName=Btsg"
+EMAIL="e69808220@gmail.com"
+SEND_GRID_EMAIL_KEY="lxcx qyon gilh pyvt"
