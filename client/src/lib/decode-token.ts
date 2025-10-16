@@ -1,4 +1,4 @@
-export const getUserIdFromToken = (token: string | null): string | null => {
+export const getUserIdFromToken = (token: string | null) => {
   if (!token) return null;
   
   try {

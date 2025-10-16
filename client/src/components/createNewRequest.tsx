@@ -1,256 +1,277 @@
-"use client"
+"use client";
+import { useState } from "react";
+import { useFormik } from "formik";
+import Image from "next/image";
+import {ChevronDown, Send, X} from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { useFormik } from "formik";
-import Image from "next/image";
-import { Send } from "lucide-react";
+import { useSentRequestMutation } from "@/generated";
+import { User } from "@/context/AuthProvider";
 import { UploadFilesInCloudinary } from "@/lib/uploadfiles";
-import { useState } from 'react';
-import {useSentRequestMutation} from "@/generated";
-import {User} from "@/context/AuthProvider";
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@radix-ui/react-dropdown-menu"; // keep it in a separate util file
 
-export interface RequestFormValues {
-  _id: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  workPlace: {
-    city: string;
-    state: string;
-    company_name: string;
-    principal_name: string;
-  }
-  requestDate: string;
-  school: {
-    city: string;
-    state: string;
-    school_number: string;
-    class: string;
-  }
-  position: string;
-  requestType: string;
-  startTime: string;
-  endTime: string;
-  optionalFile: string;
-  optionalFileMeduuleg: string;
-  optionalFilePublicId: string;
-  detailAboutRequest: string;
+interface RequestFormValues {
+    email: string;
+    firstname: string;
+    lastname: string;
+    workPlace: {
+        city: string;
+        state: string;
+        company_name: string;
+        principal_name: string;
+    };
+    school: {
+        city: string;
+        state: string;
+        school_number: string;
+        class: string;
+    };
+    position: string;
+    requestType: string;
+    requestDate: string;
+    startTime: string;
+    endTime: string;
+    optionalFile?: File | null;
+    optionalFileMeduuleg?: File | null;
+    detailAboutRequest: string;
 }
 
-const RequestSuccessDiv = () => {
-  return (
-    <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
-      <div className="max-w-[608px] text-center w-full flex flex-col items-center gap-8 p-8 border-[1px] border-[#E4E4E7] rounded-[8px] bg-[#FFFFFF]">
-        <Image src="/sent.png" alt="Success" width={80} height={80} />
-        <div>
-          <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
-          <span className="text-sm text-[#71717A]">
-            Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг танд Teams
-            Chat-аар мэдэгдэх болно.
-          </span>
+const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>})=>  (
+        <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
+        <div
+            className="max-w-[608px] text-center w-full flex flex-col relative items-center gap-8 p-8 border border-[#E4E4E7] rounded-[8px] bg-white">
+            <X className="size-5 text-black absolute top-2 right-4" onClick={()=>setShowSuccess(false)}/>
+            <Image src="/sent.png" alt="Success" width={80} height={80}/>
+            <div>
+                <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
+                <p className="text-sm text-[#71717A]">
+                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг танд Teams Chat-аар мэдэгдэх болно.
+                </p>
+            </div>
         </div>
-      </div>
     </div>
-  );
-};
+);
 
-export const CreateNewRequest = ({ user }: { user: User}) => {
-  const [ sentRequestMutation ] = useSentRequestMutation();
-  const [showSuccess, setShowSuccess] = useState(false);
 
-  const formik = useFormik<RequestFormValues>({
-    initialValues: {
-      startTime: "",
-      endTime: "",
-      firstname: user.firstname || '',
-      lastname: user.lastname || '',
-      email: user.email,
-      workPlace: {
-        city: user.workPlace?.city || '',
-        state: user.workPlace?.state || '',
-        company_name: user.workPlace?.company_name || '',
-        principal_name: user.workPlace?.principal_name || '',
-      },
-      school: {
-        city: user.school?.city || '',
-        state: user.school?.state || '',
-        school_number: user.school?.school_number || '',
-        class: user.school?.class || ''
-      },
-      position: user.position || "",
-      optionalFile: "",
-      optionalFileMeduuleg: "",
-      optionalFilePublicId: '',
-      _id: user._id,
-      requestDate: "",
-      requestType: '',
-      detailAboutRequest: '',
-    },
-    onSubmit: async (values) => {
-      try {
-        const optionalFileUrl = values.optionalFile
-          ? await UploadFilesInCloudinary(values.optionalFile)
-          : "";
-        const { requestDate, startTime, endTime } = values;
-        const variables = {
-          requestDate,
-          startTime,
-          endTime,
-          email: user.email,
-          optionalFile: optionalFileUrl,
-        };
-        console.log(variables, values);
-        await sentRequestMutation({ variables: {
-          input: {
+export const CreateNewRequest = ({ user }: { user: User }) => {
+    const [sentRequestMutation] = useSentRequestMutation();
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const formik = useFormik<RequestFormValues>({
+        initialValues: {
             email: user.email,
-            firstname: values.firstname,
-            lastname: values.lastname,
+            firstname: user.firstname || "",
+            lastname: user.lastname || "",
             workPlace: {
-              city: values.workPlace.city,
-              state: values.workPlace.state,
-              company_name: values.workPlace.company_name,
-              principal_name: values.workPlace.principal_name
+                city: user.workPlace?.city || "",
+                state: user.workPlace?.state || "",
+                company_name: user.workPlace?.company_name || "",
+                principal_name: user.workPlace?.principal_name || "",
             },
-            requestDate: requestDate,
             school: {
-              city: values.school.city,
-              state: values.school.state,
-              school_number: values.school.school_number,
-              class: values.school.class
+                city: user.school?.city || "",
+                state: user.school?.state || "",
+                school_number: user.school?.school_number || "",
+                class: user.school?.class || "",
             },
-            requestType: 'mediumterm',
-            startTime: variables.startTime,
-            endTime: variables.endTime,
-            optionalFile: variables.optionalFile,
-            optionalFileMeduuleg: values.optionalFileMeduuleg,
-            detailAboutRequest: values.detailAboutRequest,
-          }
-          }});
-        formik.resetForm();
-        setShowSuccess(true); // Show success message
-      } catch (error) {
-        console.error("Submission error:", error);
-      }
-    },
-  });
+            position: user.position || "",
+            requestType: "",
+            requestDate: "",
+            startTime: "",
+            endTime: "",
+            optionalFile: null,
+            optionalFileMeduuleg: null,
+            detailAboutRequest: "",
+        },
 
-  return (
-    <>
-      {showSuccess && <RequestSuccessDiv />}
-      <form onSubmit={formik.handleSubmit}>
-        <div className="text-[#000000] text-sm max-w-[680px] mx-auto bg-white mt-12 h-full p-8 rounded-md">
-          <div className="font-bold pt-4 text-2xl">Чөлөөний хүсэлт</div>
-          <span className="text-[#EF4430]">
+        onSubmit: async (values, { resetForm }) => {
+            try {
+                let optionalFileUrl = "";
+                let optionalFileMeduulegUrl = "";
+
+                // Upload files if present
+                if (values.optionalFile) {
+                    optionalFileUrl = await UploadFilesInCloudinary(values.optionalFile);
+                }
+                if (values.optionalFileMeduuleg) {
+                    optionalFileMeduulegUrl = await UploadFilesInCloudinary(values.optionalFileMeduuleg);
+                }
+
+                await sentRequestMutation({
+                    variables: {
+                        input: {
+                            email: user.email,
+                            firstname: values.firstname,
+                            lastname: values.lastname,
+                            workPlace: values.workPlace,
+                            school: values.school,
+                            position: values.position,
+                            requestType: values.requestType,
+                            requestDate: values.requestDate,
+                            startTime: values.startTime,
+                            endTime: values.endTime,
+                            optionalFile: optionalFileUrl,
+                            optionalFileMeduuleg: optionalFileMeduulegUrl,
+                            detailAboutRequest: values.detailAboutRequest,
+                        },
+                    },
+                });
+
+                resetForm();
+                setShowSuccess(true);
+            } catch (error) {
+                console.error("Submission error:", error);
+            }
+        },
+    });
+
+    const selectedType= formik.values.requestType;
+
+    return (
+        <>
+            {showSuccess && <RequestSuccessDiv setShowSuccess={setShowSuccess}/>}
+            <form onSubmit={formik.handleSubmit}>
+                <div className="text-[#000000] text-sm max-w-[680px] mx-auto bg-white mt-12 p-8 rounded-md">
+                    <h2 className="font-bold text-2xl">Чөлөөний хүсэлт</h2>
+                    <span className="text-[#EF4430]">
             Хамгийн богинодоо нэг өдрийн чөлөө авах боломжтой.
           </span>
-          <div className="mt-4 flex">
-            <div className="flex-1 pr-3">
-              <Label className="py-2">Эхлэх өдөр</Label>
-              <Input
-                name="startTime"
-                type="date"
-                value={formik.values.startTime}
-                onChange={formik.handleChange}
-              />
-            </div>
-            <div className="flex-1">
-              <Label>Дуусах өдөр</Label>
-              <Input
-                name="endTime"
-                type="date"
-                value={formik.values.endTime}
-                onChange={formik.handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex">
-            <div className="mt-6 flex-1 pr-3">
-              <Label>Тэмцээний албан ёсны удирдамж</Label>
-              <Input
-                name="optionalFile"
-                type="file"
-                className="file-input max-w-xs"
-                onChange={formik.handleChange}
-              />
-            </div>
-            <div className="mt-6 flex-1">
-              <Label>Тэмцээний мэдүүлэг (заавал) хавсаргах</Label>
-              <Input
-                name="optionalFileMeduuleg"
-                type="file"
-                className="file-input w-full max-w-xs"
-                onChange={formik.handleChange}
-              />
-            </div>
-          </div>
-          <div className="mt-6">
-            <div className="flex">
-              <div className="flex-1 mt-2 pr-3">
-                <Label>Ажлын (Сургууль) газар</Label>
-                {/*<Input*/}
-                {/*  name="workPlace"*/}
-                {/*  value={formik.values.workPlace}*/}
-                {/*  onChange={formik.handleChange}*/}
-                {/*  placeholder="Жишээ нь: Биеийн тамир, спортын газар"*/}
-                {/*/>*/}
-              </div>
-              <div className="flex-1 mt-2">
-                <Label>Захирлын (дарга) нэр</Label>
-                <Input
-                  name="workPlace.principal_name"
-                  value={formik.values.workPlace.principal_name}
-                  onChange={formik.handleChange}
-                  placeholder="Жишээ нь: О.Болдбаатар"
-                />
-              </div>
-            </div>
-            <div className="flex mt-6">
-              <div className="flex-1 mt-2 pr-3">
-                <Label>Албан тушаал (анги)</Label>
-                <Input
-                  name="position"
-                  value={formik.values.position}
-                  onChange={formik.handleChange}
-                  placeholder="Жишээ нь: Мэргэжилтэн"
-                />
-              </div>
-              <div className="flex-1 mt-2">
-                <Label>Тамирчны нэр</Label>
-                <Input
-                  name="firstname"
-                  value={user.firstname || formik.values.firstname}
-                  onChange={formik.handleChange}
-                  placeholder="Жишээ нь: О.Бат"
-                />
-              </div>
-              <div className="flex-1 mt-2">
-                <Label>Тамирчны овог</Label>
-                <Input
-                    name="lastname"
-                    value={user.lastname || formik.values.lastname}
-                    onChange={formik.handleChange}
-                    placeholder={user.firstname}
-                />
-              </div>
-            </div>
-          </div>
-          <Button className="w-full mt-6" type="submit">
-            <Send size={14} />
-            Хүсэлт илгээх
-          </Button>
-        </div>
-      </form>
-    </>
-  );
+
+                    {/* Dates */}
+                    <div className="mt-4 flex gap-3">
+                        <div className="flex-1">
+                            <Label>Эхлэх өдөр</Label>
+                            <Input type="date" {...formik.getFieldProps("startTime")} required={true}/>
+                        </div>
+                        <div className="flex-1">
+                            <Label>Дуусах өдөр</Label>
+                            <Input type="date" {...formik.getFieldProps("endTime")} required={true}/>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 flex-1">
+                        <div className="mt-6 flex-1">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="bg-white border border-gray-200 rounded-md px-3 py-2 flex items-center gap-2 justify-between w-2/3">
+                                    {selectedType ? selectedType : "Чөлөө авах хугацааны төрөл"}
+                                    <ChevronDown className="size-5 text-gray-400" />
+                                </DropdownMenuTrigger>
+
+                                <DropdownMenuContent className="bg-white w-full px-6 py-2 border border-gray-200 rounded-md shadow-md space-y-2">
+                                    <DropdownMenuItem
+                                        onSelect={() => formik.setFieldValue("requestType", "longterm")}
+                                        className="cursor-pointer"
+                                    >
+                                        Урт хугацаа
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        onSelect={() => formik.setFieldValue("requestType", "mediumterm")}
+                                        className="cursor-pointer"
+                                    >
+                                        Дундаж хугацаа
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        onSelect={() => formik.setFieldValue("requestType", "shortterm")}
+                                        className="cursor-pointer"
+                                    >
+                                        Богино хугацаа
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+
+                    </div>
+
+
+                    {/* Files */}
+                    <div className="mt-6 flex gap-3">
+                        <div className="flex-1">
+                            <Label>Тэмцээний албан ёсны удирдамж</Label>
+                            <Input
+                                type="file"
+                                name="optionalFile"
+                                onChange={(e) =>
+                                    formik.setFieldValue("optionalFile", e.currentTarget.files?.[0] || null)
+                                }
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <Label>Тэмцээний мэдүүлэг (заавал)</Label>
+                            <Input
+                                type="file"
+                                name="optionalFileMeduuleg"
+                                onChange={(e) =>
+                                    formik.setFieldValue("optionalFileMeduuleg", e.currentTarget.files?.[0] || null)
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Workplace */}
+                    <div className="mt-6 flex gap-3">
+                        <div className="flex-1 ">
+                            <Label>Ажлын газар/Сургууль</Label>
+                            <div className="grid grid-cols-2 gap-3 mt-1">
+                                <Input
+                                    placeholder="Жишээ нь: Биеийн тамир, спортын газар"
+                                    {...formik.getFieldProps("workPlace.company_name")}
+                                />
+                                <Input
+                                    placeholder="Жишээ нь: Хот, аймаг"
+                                    {...formik.getFieldProps("workPlace.city")}
+                                />
+                                <Input
+                                    placeholder="Жишээ нь: Дүүрэг, хороо"
+                                    {...formik.getFieldProps("workPlace.state")}
+                                />
+                                <Input
+                                    placeholder="Жишээ нь: О.Болдбаатар"
+                                    {...formik.getFieldProps("workPlace.principal_name")}
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Name and position */}
+                    <div className="mt-6 flex gap-3">
+                        <div className="flex-1">
+                            <Label>Албан тушаал/анги</Label>
+                            <Input
+                                placeholder="Жишээ нь: Мэргэжилтэн"
+                                {...formik.getFieldProps("position")}
+                            />
+                        </div>
+
+                    </div>
+                    <div className="mt-6 flex gap-3">
+                        <div className="flex-1">
+                            <Label>Овог</Label>
+                            <Input {...formik.getFieldProps("lastname")} required={true}/>
+                        </div>
+                        <div className="flex-1">
+                            <Label>Нэр</Label>
+                            <Input {...formik.getFieldProps("firstname")} required={true}/>
+                        </div>
+                    </div>
+                    <div className="mt-6 w-full flex-1">
+                        <Label>Чөлөөний талаар дэлгэрэнгүй оруулна уу.</Label>
+                        <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20"/>
+                    </div>
+
+                    <Button className="w-full mt-6" type="submit">
+                        <Send size={14} /> Хүсэлт илгээх
+                    </Button>
+                </div>
+            </form>
+        </>
+    );
 };
-
-// export default CreateNewRequest;
-// function useCreateRequestQuery({}: { variables: { email: string; }; }): { data: unknown; } {
-//   throw console.log(error)
-// }
-
-// function useCreatesRequestMutation(): { createRequest: unknown; } {
-//   throw new Error("Function not implemented.");
-// }
-

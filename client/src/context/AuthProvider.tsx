@@ -46,12 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     // Decode user ID from token
-    const userId = token ? getUserIdFromToken(token) : null;
+    const userId = getUserIdFromToken(token);
 
     // Apollo query: fetch user only if we have a valid userId
     const { data, loading, error } = useGetUserQuery({
         skip: !userId,
-        variables: { _id: userId || "" },
+        variables: { _id: userId },
     });
 
     // Handle authentication state
