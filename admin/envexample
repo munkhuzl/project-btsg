@@ -1,0 +1,2 @@
+LOCAL_BACKEND_URI=" http://localhost:3001"
+SEND_GRID_EMAIL_KEY="e69808220@gmail.com"

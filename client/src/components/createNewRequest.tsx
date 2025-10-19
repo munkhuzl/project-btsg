@@ -8,18 +8,19 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useSentRequestMutation } from "@/generated";
 import { User } from "@/context/AuthProvider";
-import { UploadFilesInCloudinary } from "@/lib/uploadfiles";
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@radix-ui/react-dropdown-menu"; // keep it in a separate util file
+} from "@radix-ui/react-dropdown-menu";
+import {uploadFilesInCloudinary} from "@/lib/upload-files"; // keep it in a separate util file
 
 interface RequestFormValues {
     email: string;
     firstname: string;
     lastname: string;
+    userId: string;
     workPlace: {
         city: string;
         state: string;
@@ -43,9 +44,9 @@ interface RequestFormValues {
 }
 
 const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>})=>  (
-        <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
+    <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
         <div
-            className="max-w-[608px] text-center w-full flex flex-col relative items-center gap-8 p-8 border border-[#E4E4E7] rounded-[8px] bg-white">
+            className="md:max-w-[608px] w-full text-center flex flex-col relative items-center gap-8 p-8 border border-[#E4E4E7] rounded-[8px] bg-white">
             <X className="size-5 text-black absolute top-2 right-4" onClick={()=>setShowSuccess(false)}/>
             <Image src="/sent.png" alt="Success" width={80} height={80}/>
             <div>
@@ -60,7 +61,7 @@ const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<Rea
 
 
 export const CreateNewRequest = ({ user }: { user: User }) => {
-    const [sentRequestMutation] = useSentRequestMutation();
+    const [sentRequestMutation, {loading}] = useSentRequestMutation();
     const [showSuccess, setShowSuccess] = useState(false);
 
     const formik = useFormik<RequestFormValues>({
@@ -68,6 +69,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             email: user.email,
             firstname: user.firstname || "",
             lastname: user.lastname || "",
+            userId: user._id || "",
             workPlace: {
                 city: user.workPlace?.city || "",
                 state: user.workPlace?.state || "",
@@ -97,10 +99,10 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
 
                 // Upload files if present
                 if (values.optionalFile) {
-                    optionalFileUrl = await UploadFilesInCloudinary(values.optionalFile);
+                    optionalFileUrl = await uploadFilesInCloudinary(values.optionalFile);
                 }
                 if (values.optionalFileMeduuleg) {
-                    optionalFileMeduulegUrl = await UploadFilesInCloudinary(values.optionalFileMeduuleg);
+                    optionalFileMeduulegUrl = await uploadFilesInCloudinary(values.optionalFileMeduuleg);
                 }
 
                 await sentRequestMutation({
@@ -110,6 +112,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                             firstname: values.firstname,
                             lastname: values.lastname,
                             workPlace: values.workPlace,
+                            userId: user._id,
                             school: values.school,
                             position: values.position,
                             requestType: values.requestType,
@@ -211,6 +214,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 onChange={(e) =>
                                     formik.setFieldValue("optionalFileMeduuleg", e.currentTarget.files?.[0] || null)
                                 }
+                                required={true}
                             />
                         </div>
                     </div>
@@ -268,7 +272,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                     </div>
 
                     <Button className="w-full mt-6" type="submit">
-                        <Send size={14} /> Хүсэлт илгээх
+                        {loading ? <p>Уншиж байна...</p> : <><Send size={14} /> Хүсэлт илгээх</>}
                     </Button>
                 </div>
             </form>

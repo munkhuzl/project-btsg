@@ -7,18 +7,17 @@ export const MutationTypeDefs = gql`
         createsOTP(email: String!): OTPType!
         checkOTP(email: String!, OTP: String!): OTPResponse!
         sentRequest(input: SendRequestInput!): RequestSentRespone!
-        changeReStatus(result: String!): StatusChangedResponse!
+        changeReStatus(result: String!, _id: ID!): StatusChangedResponse!
     }
 
     type Query {
         getUser(_id: ID!): User!
         getRequestById(_id: ID!): RequestType!
+        getRequestByUserID: [RequestType!]!
         getRequests(
             email: String
-            startDate: Date
-            endDate: Date
-            status: String
-        ): [GroupedRequests!]
+            result: String
+        ): [AllGroupedRequests!]!
         getAllRequests: [RequestType!]!
         openRequest(_id: ID): OpenRequestType
     }

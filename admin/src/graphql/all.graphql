@@ -1,0 +1,129 @@
+query GetUser($_id: ID!) {
+    getUser(_id: $_id) {
+        _id
+        email
+        password
+        firstname
+        lastname
+        role
+        position
+        phoneNumber
+        otp
+        passwordResetToken
+        passwordResetTokenExpire
+        age
+        birthDate
+        home_address
+        workPlace {
+            city
+            state
+            company_name
+            principal_name
+        }
+        school {
+            city
+            state
+            school_number
+            class
+        }
+        createdAt
+        updatedAt
+    }
+}
+mutation Login($input: LoginInput!) {
+    login(input: $input) {
+        user {
+            email
+        }
+        message
+    }
+}
+mutation SignUp($input: SignUpInput!) {
+    signUp(input: $input) {
+        email
+    }
+}
+mutation CheckOTP($email: String!, $otp: String!) {
+    checkOTP(email: $email, OTP: $otp) {
+        message
+        token
+    }
+}
+## Query to fetch request details based on email
+query GetAllRequests {
+    getAllRequests {
+        _id
+        email
+        firstname
+        lastname
+        requestDate
+        position
+        requestType
+        startTime
+        endTime
+        optionalFile
+        optionalFileMeduuleg
+        result
+        detailAboutRequest
+        school {
+            city
+            state
+            school_number
+            class
+        }
+        updatedAt
+        createdAt
+        workPlace {
+            city
+            state
+            company_name
+            principal_name
+        }
+    }
+}
+
+query GetRequestByUserID {
+    getRequestByUserID {
+        _id
+        email
+        firstname
+        userId
+        lastname
+        workPlace {
+            city
+            state
+            company_name
+            principal_name
+        }
+        school {
+            city
+            state
+            school_number
+            class
+        }
+        requestDate
+        position
+        requestType
+        startTime
+        endTime
+        optionalFile
+        optionalFileMeduuleg
+        result
+        detailAboutRequest
+        createdAt
+        updatedAt
+    }
+}
+
+# Mutation to create a request
+mutation SentRequest($input: SendRequestInput!) {
+    sentRequest(input: $input) {
+        message
+    }
+}
+
+mutation ChangeReStatus($result: String!, $id: ID!) {
+    changeReStatus(result: $result, _id: $id) {
+        message
+    }
+}

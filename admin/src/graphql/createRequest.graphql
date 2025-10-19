@@ -1,0 +1,6 @@
+# Mutation to create a request
+mutation SentRequest($input: SendRequestInput!) {
+    sentRequest(input: $input) {
+        message
+    }
+}

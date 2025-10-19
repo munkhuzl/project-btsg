@@ -1,37 +1,38 @@
 # Query to fetch request details based on email
 query GetAllRequests {
-  getAllRequests {
-    _id
-    email
-    firstname
-    lastname
-    requestDate
-    position
-    requestType
-    startTime
-    endTime
-    optionalFile
-    optionalFileMeduuleg
-    result
-    school {
-      city
-      state
-      school_number
-      class
+    getAllRequests {
+        _id
+        email
+        firstname
+        lastname
+        requestDate
+        position
+        requestType
+        startTime
+        endTime
+        optionalFile
+        optionalFileMeduuleg
+        result
+        school {
+            city
+            state
+            school_number
+            class
+        }
+        updatedAt
+        createdAt
+        workPlace {
+            city
+            state
+            company_name
+            principal_name
+        }
     }
-    updated_at
-    workPlace {
-      city
-      state
-      company_name
-      principal_name
-    }
-  }
 }
 
 # Mutation to create a request
 mutation SentRequest($input: SendRequestInput!) {
-  sentRequest(input: $input) {
-    message
-  }
+    sentRequest(input: $input) {
+        message
+    }
 }

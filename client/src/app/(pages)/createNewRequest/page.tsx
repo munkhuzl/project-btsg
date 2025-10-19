@@ -8,7 +8,7 @@ const Page = () => {
   const { isAuth, user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="w-full mx-auto text-center">Уншиж байна...</div>;
   }
   
   if (!user || !isAuth) {

@@ -1,7 +1,7 @@
 import {MutationResolvers} from "@/generated/graphql";
 import {RequestModel} from "@/models";
 
-export const changeReStatus: MutationResolvers['changeReStatus'] = async (_, { result }, {userId})=>{
+export const changeReStatus: MutationResolvers['changeReStatus'] = async (_, { result, _id }, {userId})=>{
     if(!userId){
         return {
             message: 'User must be logged in'
@@ -11,7 +11,7 @@ export const changeReStatus: MutationResolvers['changeReStatus'] = async (_, { r
     try {
         // Find the first request with pending status and update it to success
         const updatedRequest = await RequestModel.findOneAndUpdate(
-            { result: 'pending' }, // Find a request with pending status
+            { result: 'pending', _id: _id }, // Find a request with pending status
             { result: result }, // Update to success
             { new: true } // Return the updated document
         );
