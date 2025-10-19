@@ -52,7 +52,7 @@ const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<Rea
             <div>
                 <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
                 <p className="text-sm text-[#71717A]">
-                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг танд Teams Chat-аар мэдэгдэх болно.
+                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг и-мэйлээр илгээх болно. 
                 </p>
             </div>
         </div>

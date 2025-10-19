@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { ApolloWrapper } from '@/components/providers';
 import { LoginProvider } from '@/context/LoginContext';
 import { cookies } from 'next/headers';
-import './global.css'
+import './global.css';
 import {AuthProvider} from "@/context/AuthProvider";
 import {Header} from "@/components/Header";
 import {Theme} from "@radix-ui/themes";

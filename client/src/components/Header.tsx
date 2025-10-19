@@ -18,7 +18,7 @@ export function Header() {
                 <div className="flex items-center gap-4">
                     <div>
                         <h1 className="text-gray-900">Биеийн тамир спортын газар</h1>
-                        <p className="text-sm text-gray-500">Цаг бүртгэл</p>
+                        <p className="text-sm text-gray-500">Чөлөөний хуудас</p>
                     </div>
                 </div>
 
