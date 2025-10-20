@@ -76,9 +76,6 @@ const MyRequest = () => {
                   id="print-area"
                   className="bg-white p-10 text-[14px] text-black leading-relaxed"
                 >
-                
-                    
-
                   <div className="text-center mb-4">
                     <Image
                       src="/suld.png"
@@ -87,23 +84,18 @@ const MyRequest = () => {
                       height={300}
                       className="mx-auto"
                     />
-                    
-                    
                     <div className="flex justify-between mt-2 text-[12px] px-2">
                       <p>2025.10.19</p>
                       <p>№ 03/66</p>
                     </div>
                   </div>
-
-                  {/* Хэнд хандаж буй хэсэг */}
                   <p className=" font-medium mb-4 text-center">БАЙГУУЛЛАГУУДАД</p>
 
-                  {/* Гарчиг */}
                   <h3 className="text-center font-semibold mb-4 underline">
                     ЧӨЛӨӨ ОЛГОХ ТУХАЙ
                   </h3>
 
-                  {/* Үндсэн текст */}
+    
                   <p className="text-justify indent-8"> Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45 дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 3.1 дэх заалтыг үндэслэн 
                    {" "}  {acceptedReqs.lastname} овогтой {acceptedReqs.firstname}{" "}
                     -д {acceptedReqs.startTime}-ны өдрөөс  {acceptedReqs.endTime}{" "}
@@ -113,7 +105,7 @@ const MyRequest = () => {
 
                   <p className="mt-4">Хавсралт 1 хуудастай.</p>
 
-                  {/* Гарын үсгийн хэсэг */}
+
                   <div className="flex justify-end mt-12">
                     <div className="text-center">
                       <p>_____________________</p>

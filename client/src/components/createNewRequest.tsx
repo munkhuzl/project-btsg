@@ -48,7 +48,7 @@ const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<Rea
         <div
             className="md:max-w-[608px] w-full text-center flex flex-col relative items-center gap-8 p-8 border border-[#E4E4E7] rounded-[8px] bg-white">
             <X className="size-5 text-black absolute top-2 right-4" onClick={()=>setShowSuccess(false)}/>
-            <Image src="/sent.png" alt="Success" width={80} height={80}/>
+            <Image src="/checked.png" alt="Success" width={80} height={80}/>
             <div>
                 <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
                 <p className="text-sm text-[#71717A]">

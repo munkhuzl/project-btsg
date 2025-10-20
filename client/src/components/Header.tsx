@@ -33,9 +33,9 @@ export function Header() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 px-3 py-2 space-y-2 rounded-md">
-                            <DropdownMenuItem>
-                                <Link href='/request'>Миний бүртгэл</Link></DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem  className="hover:bg-slate-200">
+                                <Link href='/request' >Миний чөлөө</Link></DropdownMenuItem>
+                            <DropdownMenuItem className="">
                                 <Link href="/login" onClick={()=>logout()}>Гарах</Link></DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu> : <Link href="/login">Нэвтрэх</Link>}
