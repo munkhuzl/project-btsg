@@ -34,7 +34,7 @@ export function Header() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 px-3 py-2 space-y-2 rounded-md">
                             <DropdownMenuItem>
-                                <Link href='/request'>Миний бүртгэл</Link></DropdownMenuItem>
+                                <Link href='/request'>Хүсэлтүүд</Link></DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Link href="/login" onClick={()=>logout()}>Гарах</Link></DropdownMenuItem>
                         </DropdownMenuContent>
