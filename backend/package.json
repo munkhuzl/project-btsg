@@ -4,7 +4,7 @@
   "prnpivate": true,
   "scripts": {
     "dev:server": "next dev -p 3001",
-    "build": "next build",
+    "build": "tsc -p tsconfig.server.json",
     "start": "next start",
     "lint": "next lint",
     "codegen": "graphql-codegen --config codegen.ts"
