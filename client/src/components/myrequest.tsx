@@ -35,8 +35,8 @@ const MyRequest = () => {
     <div className="max-w-[680px] mx-auto">
       <h1 className="text-start mt-4 font-bold mx-2">Таны чөлөөний хуудаснууд: </h1>
       {data?.getRequestByUserID.length === 0 && (
-        <div className="bg-white my-6 pb-4">
-          <p className="text-wrap text-center text-gray-300 mb-4">
+        <div className="bg-white my-6 py-4">
+          <p className="text-wrap text-center text-gray-300">
             Чөлөөний хуудас байхгүй байна. Таны чөлөөний хуудсууд энд харагдана.
           </p>
         </div>
