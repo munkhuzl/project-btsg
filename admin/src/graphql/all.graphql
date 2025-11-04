@@ -1,5 +1,5 @@
-query GetUser($_id: ID!) {
-    getUser(_id: $_id) {
+query GetUser {
+    getUser {
         _id
         email
         password

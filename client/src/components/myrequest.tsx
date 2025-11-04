@@ -3,7 +3,6 @@
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthProvider";
 import { useGetRequestByUserIdQuery } from "@/generated";
 import {
   Dialog,
@@ -18,13 +17,7 @@ import Image from "next/image";
 
 const MyRequest = () => {
   const router = useRouter();
-  const { user } = useAuth();
-  const { data } = useGetRequestByUserIdQuery({
-    skip: !user?._id,
-    variables: {
-      userId: user?._id,
-    },
-  });
+  const { data } = useGetRequestByUserIdQuery();
 
   const acceptedReqs = data?.getRequestByUserID.find(
     (r) => r.result === "accepted"
