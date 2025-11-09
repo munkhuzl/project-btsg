@@ -10,8 +10,11 @@ dotenv_1.default.config();
 const connectDb = async () => {
     try {
         const uri = process.env.MONGO_URI;
-        if (!uri)
-            throw new Error("Mongo_Uri is not defined");
+        if (!uri) {
+            console.log("Mongo_Uri is not defined");
+            return;
+        }
+        ;
         await mongoose_1.default.connect(uri);
         console.log('Connected');
     }

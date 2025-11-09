@@ -3,12 +3,15 @@ import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { NextRequest } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextResponse } from "next/server";
-import { Context } from '../../../types';
-import {resolvers} from '../../../resolvers';
-import {typeDefs} from '../../../schemas';
+import { Context } from '@/types';
+import {resolvers} from '@/resolvers';
+import {typeDefs} from '@/schemas';
 import { connectDb } from '@/utils/connect-db';
+
 console.log('GraphQL server starting...');
+
 connectDb();
+
 const server = new ApolloServer<Context>({
     resolvers,
   typeDefs,
@@ -61,4 +64,4 @@ export async function POST(request: NextRequest) {
   response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   response.headers.set("Access-Control-Allow-Credentials", "true");
   return response;
-};
+}

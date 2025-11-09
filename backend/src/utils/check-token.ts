@@ -3,6 +3,15 @@ interface JwtPayload {
   role: string;
 }
 
+interface GraphQLContext {
+    req: {
+        headers: {
+            get: (name: string) => string | null;
+        };
+    };
+}
+
+
 const verifyToken = (token: string): JwtPayload | null => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
@@ -16,7 +25,7 @@ const verifyToken = (token: string): JwtPayload | null => {
   }
 };
 
-export const checkToken = (roles: string[], context: any) => {
+export const checkToken = (roles: string[], context: GraphQLContext): boolean | undefined => {
   const token = context.req.headers.get("authorization");
   if (!token) return undefined;
   const decoded = verifyToken(token);

@@ -5,7 +5,7 @@ export const getRequests: QueryResolvers['getRequests'] = async (
     _,
     { email, result }
 ) => {
-    const matchQuery: Record<string, any> = {};
+    const matchQuery: Record<string, string> = {};
 
     if (email) matchQuery.email = email;
     if (result) matchQuery.result = result;
