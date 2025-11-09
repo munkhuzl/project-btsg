@@ -40,7 +40,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   auth: {
     user: 'apikey',
-    pass: process.env.SEND_GRID_EMAIL_KEY,
+    pass: 'vrpn mxqp qmpl bcjz',
   },
 });
 
