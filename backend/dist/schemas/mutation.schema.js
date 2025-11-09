@@ -16,7 +16,7 @@ exports.MutationTypeDefs = (0, graphql_tag_1.default) `
     }
 
     type Query {
-        getUser(_id: ID!): User!
+        getUser: User!
         getRequestById(_id: ID!): RequestType!
         getRequestByUserID: [RequestType!]!
         getRequests(
