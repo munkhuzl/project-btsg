@@ -44,8 +44,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-        user: process.env.EMAIL,
-        pass: process.env.SEND_GRID_EMAIL_KEY,
+        user: "e69808220@gmail.com",
+        pass: "vrpn mxqp qmpl bcjz",
     },
 });
 
