@@ -4,7 +4,7 @@ import {RequestModel} from "@/models";
 export const changeReStatus: MutationResolvers['changeReStatus'] = async (_, { result, _id }, {userId})=>{
     if(!userId){
         return {
-            message: 'User must be logged in'
+            message: 'User must be logged in',
         }
     }
 
