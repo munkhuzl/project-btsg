@@ -4,7 +4,6 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { useApolloClient } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useGetUserQuery } from "@/generated";
-import { getUserIdFromToken } from "@/lib/decode-token";
 
 export interface User {
     _id: string;
@@ -45,14 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const client = useApolloClient();
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    // Decode user ID from token
-    const userId = getUserIdFromToken(token);
-
     // Apollo query: fetch user only if we have a valid userId
-    const { data, loading, error } = useGetUserQuery({
-        skip: !userId,
-        variables: { _id: userId },
-    });
+    const { data, loading, error } = useGetUserQuery();
 
     // Handle authentication state
     useEffect(() => {
