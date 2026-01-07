@@ -168,7 +168,7 @@ const MyRequest = () => {
 
       {/* ✅ Accepted request-ууд */}
       {acceptedReqs?.map((req) => (
-        <Dialog key={req.id}>
+        <Dialog key={req._id}>
           <DialogTrigger asChild>
             <Button variant="outline" className="my-2">
               Чөлөөний хуудас
@@ -177,7 +177,7 @@ const MyRequest = () => {
 
           <DialogContent className="sm:max-w-[600px] bg-white">
             <div
-              id={`print-area-${req.id}`} // ✅ unique id
+              id={`print-area-${req._id}`} // ✅ unique id
               className="bg-white p-10 text-[14px] text-black leading-relaxed"
             >
               <div className="text-center mb-4">
@@ -226,7 +226,7 @@ const MyRequest = () => {
               <Button
                 type="button"
                 onClick={() =>
-                  printDocument(`print-area-${req.id}`, "chuluu_olgov.pdf")
+                  printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
                 }
               >
                 Татах
