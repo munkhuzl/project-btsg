@@ -194,7 +194,7 @@ const MyRequest = () => {
                 </div>
               </div>
 
-              <p className="font-medium mb-4 text-center">БАЙГУУЛЛАГУУДАД</p>
+              <p className="font-medium mb-4 text-center">{req.detailAboutRequest}</p>
 
               <h3 className="text-center font-semibold mb-4 underline">
                 ЧӨЛӨӨ ОЛГОХ ТУХАЙ
