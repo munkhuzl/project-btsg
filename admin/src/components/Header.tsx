@@ -17,7 +17,7 @@ export function Header() {
             <div className="flex items-center justify-between px-6 py-4">
                 <div className="flex items-center gap-4">
                     <div>
-                        <h1 className="text-gray-900">Биеийн тамир спортын газар</h1>
+                        <h1 className="text-gray-900 font-bold">БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР</h1>
                         <p className="text-sm text-gray-500">Цаг бүртгэл Aдмин</p>
                     </div>
                 </div>
@@ -26,7 +26,7 @@ export function Header() {
                     {isAuth ? <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="gap-2">
-                                <CircleUserRound className="md:hidden sm:block w-8 h-8"/>
+                                <CircleUserRound size={24} className="md:hidden sm:block " />
                                 <div className="hidden md:block text-left">
                                     <p className="text-sm">{user?.email}</p>
                                 </div>

@@ -62,8 +62,8 @@ const Login = () => {
                             </div>
                             <div className='text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4' onClick={()=> {router.push('/signup')}} >Бүртгүүлэх</div>
                             <Button type="submit" className="my-6 w-full" disabled={loading} >
-                                {loading &&<p className="text-xs">Уншиж байна...</p>}
-                                Нэвтрэх
+                                {loading ? '<p className="text-xs">Уншиж байна...</p>' : 'Нэвтрэх'}
+                                
                             </Button>
                         </Form>
                     )}
