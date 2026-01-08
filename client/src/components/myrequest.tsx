@@ -189,7 +189,7 @@ const MyRequest = () => {
                   className="mx-auto"
                 />
                 <div className="flex justify-between mt-2 text-[12px] px-2">
-                  <p>2025.10.19</p>
+                  <p></p>
                   <p>№ 03/66</p>
                 </div>
               </div>
