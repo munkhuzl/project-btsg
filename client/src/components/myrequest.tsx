@@ -13,10 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { printDocument } from "@/lib/print-document";
 import Image from "next/image";
+import {useAuth} from "@/context/AuthProvider";
 
-const MyRequest = () => {
+export const MyRequest = () => {
   const router = useRouter();
+  const { isAuth } = useAuth();
   const { data } = useGetRequestByUserIdQuery();
+
+  if(!isAuth) return router.push('/login')
 
   // ✅ find → filter (array болгоно)
   const acceptedReqs = data?.getRequestByUserID?.filter(
@@ -133,6 +137,4 @@ const MyRequest = () => {
       </div>
     </div>
   );
-};
-
-export default MyRequest;
+}

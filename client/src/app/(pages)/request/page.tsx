@@ -1,7 +1,7 @@
 "use server";
 
 import RequestPage from "@/components/request";
-import MyRequest from "@/components/myrequest";
+import { MyRequest } from "@/components/myrequest";
 
 const Page = () => {
   return (
