@@ -41,84 +41,87 @@ export function MyRequest () {
       )}
 
       {/* ✅ Accepted request-ууд */}
-      {acceptedReqs?.map((req,index) => (
-        <Dialog key={req._id}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="my-2 flex flex-col items-start justify-between gap-2">
-              Чөлөөний хуудас
-                Илгээсэн огноо: {req.startTime} - {req.endTime}
-            </Button>
-          </DialogTrigger>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {acceptedReqs?.map((req,index) => (
+                <Dialog key={req._id}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline" className="my-2 flex flex-col items-start justify-between gap-2">
+                            <span>Чөлөөний хуудас</span>
+                            <span>Илгээсэн огноо: {req.startTime} - {req.endTime}</span>
+                        </Button>
+                    </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[600px] bg-white">
-            <div
-              id={`print-area-${req._id}`} // ✅ unique id
-              className="bg-white p-10 text-[14px] text-black leading-relaxed"
-            >
-              <div className="text-center mb-4">
-                <Image
-                  src="/logo2.png"
-                  alt="logo2"
-                  width={100}
-                  height={100}
-                  className="mx-auto"
-                />
-                <h1 className="font-bold mt-4">БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР</h1>
-                <div className="flex justify-between mt-4 text-[12px] px-2">
-                <p>
-                    {new Date().getFullYear()}.
-                    {String(new Date().getMonth() + 1).padStart(2, '0')}.
-                    {String(new Date().getDate()).padStart(2, '0')}
-                  </p>
-                <p>
-                        Дугаар {String(index + 1).padStart(2, "0")}/14
-                </p>
-                  <p>Баян-Өндөр сум</p>
-                </div>
-              </div>
+                    <DialogContent className="sm:max-w-[600px] bg-white">
+                        <div
+                            id={`print-area-${req._id}`} // ✅ unique id
+                            className="bg-white p-10 text-[14px] text-black leading-relaxed"
+                        >
+                            <div className="text-center mb-4">
+                                <Image
+                                    src="/logo2.png"
+                                    alt="logo2"
+                                    width={100}
+                                    height={100}
+                                    className="mx-auto"
+                                />
+                                <h1 className="font-bold mt-4">БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР</h1>
+                                <div className="flex justify-between mt-4 text-[12px] px-2">
+                                    <p>
+                                        {new Date().getFullYear()}.
+                                        {String(new Date().getMonth() + 1).padStart(2, '0')}.
+                                        {String(new Date().getDate()).padStart(2, '0')}
+                                    </p>
+                                    <p>
+                                        Дугаар {String(index + 1).padStart(2, "0")}/14
+                                    </p>
+                                    <p>Баян-Өндөр сум</p>
+                                </div>
+                            </div>
 
-              {/* <p className="font-medium mb-4 text-center">{}</p> */}
+                            {/* <p className="font-medium mb-4 text-center">{}</p> */}
 
-              <h3 className="text-center font-semibold mb-4 underline">
-                
-              </h3>
+                            <h3 className="text-center font-semibold mb-4 underline">
 
-              <p className="text-justify indent-8">
-                     Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
-                дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 3.1
-                дэх заалтыг үндэслэн{" "}
-                {req.lastname} овогтой {req.firstname} -д{" "}
-                {req.startTime}-ны өдрөөс {req.endTime} хүртэлх хугацаанд
-                ажлаас нь чөлөөлж, хамтран ажиллахыг хүсье.
-              </p>
+                            </h3>
 
-              <div className="flex justify-center mt-12">
-                <div className="text-center">
-                      <Image src="/tamga.JPG"
-                      alt="tamga"
-                      width={100}
-                      height={100} />
+                            <p className="text-justify indent-8">
+                                Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
+                                дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 3.1
+                                дэх заалтыг үндэслэн{" "}
+                                {req.lastname} овогтой {req.firstname} -д{" "}
+                                {req.startTime}-ны өдрөөс {req.endTime} хүртэлх хугацаанд
+                                ажлаас нь чөлөөлж, хамтран ажиллахыг хүсье.
+                            </p>
 
-                </div>
-              </div>
-            </div>
+                            <div className="flex justify-center mt-12">
+                                <div className="text-center">
+                                    <Image src="/tamga.JPG"
+                                           alt="tamga"
+                                           width={100}
+                                           height={100} />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Хаах</Button>
-              </DialogClose>
-              <Button
-                type="button"
-                onClick={() =>
-                  printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
-                }
-              >
-                Татах
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Хаах</Button>
+                            </DialogClose>
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
+                                }
+                            >
+                                Татах
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            ))}
+        </div>
+
 
       {/* Create new request */}
       <div className="bg-white p-4 text-gray-300 text-center mt-6">
