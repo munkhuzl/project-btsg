@@ -15,12 +15,15 @@ import { printDocument } from "@/lib/print-document";
 import Image from "next/image";
 import {useAuth} from "@/context/AuthProvider";
 
-export const MyRequest = () => {
+export function MyRequest () {
   const router = useRouter();
   const { isAuth } = useAuth();
   const { data } = useGetRequestByUserIdQuery();
 
-  if(!isAuth) return router.push('/login')
+  if(!isAuth) {
+      router.push('/login');
+      return null;
+  }
 
   // ✅ find → filter (array болгоно)
   const acceptedReqs = data?.getRequestByUserID?.filter(

@@ -52,7 +52,7 @@ const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<Rea
             <div>
                 <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
                 <p className="text-sm text-[#71717A]">
-                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг и-мэйлээр илгээх болно. 
+                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг и-мэйлээр илгээх болно.
                 </p>
             </div>
         </div>
@@ -90,6 +90,38 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             optionalFile: null,
             optionalFileMeduuleg: null,
             detailAboutRequest: "",
+        },
+
+        validate: (values) => {
+            const errors: Partial<Record<keyof RequestFormValues, string>> = {};
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (values.startTime) {
+                const start = new Date(values.startTime);
+                if (start < today) {
+                    errors.startTime = "Эхлэх өдөр өнөөдрөөс өмнө байж болохгүй";
+                }
+            }
+
+            if (values.endTime) {
+                const end = new Date(values.endTime);
+                if (end < today) {
+                    errors.endTime = "Дуусах өдөр өнөөдрөөс өмнө байж болохгүй";
+                }
+            }
+
+            if (values.startTime && values.endTime) {
+                const start = new Date(values.startTime);
+                const end = new Date(values.endTime);
+
+                if (end < start) {
+                    errors.endTime = "Дуусах өдөр эхлэх өдрөөс өмнө байж болохгүй";
+                }
+            }
+
+            return errors;
         },
 
         onSubmit: async (values, { resetForm }) => {
@@ -150,7 +182,10 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                     <div className="mt-4 flex gap-3">
                         <div className="flex-1">
                             <Label>Эхлэх өдөр</Label>
-                            <Input type="date" {...formik.getFieldProps("startTime")} required={true}/>
+                            <Input min={new Date().toISOString().split('T')[0]} type="date" {...formik.getFieldProps("startTime")} required={true}/>
+                            {formik.touched.startTime && formik.errors.startTime && (
+                                <p className="text-red-500 text-sm">{formik.errors.startTime}</p>
+                            )}
                         </div>
                         <div className="flex-1">
                             <Label>Дуусах өдөр</Label>
