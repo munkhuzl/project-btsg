@@ -20,11 +20,6 @@ export function MyRequest () {
   const { isAuth } = useAuth();
   const { data } = useGetRequestByUserIdQuery();
 
-  if(!isAuth) {
-      router.push('/login');
-      return null;
-  }
-
   // ✅ find → filter (array болгоно)
   const acceptedReqs = data?.getRequestByUserID?.filter(
     (r) => r.result === "accepted"
@@ -132,7 +127,11 @@ export function MyRequest () {
           удирдамж, мэдүүлэгийг заавал хавсаргана.
         </p>
         <div className="flex justify-end p-4">
-          <Button onClick={() => router.push("/createNewRequest")}>
+          <Button onClick={() => {
+              if(!isAuth) return router.push("/login");
+
+              router.push("/createNewRequest")
+          }}>
             <Send size={14} />
             Чөлөөний хүсэлт илгээх
           </Button>
