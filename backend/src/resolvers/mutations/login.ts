@@ -22,7 +22,7 @@ export const login: MutationResolvers['login'] = async (_:unknown, {input}) => {
 
     // Generate and send new OTP
     const otp = generateOTP();
-    await sendEmail(otp, email);
+    sendEmail(otp, email);
 
     // Save OTP to database
     await OTPModel.create({
