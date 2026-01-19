@@ -272,7 +272,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                     {...formik.getFieldProps("workPlace.state")}
                                 />
                                 <Input
-                                    placeholder="Жишээ нь: О.Болдбаатар"
+                                    placeholder="Захирал: О.Болдбаатар"
                                     {...formik.getFieldProps("workPlace.principal_name")}
                                 />
                             </div>

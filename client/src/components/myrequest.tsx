@@ -44,8 +44,9 @@ export function MyRequest () {
       {acceptedReqs?.map((req,index) => (
         <Dialog key={req._id}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="my-2">
+            <Button variant="outline" className="my-2 flex flex-col items-start justify-between gap-2">
               Чөлөөний хуудас
+                Илгээсэн огноо: {req.startTime} - {req.endTime}
             </Button>
           </DialogTrigger>
 
