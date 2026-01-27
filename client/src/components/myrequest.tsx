@@ -72,7 +72,7 @@ export function MyRequest () {
                                         {String(new Date().getDate()).padStart(2, '0')}
                                     </p>
                                     <p>
-                                        Дугаар {String(index + 1).padStart(2, "0")}/14
+                                        Дугаар 03/{String(index + 1).padStart(2, "60")}
                                     </p>
                                     <p>Баян-Өндөр сум</p>
                                 </div>
