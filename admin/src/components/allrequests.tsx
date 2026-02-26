@@ -14,49 +14,85 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// ✅ File preview helper
+const getFileType = (url?: string) => {
+  if (!url) return null;
+  if (url.endsWith(".pdf")) return "pdf";
+  if (url.endsWith(".doc") || url.endsWith(".docx")) return "doc";
+  if (url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".png")) return "image";
+  return "other";
+};
+
+const FilePreview = ({ url }: { url?: string }) => {
+  const type = getFileType(url);
+
+  if (!url) return <span className="text-gray-400 italic">Файл байхгүй</span>;
+
+  switch (type) {
+    case "pdf":
+      return (
+        <iframe
+          src={url}
+          className="w-full h-64 border rounded-md"
+          title="PDF Preview"
+        />
+      );
+    case "image":
+      return <img src={url} alt="preview" className="max-h-64 rounded-md" />;
+    case "doc":
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline"
+        >
+          DOC файлыг нээх
+        </a>
+      );
+    default:
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline"
+        >
+          Файл үзэх
+        </a>
+      );
+  }
+};
+
 const RequestsList = () => {
   const { isAuth } = useAuth();
   const { data, loading: queryLoading, error } = useGetAllRequestsQuery();
-  const [changeReStatus, { loading: mutationLoading }] =
-    useChangeReStatusMutation();
+  const [changeReStatus, { loading: mutationLoading }] = useChangeReStatusMutation();
 
   useEffect(() => {
     if (!isAuth) toast.error("User must be logged in");
   }, [isAuth]);
 
   if (!isAuth) return null;
-  if (queryLoading)
-    return (
-      <p className="text-center py-12 text-gray-500">Loading requests...</p>
-    );
-  if (error)
-    return (
-      <p className="text-center py-12 text-red-500">Failed to load requests.</p>
-    );
+  if (queryLoading) return <p className="text-center py-12 text-gray-500">Loading requests...</p>;
+  if (error) return <p className="text-center py-12 text-red-500">Failed to load requests.</p>;
 
   const requests = data?.getAllRequests || [];
 
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case "accepted":
-        return "bg-green-100 text-green-800";
-      case "declined":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-yellow-100 text-yellow-800";
+      case "accepted": return "bg-green-100 text-green-800";
+      case "declined": return "bg-red-100 text-red-800";
+      default: return "bg-yellow-100 text-yellow-800";
     }
   };
 
   const getTypeLabel = (type?: string) => {
     switch (type) {
-      case "longterm":
-        return "Урт хугацааны";
-      case "shortterm":
-        return "Богино хугацаа";
-      case "mediumterm":
-        return "Дундаж хугацаа";
-      default:
-        return "Бусад";
+      case "longterm": return "Урт хугацааны";
+      case "shortterm": return "Богино хугацаа";
+      case "mediumterm": return "Дундаж хугацаа";
+      default: return "Бусад";
     }
   };
 
@@ -74,7 +110,7 @@ const RequestsList = () => {
     try {
       await changeReStatus({
         variables: { id, result: status },
-        refetchQueries: ["GetAllRequests"], // optional: update UI
+        refetchQueries: ["GetAllRequests"],
       });
       toast.success("Статус амжилттай шинэчлэгдлээ");
     } catch (err) {
@@ -104,45 +140,33 @@ const RequestsList = () => {
                 request.startTime &&
                 request.endTime &&
                 request.requestType &&
-                request.optionalFileMeduuleg &&
-                request.optionalFile &&
                 request.workPlace && (
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-semibold text-gray-900">
-                      {request.firstname}
-                    </h3>
-
-                    <span>
-                        <a href={request.optionalFileMeduuleg} target="_blank" rel="noopener noreferrer" className="text-blie-600 underline">Файл харах </a>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="font-semibold text-gray-900">{request.firstname}</h3>
+                    <span className={`${getStatusColor(request.result)} px-3 py-1 rounded-md text-sm font-medium`}>
+                      {request.result.charAt(0).toUpperCase() + request.result.slice(1)}
                     </span>
                     <span>{getTypeLabel(request.requestType)}</span>
-                    <span
-                      className={`${getStatusColor(
-                        request.result
-                      )} px-3 py-1 rounded-md text-sm font-medium`}
-                    >
-                      {request.result
-                        ? request.result.charAt(0).toUpperCase() +
-                          request.result.slice(1)
-                        : "Pending"}
-                    </span>
                   </div>
                 )}
               <p className="text-gray-600">{request.detailAboutRequest}</p>
 
+              {/* ✅ File preview */}
+              {request.optionalFileMeduuleg && (
+                <div className="mt-2">
+                  <FilePreview url={request.optionalFileMeduuleg} />
+                </div>
+              )}
+
               <div className="flex items-center gap-6 text-gray-600 text-sm">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  <span>
-                    {request.startTime} – {request.endTime}
-                  </span>
+                  <span>{request.startTime} – {request.endTime}</span>
                 </div>
                 {request.startTime && request.endTime && (
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    <span>
-                      {calculateDays(request.startTime, request.endTime)} days
-                    </span>
+                    <span>{calculateDays(request.startTime, request.endTime)} days</span>
                   </div>
                 )}
               </div>
