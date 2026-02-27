@@ -3,7 +3,7 @@
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useGetRequestByUserIdQuery } from "@/generated";
+import { useGetRequestByUserIdQuery, RequestType } from "@/generated";
 import {
   Dialog,
   DialogClose,
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { printDocument } from "@/lib/print-document";
 import { useAuth } from "@/context/AuthProvider";
+import Image from "next/image";
 
 export function MyRequest() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export function MyRequest() {
 
       {/* ✅ Accepted request-ууд */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {acceptedReqs?.map((req, index) => (
+        {acceptedReqs?.map((req: RequestType, index: number) => (
           <Dialog key={req._id}>
             <DialogTrigger asChild>
               <Button
@@ -61,7 +62,7 @@ export function MyRequest() {
                 className="bg-white p-10 text-[14px] text-black leading-relaxed ml-6"
               >
                 <div className="text-center mb-4">
-                  <img
+                  <Image
                     src="/logo2.png"
                     alt="logo2"
                     width={100}
@@ -69,7 +70,8 @@ export function MyRequest() {
                     className="mx-auto"
                   />
                   <h1 className=" mt-4">
-                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ ТАМИРЧИН, (ДАСГАЛЖУУЛАГЧ)-ЫГ ЧӨЛӨӨЛҮҮЛЭХ ХУУДАС
+                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ
+                    ТАМИРЧИН, (ДАСГАЛЖУУЛАГЧ)-ЫГ ЧӨЛӨӨЛҮҮЛЭХ ХУУДАС
                   </h1>
                   <div className="flex justify-between mt-4 text-[12px] px-2">
                     <p>
@@ -81,30 +83,44 @@ export function MyRequest() {
                     <p>Баян-Өндөр сум</p>
                   </div>
                 </div>
-                <h1 className="font-bold text-center" > "{`${req.workPlace?.company_name}-ЫН ДАРГА ${req.workPlace?.principal_name} ТАНАА`.toUpperCase()}"</h1>
+                <h1 className="font-bold text-center">
+                  {" "}
+                  &ldquo;
+                  {`${req.workPlace?.company_name}-ЫН ДАРГА ${req.workPlace?.principal_name} ТАНАА`.toUpperCase()}
+                  &ldquo;
+                </h1>
                 {/* <p className="font-medium mb-4 text-center">{}</p> */}
 
                 <h3 className="text-center font-semibold mb-4 underline"></h3>
 
                 <p className="text-justify indent-8">
                   Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
-                  дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2, 4.3 дахь 
-                  заалтыг тус тус үндэслэн {req.lastname} овогтой {req.firstname} -д{" "}
-                  {req.startTime}-ны өдрөөс {req.endTime} хүртэлх хугацаанд
-                  ажлаас нь чөлөөлж, хамтран ажиллахыг хүсье. </p>
-                  <p className="indent-8 text-justify">
-                 Мөн тус тушаалын 3.2 дахь заалтад, "Ажлаас чөлөөлөгдсөн хугацааны цалинг өмчийн хэлбэр харгалзахгүйгээр үндсэн байгууллагаас нь олгоно." гэж заасан тул тамирчин (дасгалжуулагч)-ны чөлөөтэй хугацааны цалинг шийдвэрлэж, хамтран ажиллахыг хүсье. 
-                   </p>
+                  дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2,
+                  4.3 дахь заалтыг тус тус үндэслэн {req.lastname} овогтой{" "}
+                  {req.firstname} -д {req.startTime}-ны өдрөөс {req.endTime}{" "}
+                  хүртэлх хугацаанд ажлаас нь чөлөөлж, хамтран ажиллахыг
+                  хүсье.{" "}
+                </p>
+                <p className="indent-8 text-justify">
+                  Мөн тус тушаалын 3.2 дахь заалтад, &ldquo;Ажлаас чөлөөлөгдсөн
+                  хугацааны цалинг өмчийн хэлбэр харгалзахгүйгээр үндсэн
+                  байгууллагаас нь олгоно.&ldquo; гэж заасан тул тамирчин
+                  (дасгалжуулагч)-ны чөлөөтэй хугацааны цалинг шийдвэрлэж,
+                  хамтран ажиллахыг хүсье.
+                </p>
 
                 <div className="flex flex-wrap justify-center mt-4">
-                  <h1 className="text-center relative ">БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГА</h1>
+                  <h1 className="text-center relative ">
+                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГА
+                  </h1>
                   <div className="justify-center relative w-48 h-40">
-                    <img
+                    <Image
                       src="/tamga1.svg"
                       alt="tamga"
                       className="absolute top-1/2 left-1/2 w-80 h-80 -translate-x-1/2 -translate-y-1/2 opacity-80 rotate-[8deg]"
                     />
-                    <img
+                    <Image
+                      alt="gar"
                       src="/gar.svg"
                       className="absolute top-1/2 left-1/2 w-40 h-20 -translate-x-1/2 -translate-y-1/2 z-10"
                     />
@@ -153,5 +169,3 @@ export function MyRequest() {
     </div>
   );
 }
-
-
