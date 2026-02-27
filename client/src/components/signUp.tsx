@@ -62,7 +62,6 @@ const SignUp = () => {
                             <div className="mt-8 mx-4 flex flex-col gap-2">
                                 <Label className="mt-4">И-мэйл хаяг</Label>
                                 <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} />
-
                                 <Label className='mt-3' >Нууц үг</Label>
                                 <Input className="" placeholder='нууц үг' onChange={handleChange} value={values.password} id='password'/>
                             </div>

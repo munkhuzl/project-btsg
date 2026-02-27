@@ -27,7 +27,7 @@ export function MyRequest() {
   return (
     <div className="max-w-[680px] mx-auto">
       <h1 className="text-start mt-4 font-bold mx-2">
-        Таны чөлөөний хуудаснууд:
+        Таны өмнөх чөлөөний хуудаснууд:
       </h1>
 
       {/* Empty state */}
@@ -58,7 +58,7 @@ export function MyRequest() {
             <DialogContent className="sm:max-w-[600px] bg-white">
               <div
                 id={`print-area-${req._id}`} // ✅ unique id
-                className="bg-white p-10 text-[14px] text-black leading-relaxed"
+                className="bg-white p-10 text-[14px] text-black leading-relaxed ml-6"
               >
                 <div className="text-center mb-4">
                   <img
@@ -68,8 +68,8 @@ export function MyRequest() {
                     height={100}
                     className="mx-auto"
                   />
-                  <h1 className="font-bold mt-4">
-                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР
+                  <h1 className=" mt-4">
+                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ ТАМИРЧИН, (ДАСГАЛЖУУЛАГЧ)-ЫГ ЧӨЛӨӨЛҮҮЛЭХ ХУУДАС
                   </h1>
                   <div className="flex justify-between mt-4 text-[12px] px-2">
                     <p>
@@ -81,21 +81,24 @@ export function MyRequest() {
                     <p>Баян-Өндөр сум</p>
                   </div>
                 </div>
-
+                <h1 className="font-bold text-center" > "{`${req.workPlace?.company_name}-ЫН ДАРГА ${req.workPlace?.principal_name} ТАНАА`.toUpperCase()}"</h1>
                 {/* <p className="font-medium mb-4 text-center">{}</p> */}
 
                 <h3 className="text-center font-semibold mb-4 underline"></h3>
 
                 <p className="text-justify indent-8">
                   Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
-                  дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 3.1
-                  дэх заалтыг үндэслэн {req.lastname} овогтой {req.firstname} -д{" "}
+                  дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2, 4.3 дахь 
+                  заалтыг тус тус үндэслэн {req.lastname} овогтой {req.firstname} -д{" "}
                   {req.startTime}-ны өдрөөс {req.endTime} хүртэлх хугацаанд
-                  ажлаас нь чөлөөлж, хамтран ажиллахыг хүсье.
-                </p>
+                  ажлаас нь чөлөөлж, хамтран ажиллахыг хүсье. </p>
+                  <p className="indent-8 text-justify">
+                 Мөн тус тушаалын 3.2 дахь заалтад, "Ажлаас чөлөөлөгдсөн хугацааны цалинг өмчийн хэлбэр харгалзахгүйгээр үндсэн байгууллагаас нь олгоно." гэж заасан тул тамирчин (дасгалжуулагч)-ны чөлөөтэй хугацааны цалинг шийдвэрлэж, хамтран ажиллахыг хүсье. 
+                   </p>
 
-                <div className="flex justify-center">
-                  <div className="relative w-48 h-40">
+                <div className="flex flex-wrap justify-center mt-4">
+                  <h1 className="text-center relative ">БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГА</h1>
+                  <div className="justify-center relative w-48 h-40">
                     <img
                       src="/tamga1.svg"
                       alt="tamga"
@@ -128,13 +131,13 @@ export function MyRequest() {
       </div>
 
       {/* Create new request */}
-      <div className="bg-white p-4 text-gray-300 text-center mt-6">
-        <h1>Чөлөөний хүсэлт</h1>
-        <p className="text-red-400 italic">
+      <div className="bg-white p-4 text-center mt-6">
+        <h1 className="mt-2">Чөлөөний хүсэлт</h1>
+        <p className="mt-2 text-red-400 italic">
           Чөлөөний хүсэлт илгээхдээ тэмцээний албан ёсны тамга тэмдэгтэй
           удирдамж, мэдүүлэгийг заавал хавсаргана.
         </p>
-        <div className="flex justify-end p-4">
+        <div className="flex justify-start p-4 mt-2">
           <Button
             onClick={() => {
               if (!isAuth) return router.push("/login");

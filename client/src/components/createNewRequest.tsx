@@ -209,12 +209,12 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                         Урт хугацаа
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem
+                                    {/* <DropdownMenuItem
                                         onSelect={() => formik.setFieldValue("requestType", "mediumterm")}
                                         className="cursor-pointer"
                                     >
                                         Дундаж хугацаа
-                                    </DropdownMenuItem>
+                                    </DropdownMenuItem> */}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         onSelect={() => formik.setFieldValue("requestType", "shortterm")}
@@ -263,16 +263,16 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                     placeholder="Жишээ нь: Биеийн тамир, спортын газар"
                                     {...formik.getFieldProps("workPlace.company_name")}
                                 />
-                                <Input
+                                {/* <Input
                                     placeholder="Жишээ нь: Хот, аймаг"
                                     {...formik.getFieldProps("workPlace.city")}
                                 />
                                 <Input
                                     placeholder="Жишээ нь: Дүүрэг, хороо"
                                     {...formik.getFieldProps("workPlace.state")}
-                                />
+                                /> */}
                                 <Input
-                                    placeholder="Захирал: О.Болдбаатар"
+                                    placeholder="Захирал: Б.Бат"
                                     {...formik.getFieldProps("workPlace.principal_name")}
                                 />
                             </div>
@@ -283,9 +283,9 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                     {/* Name and position */}
                     <div className="mt-6 flex gap-3">
                         <div className="flex-1">
-                            <Label>Албан тушаал/анги</Label>
+                            <Label>Албан тушаал/Анги бүлэг</Label>
                             <Input
-                                placeholder="Жишээ нь: Мэргэжилтэн"
+                                placeholder="Жишээ нь: Мэргэжилтэн, 12а ангийн сурагчч"
                                 {...formik.getFieldProps("position")}
                             />
                         </div>
@@ -294,16 +294,16 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                     <div className="mt-6 flex gap-3">
                         <div className="flex-1">
                             <Label>Овог</Label>
-                            <Input {...formik.getFieldProps("lastname")} required={true}/>
+                            <Input {...formik.getFieldProps("lastname")} placeholder="Жишээ нь: Бат" required={true}/>
                         </div>
                         <div className="flex-1">
                             <Label>Нэр</Label>
-                            <Input {...formik.getFieldProps("firstname")} required={true}/>
+                            <Input {...formik.getFieldProps("firstname")} required={true} placeholder="Жишээ нь: Болд"/>
                         </div>
                     </div>
                     <div className="mt-6 w-full flex-1">
-                        <Label>Чөлөөний талаар дэлгэрэнгүй оруулна уу.</Label>
-                        <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20"/>
+                        <Label>Тэмцээний албан ёсны нэрийг оруулна уу.</Label>
+                        <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20" placeholder="Жишээ нь: Өсвөр үеийн Буудлага спортын улсын аварга шалгаруулах тэмцээн"/>
                     </div>
 
                     <Button className="w-full mt-6" type="submit">

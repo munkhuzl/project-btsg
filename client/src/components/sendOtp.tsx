@@ -33,7 +33,7 @@ const SendOtp = () => {
       setIsVerified(true);
       toast.success("OTP Verified Successfully");
       setToken(response.data.checkOTP.token);
-      router.replace("/");
+      router.replace("/request");
     }
   }, [email, otp, checkOtp, router]);
 
@@ -82,6 +82,7 @@ const SendOtp = () => {
           <div className="mt-4 text-center text-green-500">
             Амжилттай нэвтэрлээ..
           </div>
+
         )}
 
         <div className="flex items-center justify-between p-6">
