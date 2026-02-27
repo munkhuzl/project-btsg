@@ -33,7 +33,7 @@ const SendOtp = () => {
       setIsVerified(true);
       toast.success("OTP Verified Successfully");
       setToken(response.data.checkOTP.token);
-      router.replace("/request");
+      router.replace("/createNewRequest");
     }
   }, [email, otp, checkOtp, router]);
 
