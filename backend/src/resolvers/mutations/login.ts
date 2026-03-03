@@ -3,59 +3,62 @@ import { UserModel, OTPModel } from "@/models";
 import { generateHtmlTemplate } from "@/utils/generate-html-template";
 import nodemailer from "nodemailer";
 
-export const login: MutationResolvers['login'] = async (_:unknown, {input}) => {
-    const {email} = input;
-    const user = await UserModel.findOne({email});
+export const login: MutationResolvers["login"] = async (
+  _: unknown,
+  { input },
+) => {
+  const { email } = input;
+  const user = await UserModel.findOne({ email });
 
-    if(!user) throw new Error('User not found');
+  if (!user) throw new Error("User not found");
 
-    // Check if there's an existing valid OTP
-    const oldOTP = await OTPModel.findOne({ email });
-    if (oldOTP && oldOTP.expirationDate > new Date()) {
-        return {user, token: null}; // Return user but no token since OTP is already sent
-    }
+  // Always remove any existing OTP for this email (expired or not)
+  const oldOTP = await OTPModel.findOne({ email });
+  if (oldOTP) {
+    console.log("Removing existing OTP before creating a new one", oldOTP);
+    await OTPModel.deleteOne({ email });
+  }
 
-    // Delete expired OTP if exists
-    if (oldOTP) {
-        await OTPModel.deleteOne({ email });
-    }
+  // Generate and send new OTP
+  const otp = generateOTP();
+  console.log("Generated OTP", otp);
+  await sendEmail(otp, email);
 
-    // Generate and send new OTP
-    const otp = generateOTP();
-    sendEmail(otp, email);
+  // Save OTP to database
+  const createdOTP = await OTPModel.create({
+    email,
+    OTP: otp,
+    expirationDate: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+  });
+  console.log("createdOTP", createdOTP);
 
-    // Save OTP to database
-    await OTPModel.create({
-        email,
-        OTP: otp,
-        expirationDate: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
-    });
-
-    return {user, message: 'Welcome'}; // Return user but no token since OTP needs to be verified
+  // Always return a clear message so `message` is never null
+  return { user, token: null, message: "OTP sent to your email" };
 };
 
 const generateOTP = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
+  return Math.floor(1000 + Math.random() * 9000).toString();
 };
 
 const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: "e69808220@gmail.com",
-        pass: "vrpn mxqp qmpl bcjz",
-    },
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "e69808220@gmail.com",
+    pass: "vrpn mxqp qmpl bcjz",
+  },
 });
 
-const sendEmail = (otp: string, email: string) => {
-    const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: 'Your Login OTP',
-        html: generateHtmlTemplate(otp),
-    };
-    
-    transporter.sendMail(mailOptions).then(() => console.log(`OTP sent to ${email}: ${otp}`));
+const sendEmail = async (otp: string, email: string) => {
+  const mailOptions = {
+    from: "e69808220@gmail.com",
+    to: email,
+    subject: "Your Login OTP",
+    html: generateHtmlTemplate(otp),
+  };
+
+  await transporter.sendMail(mailOptions);
+  console.log(`OTP sent to ${email}: ${otp}`);
 };

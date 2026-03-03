@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "prnpivate": true,
   "scripts": {
-    "dev:server": "next dev -p 3001",
+    "dev:server": "next dev -p 3002",
     "build": " graphql-codegen --config codegen.ts && next build",
     "start": "next start",
     "lint": "next lint",
