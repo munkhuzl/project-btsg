@@ -31,6 +31,7 @@ export interface AuthContextValue {
     user: User | null;
     token: string | null;
     isLoading: boolean;
+    setToken: (token: string | null) => void;
     logout: () => void;
 }
 
@@ -40,9 +41,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuth, setIsAuth] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [token, setToken] = useState<string | null>(null);
 
     const client = useApolloClient();
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            setToken(storedToken);
+        }
+    }, []);
 
     // Apollo query: fetch user only if we have a valid userId
     const { data, loading, error } = useGetUserQuery({skip: !token});
@@ -86,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuth, user, token, isLoading, logout }}>
+        <AuthContext.Provider value={{ isAuth, user, token, isLoading, setToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
