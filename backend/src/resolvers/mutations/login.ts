@@ -44,7 +44,7 @@ export const login: MutationResolvers["login"] = async (
   });
   console.log("createdOTP", createdOTP);
 
-  return { user, token: null, message: "OTP sent to your email" };
+  return { user, token: "", message: "OTP sent to your email" };
 };
 
 const generateOTP = () => {
