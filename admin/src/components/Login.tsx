@@ -9,37 +9,41 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useLoginMutation } from '@/generated/';
-import {toast} from "react-toastify";
-import {useLogin} from "@/context/LoginContext";
+import { toast } from "react-toastify";
+import { useLogin } from "@/context/LoginContext";
+import { useAuth } from "@/context/AuthProvider";
 
 const Login = () => {
     const router = useRouter();
     const { setEmail } = useLogin();
-    const [loginMutation, { loading, error }] = useLoginMutation();
+    const [loginMutation, { loading }] = useLoginMutation();
+    const { setToken } = useAuth();
 
     const handleLogin = async (values: { email: string; password: string }) => {
         try {
             setEmail(values.email);
-            const { data } = await loginMutation({ variables: {
-                    input: {
-                        email: values.email,
-                        password: values.password,
-                    },
-                }});
+            const { data } = await loginMutation({
+              variables: {
+                input: {
+                  email: values.email,
+                  password: values.password,
+                },
+              },
+            });
 
             if (data?.login?.token) {
-                localStorage.setItem('token', data.login.token);
-                toast.success('Амжилттай нэвтэрлээ.');
-                router.push('/');
+              localStorage.setItem("token", data.login.token);
+              setToken(data.login.token);
+              toast.success("Амжилттай нэвтэрлээ.");
+              router.push("/request");
             } else {
-                toast.success('Таны имэйл рүү нэг удаагийн код илгээлээ.');
-                router.push('/sendOtp');
+              toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
+              router.push("/sendOtp");
             }
-        } catch (err) {
-            toast.error('Алдаа гарлаа');
-            console.error('Алдаа гарлаа:', err, error?.message);
-        }
-    };
+          } catch (err) {
+            toast.error("Алдаа гарлаа");
+          }
+        };
 
     const validationSchema = Yup.object({
         email: Yup.string()
