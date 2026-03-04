@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 
 const Page = () => {
   const { isAuth, user, isLoading } = useAuth();
-
+console.log(isAuth, user);
   if (isLoading) {
     return <div className="w-full mx-auto text-center">Уншиж байна...</div>;
   }

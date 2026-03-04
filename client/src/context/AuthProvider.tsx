@@ -46,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Apollo query: fetch user only if we have a valid userId
     const { data, loading, error } = useGetUserQuery({skip: !token});
-
     // Handle authentication state
     useEffect(() => {
         if (token) {

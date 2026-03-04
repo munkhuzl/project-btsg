@@ -32,14 +32,13 @@ const Login = () => {
       if (data?.login?.token) {
         localStorage.setItem("token", data.login.token);
         toast.success("Амжилттай нэвтэрлээ.");
-        router.push("/");
+        router.push("/createNewRequest");
       } else {
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
         router.push("/sendOtp");
       }
     } catch (err) {
       toast.error("Алдаа гарлаа");
-      console.error("Алдаа гарлаа:", err, error?.message);
     }
   };
 
