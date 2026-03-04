@@ -36,6 +36,7 @@ mutation Login($input: LoginInput!) {
             email
         }
         message
+        token
     }
 }
 mutation SignUp($input: SignUpInput!) {

@@ -17,19 +17,26 @@ const Login = () => {
   const { setEmail } = useLogin();
   const [loginMutation, { loading, error }] = useLoginMutation();
 
-  const sendEmail = async (values: { email: string }) => {
+  const handleLogin = async (values: { email: string; password: string }) => {
     try {
       setEmail(values.email);
-      await loginMutation({
+      const { data } = await loginMutation({
         variables: {
           input: {
             email: values.email,
+            password: values.password,
           },
         },
       });
-      toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
-      console.log("success");
-      router.push("/sendOtp");
+
+      if (data?.login?.token) {
+        localStorage.setItem("token", data.login.token);
+        toast.success("Амжилттай нэвтэрлээ.");
+        router.push("/");
+      } else {
+        toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
+        router.push("/sendOtp");
+      }
     } catch (err) {
       toast.error("Алдаа гарлаа");
       console.error("Алдаа гарлаа:", err, error?.message);
@@ -46,6 +53,9 @@ const Login = () => {
       )
       .min(5, "И-мэйл хаяг хамгийн багадаа 5 тэмдэгт байх ёстой")
       .max(50, "И-мэйл хаяг хамгийн ихдээ 50 тэмдэгт байх ёстой"),
+    password: Yup.string()
+      .required("Нууц үг оруулна уу")
+      .min(6, "Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой"),
   });
 
   return (
@@ -60,9 +70,9 @@ const Login = () => {
           className="mx-auto"
         />
         <Formik
-          initialValues={{ email: "" }}
+          initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
-          onSubmit={sendEmail}
+          onSubmit={handleLogin}
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => (
             <Form onSubmit={handleSubmit}>
@@ -79,6 +89,22 @@ const Login = () => {
                 />
                 {touched.email && errors.email && (
                   <span className="text-red-500">{errors.email}</span>
+                )}
+              </div>
+              <div className="mt-4 mx-4 flex flex-col gap-2">
+                <Label>Нууц үг</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Нууц үг"
+                  className="mt-2"
+                  name="password"
+                  onChange={handleChange}
+                  value={values.password}
+                  data-testid="password-input"
+                />
+                {touched.password && errors.password && (
+                  <span className="text-red-500">{errors.password}</span>
                 )}
               </div>
               <div
