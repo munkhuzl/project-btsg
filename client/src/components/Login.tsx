@@ -40,7 +40,7 @@ const Login = () => {
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
         router.push("/sendOtp");
       }
-    } catch (err) {
+    } catch {
       toast.error("Алдаа гарлаа");
     }
   };
