@@ -16,6 +16,7 @@ type User = {
   age?: number;
   birthDate: Date;
   home_address: string;
+  isEmailVerified: boolean;
   workPlace: {
       city: string;
       state: string;
@@ -62,6 +63,7 @@ const userSchema = new Schema<User>(
       age: Number,
       birthDate: Date,
       home_address: String,
+      isEmailVerified: { type: Boolean, default: false },
       workPlace: {
         city: String,
           state: String,

@@ -19,8 +19,12 @@ export const checkOTP:MutationResolvers['checkOTP'] = async (_:unknown,{email, O
         throw new Error('User not found');
     }
   
+    // Mark email as verified
+    user.isEmailVerified = true;
+    await user.save();
+
     const token = generateToken({id: user._id});
-  
+
     return {
         message: 'Welcome',
         token: token,

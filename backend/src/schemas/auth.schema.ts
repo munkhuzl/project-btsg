@@ -17,6 +17,7 @@ scalar Date
     age: Int
     birthDate: Date
     home_address: String
+    isEmailVerified: Boolean
     workPlace: WorkPlaceType
     school: SchoolType
     createdAt: Date!
@@ -51,6 +52,7 @@ input WorkPlaceInput {
 
 input LoginInput {
   email: String!
+  password: String!
 }
 
 input SignUpInput {
@@ -61,5 +63,6 @@ input SignUpInput {
   type AuthResponse {
     user: User!
     message: String
+    token: String
   }
 `;

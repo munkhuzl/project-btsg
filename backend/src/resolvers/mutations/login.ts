@@ -1,17 +1,29 @@
 import { MutationResolvers } from "@/generated/graphql";
 import { UserModel, OTPModel } from "@/models";
 import { generateHtmlTemplate } from "@/utils/generate-html-template";
+import { generateToken } from "@/utils/generate-token";
 import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 
 export const login: MutationResolvers["login"] = async (
   _: unknown,
   { input },
 ) => {
-  const { email } = input;
+  const { email, password } = input;
   const user = await UserModel.findOne({ email });
 
   if (!user) throw new Error("User not found");
 
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) throw new Error("Invalid password");
+
+  // If email is already verified, return token directly
+  if (user.isEmailVerified) {
+    const token = generateToken({ id: user._id });
+    return { user, message: "Login successful", token };
+  }
+
+  // First login: send OTP
   // Always remove any existing OTP for this email (expired or not)
   const oldOTP = await OTPModel.findOne({ email });
   if (oldOTP) {
@@ -32,7 +44,6 @@ export const login: MutationResolvers["login"] = async (
   });
   console.log("createdOTP", createdOTP);
 
-  // Always return a clear message so `message` is never null
   return { user, token: null, message: "OTP sent to your email" };
 };
 
