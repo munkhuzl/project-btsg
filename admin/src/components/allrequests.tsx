@@ -38,6 +38,7 @@ const FilePreview = ({ url }: { url?: string }) => {
         />
       );
     case "image":
+      // eslint-disable-next-line @next/next/no-img-element
       return <img src={url} alt="preview" className="max-h-64 rounded-md" />;
     case "doc":
       return (

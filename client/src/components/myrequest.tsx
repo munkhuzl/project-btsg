@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Send } from "lucide-react";
@@ -62,7 +63,7 @@ export function MyRequest() {
                 className="bg-white p-10 text-[14px] text-black leading-relaxed ml-6"
               >
                 <div className="text-center mb-4">
-                  <Image
+                  <img
                     src="/logo2.png"
                     alt="logo2"
                     width={100}
@@ -121,7 +122,7 @@ export function MyRequest() {
                     />
                     <Image
                       alt="gar"
-                      src="/gar.svg"
+                      src="/image2vector.svg"
                       className="absolute top-1/2 left-1/2 w-40 h-20 -translate-x-1/2 -translate-y-1/2 z-10"
                     />
                   </div>
