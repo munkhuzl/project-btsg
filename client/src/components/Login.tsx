@@ -18,6 +18,18 @@ type LoginValues = {
   password: string;
 };
 
+// ✅ GraphQL Error type тодорхойлсон
+interface GraphQLError {
+  message: string;
+  extensions?: Record<string, unknown>;
+}
+
+interface ApolloError {
+  message: string;
+  graphQLErrors?: GraphQLError[];
+  networkError?: Error | null;
+}
+
 const Login = () => {
   const router = useRouter();
   const { setEmail } = useLogin();
@@ -26,7 +38,7 @@ const Login = () => {
 
   const handleLogin = async (
     values: LoginValues,
-    { setFieldError }: FormikHelpers<LoginValues>  // ✅ setFieldError нэмэгдлээ
+    { setFieldError }: FormikHelpers<LoginValues>
   ) => {
     try {
       setEmail(values.email);
@@ -48,20 +60,33 @@ const Login = () => {
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
         router.push("/sendOtp");
       }
-    } catch (error: any) {
-      // ✅ GraphQL эсвэл серверийн алдааны мессежийг шалгана
-      const message: string =
-        error?.graphQLErrors?.[0]?.message ||
-        error?.message ||
-        "";
+    } catch (error: unknown) {  // ✅ unknown type ашигласан
+      // ✅ Type guard ашиглан error-ийн төрлийг шалгана
+      const apolloError = error as ApolloError;
+      
+      let errorMessage = "";
+      
+      // GraphQL errors шалгах
+      if (apolloError?.graphQLErrors && apolloError.graphQLErrors.length > 0) {
+        errorMessage = apolloError.graphQLErrors[0].message;
+      } 
+      // Network error шалгах
+      else if (apolloError?.networkError) {
+        errorMessage = apolloError.networkError.message;
+      } 
+      // Бусад error
+      else if (apolloError?.message) {
+        errorMessage = apolloError.message;
+      }
 
       // ✅ Нууц үгтэй холбоотой алдаа бол field дээр гаргана
       if (
-        message.toLowerCase().includes("password") ||
-        message.toLowerCase().includes("нууц үг") ||
-        message.toLowerCase().includes("invalid") ||
-        message.toLowerCase().includes("credentials") ||
-        message.toLowerCase().includes("буруу")
+        errorMessage.toLowerCase().includes("password") ||
+        errorMessage.toLowerCase().includes("нууц үг") ||
+        errorMessage.toLowerCase().includes("invalid") ||
+        errorMessage.toLowerCase().includes("credentials") ||
+        errorMessage.toLowerCase().includes("буруу") ||
+        errorMessage.toLowerCase().includes("unauthorized")
       ) {
         setFieldError("password", "Нууц үг буруу байна");
       } else {
@@ -100,7 +125,7 @@ const Login = () => {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
-          onSubmit={handleLogin}  // ✅ FormikHelpers автоматаар дамжна
+          onSubmit={handleLogin}
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => (
             <Form onSubmit={handleSubmit}>
@@ -119,7 +144,7 @@ const Login = () => {
                   <span className="text-red-500 text-sm">{errors.email}</span>
                 )}
               </div>
-              <div className="mt-4 mx-4 flex flex-col gap-2">
+              <div className="mt-4 mx-4 flex flex col gap-2">
                 <Label>Нууц үг</Label>
                 <Input
                   id="password"
@@ -131,7 +156,6 @@ const Login = () => {
                   value={values.password}
                   data-testid="password-input"
                 />
-                {/* ✅ touched шаардлагагүй — серверийн алдаа ч гарна */}
                 {errors.password && (
                   <span className="text-red-500 text-sm">
                     {errors.password}
