@@ -6,12 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import * as Yup from "yup";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/generated/";
 import { toast } from "react-toastify";
 import { useLogin } from "@/context/LoginContext";
 import { useAuth } from "@/context/AuthProvider";
+
+type LoginValues = {
+  email: string;
+  password: string;
+};
 
 const Login = () => {
   const router = useRouter();
@@ -19,7 +24,10 @@ const Login = () => {
   const [loginMutation, { loading }] = useLoginMutation();
   const { setToken } = useAuth();
 
-  const handleLogin = async (values: { email: string; password: string }) => {
+  const handleLogin = async (
+    values: LoginValues,
+    { setFieldError }: FormikHelpers<LoginValues>  // ✅ setFieldError нэмэгдлээ
+  ) => {
     try {
       setEmail(values.email);
       const { data } = await loginMutation({
@@ -40,8 +48,26 @@ const Login = () => {
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
         router.push("/sendOtp");
       }
-    } catch {
-      toast.error("Алдаа гарлаа");
+    } catch (error: any) {
+      // ✅ GraphQL эсвэл серверийн алдааны мессежийг шалгана
+      const message: string =
+        error?.graphQLErrors?.[0]?.message ||
+        error?.message ||
+        "";
+
+      // ✅ Нууц үгтэй холбоотой алдаа бол field дээр гаргана
+      if (
+        message.toLowerCase().includes("password") ||
+        message.toLowerCase().includes("нууц үг") ||
+        message.toLowerCase().includes("invalid") ||
+        message.toLowerCase().includes("credentials") ||
+        message.toLowerCase().includes("буруу")
+      ) {
+        setFieldError("password", "Нууц үг буруу байна");
+      } else {
+        // Бусад алдаанд toast харуулна
+        toast.error("Алдаа гарлаа. Дахин оролдоно уу.");
+      }
     }
   };
 
@@ -51,7 +77,7 @@ const Login = () => {
       .required("И-мэйл хаяг оруулна уу")
       .matches(
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "И-мэйл хаяг буруу байна",
+        "И-мэйл хаяг буруу байна"
       )
       .min(5, "И-мэйл хаяг хамгийн багадаа 5 тэмдэгт байх ёстой")
       .max(50, "И-мэйл хаяг хамгийн ихдээ 50 тэмдэгт байх ёстой"),
@@ -74,7 +100,7 @@ const Login = () => {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
-          onSubmit={handleLogin}
+          onSubmit={handleLogin}  // ✅ FormikHelpers автоматаар дамжна
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => (
             <Form onSubmit={handleSubmit}>
@@ -90,7 +116,7 @@ const Login = () => {
                   data-testid="email-input"
                 />
                 {touched.email && errors.email && (
-                  <span className="text-red-500">{errors.email}</span>
+                  <span className="text-red-500 text-sm">{errors.email}</span>
                 )}
               </div>
               <div className="mt-4 mx-4 flex flex-col gap-2">
@@ -105,21 +131,25 @@ const Login = () => {
                   value={values.password}
                   data-testid="password-input"
                 />
-                {touched.password && errors.password && (
-                  <span className="text-red-500">{errors.password}</span>
+                {/* ✅ touched шаардлагагүй — серверийн алдаа ч гарна */}
+                {errors.password && (
+                  <span className="text-red-500 text-sm">
+                    {errors.password}
+                  </span>
                 )}
               </div>
               <div
-                className="text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4"
-                onClick={() => {
-                  router.push("/signup");
-                }}
+                className="text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4 cursor-pointer"
+                onClick={() => router.push("/signup")}
               >
                 Бүртгүүлэх
               </div>
-              <Button type="submit" className="my-6 w-full" disabled={loading}>
-                {loading && <p className="text-xs">Уншиж байна...</p>}
-                Нэвтрэх
+              <Button
+                type="submit"
+                className="my-6 w-full"
+                disabled={loading}
+              >
+                {loading ? "Уншиж байна..." : "Нэвтрэх"}
               </Button>
             </Form>
           )}
