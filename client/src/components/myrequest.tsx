@@ -97,10 +97,9 @@ export function MyRequest() {
                 <p className="text-justify indent-8">
                   Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
                   дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2,
-                  4.3 дахь заалтыг тус тус үндэслэн {req.lastname} овогтой{" "}
+                  4.3 дахь заалтыг тус тус үндэслэн {req.lastname} -ийн {" "}
                   {req.firstname} -д {req.startTime}-ны өдрөөс {req.endTime}{" "}
-                  хүртэлх хугацаанд ажлаас нь чөлөөлж, хамтран ажиллахыг
-                  хүсье.{" "}
+                  хүртэлх хугацаанд ажлаас нь чөлөөлж, хамтран ажиллана уу.{" "}
                 </p>
                 <p className="indent-8 text-justify">
                   Мөн тус тушаалын 3.2 дахь заалтад, &ldquo;Ажлаас чөлөөлөгдсөн
@@ -110,34 +109,33 @@ export function MyRequest() {
                   хамтран ажиллахыг хүсье.
                 </p>
 
-                <div className="flex flex-row  mt-6 max-w-[680px] ">
-                  <div><h1 className="text-start relative text-wrap ">
+                <div className="flex  mt-6 max-w-[680px] ">
+                  <div className="flex-1 w-64">
+                    <h1 className="text-start relative text-wrap flex-1 w-32 ">
                     БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
-                  </h1>
-                    <h1 className="text-start relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ
                     </h1>
-                  </div>
-                  <div className="relative  flex justify-center w-[300px]">
-                    {/* тамга */}
+                    <h1 className="text-start relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ,
+                      СПОРТЫН ХЭЛТСИЙН ДАРГА
+                    </h1>
+                    <div className="relative w-[300px] ml-16 mt-3">
+                      <img
+                        src="/tamga1.svg"
+                        alt="tamga"
+                        className="absolute ml-2 inset-0 w-80 h-80 m-auto opacity-70 rotate-8 scale-95 blur-[0.4px] mix-blend-multiply contrast-125 saturate-150"
+                      />
 
-                    {/* гарын үсэг */}
-                    <img
-                      src="/image.png"
-                      alt="signature"
-                      className="absolute inset-0 w-40 h-20 m-auto z-10 opacity-100"
-                    />
-                    <img
-                      src="/tamga1.svg"
-                      alt="tamga"
-                      className="absolute inset-0 w-80 h-80 m-auto opacity-80 rotate-8 scale-95 blur-[0.4px] mix-blend-multiply contrast-125 saturate-150"
-                    />
-                    <div className="ml-0">
-                      <h1>Э.ЛХАМСҮРЭНБААТАР</h1>
+                      <img
+                        src="/image.png"
+                        alt="signature"
+                        className="absolute inset-0 w-40 h-20 m-auto z-10 opacity-80"
+                      />
+
                     </div>
                   </div>
+                  <div className="flex-row flex-1">
+                    <h1>Э.ЛХАМСҮРЭНБААТАР</h1>
+                  </div>
                 </div>
-
-
               </div>
               <DialogFooter>
                 <DialogClose asChild>
