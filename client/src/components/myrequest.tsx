@@ -110,52 +110,35 @@ export function MyRequest() {
                   хамтран ажиллахыг хүсье.
                 </p>
 
-                <div className="flex flex-wrap justify-center mt-4">
-                  <h1 className="text-center relative ">
-                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГА
+                <div className="flex flex-row  mt-6 max-w-[680px] ">
+                  <div><h1 className="text-start relative text-wrap ">
+                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
                   </h1>
-                  {/* <div className="justify-center relative w-48 h-40">
-                    
-                    <Image
-                      alt="gar"
-                      src="/image2vector.svg"
-                      className="absolute top-1/2 left-1/2 w-40 h-20 -translate-x-1/2 -translate-y-1/2 z-10"
+                    <h1 className="text-start relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ
+                    </h1>
+                  </div>
+                  <div className="relative  flex justify-center w-[300px]">
+                    {/* тамга */}
+
+                    {/* гарын үсэг */}
+                    <img
+                      src="/image.png"
+                      alt="signature"
+                      className="absolute inset-0 w-40 h-20 m-auto z-10 opacity-100"
                     />
-                    <Image
+                    <img
                       src="/tamga1.svg"
                       alt="tamga"
-                      className="absolute top-1/2 left-1/2 w-80 h-80 -translate-x-1/2 -translate-y-1/2 opacity-80 rotate-[8deg]"
+                      className="absolute inset-0 w-80 h-80 m-auto opacity-80 rotate-8 scale-95 blur-[0.4px] mix-blend-multiply contrast-125 saturate-150"
                     />
-                  </div> */}
-                  <div className="relative w-48 h-40 flex justify-center">
-
-  {/* гарын үсэг */}
-  <img
-    src="/image2vector.svg"
-    alt="gar"
-    className="absolute top-1/2 left-1/2 w-40 h-20 
-    -translate-x-1/2 -translate-y-1/2 z-10"
-  />
-
-  {/* тамга */}
-  <img
-    src="/tamga1.svg"
-    alt="tamga"
-    className="absolute top-1/2 left-1/2 w-80 h-80
-    -translate-x-1/2 -translate-y-1/2
-    opacity-70
-    rotate-[8deg]
-    scale-95
-    blur-[0.4px]
-    mix-blend-multiply
-    contrast-125
-    saturate-150"
-  />
-
-</div>
+                    <div className="ml-0">
+                      <h1>Э.ЛХАМСҮРЭНБААТАР</h1>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
+
+              </div>
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline">Хаах</Button>

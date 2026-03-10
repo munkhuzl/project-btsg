@@ -144,13 +144,13 @@ const Login = () => {
                   <span className="text-red-500 text-sm">{errors.email}</span>
                 )}
               </div>
-              <div className="mt-4 mx-4 flex flex col gap-2">
+              <div className="mt-4 mx-4 flex flex-col gap-2">
                 <Label>Нууц үг</Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Нууц үг"
-                  className="mt-2"
+                  className="mt-3"
                   name="password"
                   onChange={handleChange}
                   value={values.password}
