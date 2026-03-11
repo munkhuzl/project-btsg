@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import Image from "next/image";
-import {ChevronDown, Send, X} from "lucide-react";
+import { ChevronDown, Send, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -14,7 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@radix-ui/react-dropdown-menu";
-import {uploadFilesInCloudinary} from "@/lib/upload-files"; // keep it in a separate util file
+import { uploadFilesInCloudinary } from "@/lib/upload-files"; // keep it in a separate util file
 
 interface RequestFormValues {
     email: string;
@@ -43,16 +43,16 @@ interface RequestFormValues {
     detailAboutRequest: string;
 }
 
-const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>})=>  (
+const RequestSuccessDiv = ({ setShowSuccess }: { setShowSuccess: React.Dispatch<React.SetStateAction<boolean>> }) => (
     <div className="fixed inset-0 flex justify-center items-center bg-[#0000004D]">
         <div
             className="md:max-w-[608px] w-full text-center flex flex-col relative items-center gap-8 p-8 border border-[#E4E4E7] rounded-[8px] bg-white">
-            <X className="size-5 text-black absolute top-2 right-4" onClick={()=>setShowSuccess(false)}/>
-            <Image src="/checked.png" alt="Success" width={80} height={80}/>
+            <X className="size-5 text-black absolute top-2 right-4" onClick={() => setShowSuccess(false)} />
+            <Image src="/checked.png" alt="Success" width={80} height={80} />
             <div>
                 <h1 className="text-2xl">Амжилттай илгээгдлээ</h1>
                 <p className="text-sm text-[#71717A]">
-                    Таны хүсэлттэй ахлах ажилтан танилцсаны дараа хариуг и-мэйлээр илгээх болно.
+                    Таны хүсэлттэй танилцсаны дараа хариу миний чөлөө хэсэгт гарч ирэх болно.
                 </p>
             </div>
         </div>
@@ -61,7 +61,7 @@ const RequestSuccessDiv = ({setShowSuccess}: {setShowSuccess: React.Dispatch<Rea
 
 
 export const CreateNewRequest = ({ user }: { user: User }) => {
-    const [sentRequestMutation, {loading}] = useSentRequestMutation();
+    const [sentRequestMutation, { loading }] = useSentRequestMutation();
     const [showSuccess, setShowSuccess] = useState(false);
 
     const formik = useFormik<RequestFormValues>({
@@ -166,30 +166,30 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
         },
     });
 
-    const selectedType= formik.values.requestType;
+    const selectedType = formik.values.requestType;
 
     return (
         <>
-            {showSuccess && <RequestSuccessDiv setShowSuccess={setShowSuccess}/>}
+            {showSuccess && <RequestSuccessDiv setShowSuccess={setShowSuccess} />}
             <form onSubmit={formik.handleSubmit}>
                 <div className="text-[#000000] text-sm max-w-[680px] mx-auto bg-white mt-12 p-8 rounded-md">
                     <h2 className="font-bold text-2xl">Чөлөөний хүсэлт</h2>
                     <span className="text-[#EF4430]">
-            Хамгийн богинодоо нэг өдрийн чөлөө авах боломжтой.
-          </span>
+                        Хамгийн богинодоо нэг өдрийн чөлөө авах боломжтой.
+                    </span>
 
                     {/* Dates */}
                     <div className="mt-4 flex gap-3">
                         <div className="flex-1">
                             <Label>Эхлэх өдөр</Label>
-                            <Input min={new Date().toISOString().split('T')[0]} type="date" {...formik.getFieldProps("startTime")} required={true}/>
+                            <Input min={new Date().toISOString().split('T')[0]} type="date" {...formik.getFieldProps("startTime")} required={true} />
                             {formik.touched.startTime && formik.errors.startTime && (
                                 <p className="text-red-500 text-sm">{formik.errors.startTime}</p>
                             )}
                         </div>
                         <div className="flex-1">
                             <Label>Дуусах өдөр</Label>
-                            <Input type="date" {...formik.getFieldProps("endTime")} required={true}/>
+                            <Input type="date" {...formik.getFieldProps("endTime")} required={true} />
                         </div>
                     </div>
 
@@ -294,20 +294,20 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                     <div className="mt-6 flex gap-3">
                         <div className="flex-1">
                             <Label>Овог</Label>
-                            <Input {...formik.getFieldProps("lastname")} placeholder="Жишээ нь: Бат" required={true}/>
+                            <Input {...formik.getFieldProps("lastname")} placeholder="Жишээ нь: Бат" required={true} />
                         </div>
                         <div className="flex-1">
                             <Label>Нэр</Label>
-                            <Input {...formik.getFieldProps("firstname")} required={true} placeholder="Жишээ нь: Болд"/>
+                            <Input {...formik.getFieldProps("firstname")} required={true} placeholder="Жишээ нь: Болд" />
                         </div>
                     </div>
                     <div className="mt-6 w-full flex-1">
                         <Label>Тэмцээний албан ёсны нэрийг оруулна уу.</Label>
-                        <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20" placeholder="Жишээ нь: Өсвөр үеийн Буудлага спортын улсын аварга шалгаруулах тэмцээн"/>
+                        <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20" placeholder="Жишээ нь: Өсвөр үеийн Буудлага спортын улсын аварга шалгаруулах тэмцээн" />
                     </div>
 
-                    <Button className="w-full mt-6" type="submit">
-                        {loading ? <p>Уншиж байна...</p> : <><Send size={14} /> Хүсэлт илгээх</>}
+                    <Button className="w-full mt-6" type="submit" disabled={loading}>
+                        {loading ? <p>Таны хүсэлтийг илгээж байна....</p> : <><Send size={14} /> Хүсэлт илгээх</>}
                     </Button>
                 </div>
             </form>

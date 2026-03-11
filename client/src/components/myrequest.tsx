@@ -121,13 +121,13 @@ export function MyRequest() {
                       <img
                         src="/tamga1.svg"
                         alt="tamga"
-                        className="absolute ml-2 inset-0 w-80 h-80 m-auto opacity-70 rotate-8 scale-95 blur-[0.4px] mix-blend-multiply contrast-125 saturate-150"
+                        className="absolute ml-2 inset-0 w-80 h-80 m-auto rotate-8 scale-95  mix-blend-multiply contrast-125 saturate-150"
                       />
 
                       <img
-                        src="/image.png"
+                        src="/lkham.svg"
                         alt="signature"
-                        className="absolute inset-0 w-40 h-20 m-auto z-10 opacity-80"
+                        className="absolute inset-0 w-40 h-20 m-auto z-10 opacity"
                       />
 
                     </div>

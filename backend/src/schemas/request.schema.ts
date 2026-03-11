@@ -4,6 +4,7 @@ export const RequestTypeDefs = gql`
     type RequestType {
         _id: ID!
         email: String!
+        requestId: String!
         firstname: String!
         userId: String!
         lastname: String!
@@ -60,8 +61,14 @@ export const RequestTypeDefs = gql`
         month: Int!
         requests: [RequestType]!
     }
-
+        
+    requestId: {
+  type: String,
+  required: true,
+  unique: true
+},
     input SendRequestInput {
+    requestId: String!
         email: String!
         firstname: String!
         lastname: String!
@@ -83,4 +90,5 @@ export const RequestTypeDefs = gql`
     type StatusChangedResponse {
         message: String
     }
-`;
+`
+    ;
