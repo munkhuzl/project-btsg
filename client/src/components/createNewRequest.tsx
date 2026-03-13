@@ -230,8 +230,8 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
 
 
                     {/* Files */}
-                    <div className="mt-6 flex gap-3">
-                        <div className="flex-1">
+                    <div className="mt-6 flex gap-3 flex-wrap">
+                        <div className="flex">
                             <Label>Тэмцээний албан ёсны удирдамж</Label>
                             <Input
                                 type="file"
@@ -241,7 +241,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 }
                             />
                         </div>
-                        <div className="flex-1">
+                        <div className="flex">
                             <Label>Тэмцээний мэдүүлэг (заавал)</Label>
                             <Input
                                 type="file"
@@ -252,7 +252,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 required={true}
                             />
                         </div>
-                          <div className="flex-1">
+                          <div className="flex">
                             <Label>Тамирчны даатгал</Label>
                             <Input
                                 type="file"
