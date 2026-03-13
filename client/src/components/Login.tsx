@@ -151,6 +151,7 @@ const Login = () => {
                   type="password"
                   placeholder="Нууц үг"
                   className="mt-3"
+                  autoComplete="current-password"
                   name="password"
                   onChange={handleChange}
                   value={values.password}

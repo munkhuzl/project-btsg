@@ -252,6 +252,16 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 required={true}
                             />
                         </div>
+                          <div className="flex-1">
+                            <Label>Тамирчны даатгал</Label>
+                            <Input
+                                type="file"
+                                name="optionalFile"
+                                onChange={(e) =>
+                                    formik.setFieldValue("optionalFile", e.currentTarget.files?.[0] || null)
+                                }
+                            />
+                        </div>
                     </div>
 
                     {/* Workplace */}
