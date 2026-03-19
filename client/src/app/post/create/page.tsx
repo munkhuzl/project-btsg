@@ -34,6 +34,7 @@ const Page = () => {
    
     return (
         <form className='w-[500px] mx-auto pt-20 flex flex-col gap-2' onSubmit={handleSubmit}>
+            {/* for redeploy */}
             <input type="text" placeholder='Input your title' value={title} onChange={(e) => setTitle(e.target.value)} className='w-full border p-2 rounded-md' />
             <textarea rows={10} placeholder='Input your content' value={content} onChange={(e) => setContent(e.target.value)} className='w-full border p-2 rounded-md' />
             <button disabled={isLoading}>{isLoading ? 'Loading ...' : 'Submit'}</button>
