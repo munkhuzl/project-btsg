@@ -62,11 +62,6 @@ export const RequestTypeDefs = gql`
         requests: [RequestType]!
     }
         
-    requestId: {
-  type: String,
-  required: true,
-  unique: true
-},
     input SendRequestInput {
     requestId: String!
         email: String!
@@ -84,9 +79,10 @@ export const RequestTypeDefs = gql`
         optionalFileMeduuleg: String!
         detailAboutRequest: String!
     }
-    type RequestSentRespone {
-        message: String
-    }
+   type RequestSentRespone {
+    message: String!
+    success: Boolean!
+}
     type StatusChangedResponse {
         message: String
     }
