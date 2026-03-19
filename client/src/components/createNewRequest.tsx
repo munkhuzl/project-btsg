@@ -154,6 +154,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                             optionalFile: optionalFileUrl,
                             optionalFileMeduuleg: optionalFileMeduulegUrl,
                             detailAboutRequest: values.detailAboutRequest,
+                            requestId: ""
                         },
                     },
                 });

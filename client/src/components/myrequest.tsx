@@ -4,7 +4,7 @@
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useGetRequestByUserIdQuery, RequestType } from "@/generated";
+import { useGetRequestByUserIdQuery,  } from "@/generated";
 import {
   Dialog,
   DialogClose,
@@ -43,7 +43,7 @@ export function MyRequest() {
 
       {/* ✅ Accepted request-ууд */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {acceptedReqs?.map((req: RequestType, index: number) => (
+        {acceptedReqs?.map((req, index: number) => (
           <Dialog key={req._id}>
             <DialogTrigger asChild>
               <Button
