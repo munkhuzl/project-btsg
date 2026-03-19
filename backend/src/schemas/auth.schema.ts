@@ -65,4 +65,12 @@ input SignUpInput {
     message: String
     token: String
   }
+
+  type ForgotPasswordResponse {
+    message: String!
+  }
+
+  type ResetPasswordResponse {
+    message: String!
+  }
 `;

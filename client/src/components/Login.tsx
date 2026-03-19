@@ -164,6 +164,12 @@ const Login = () => {
                 )}
               </div>
               <div
+                className="text-gray-400 text-center hover:underline hover:text-black mt-4 cursor-pointer text-sm"
+                onClick={() => router.push("/forgotPassword")}
+              >
+                Нууц үг мартсан
+              </div>
+              <div
                 className="text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4 cursor-pointer"
                 onClick={() => router.push("/signup")}
               >

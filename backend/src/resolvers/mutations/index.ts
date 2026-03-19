@@ -4,3 +4,5 @@ export * from './createsOtp';
 export * from './sent-request';
 export * from './checkOtp';
 export * from './change-request-status';
+export * from './forgot-password';
+export * from './reset-password';

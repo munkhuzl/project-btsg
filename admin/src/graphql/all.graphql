@@ -128,3 +128,15 @@ mutation ChangeReStatus($result: String!, $id: ID!) {
         message
     }
 }
+
+mutation ForgotPassword($email: String!) {
+    forgotPassword(email: $email) {
+        message
+    }
+}
+
+mutation ResetPassword($email: String!, $otp: String!, $newPassword: String!) {
+    resetPassword(email: $email, OTP: $otp, newPassword: $newPassword) {
+        message
+    }
+}
