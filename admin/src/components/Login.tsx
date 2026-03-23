@@ -78,6 +78,7 @@ const Login = () => {
                                 <Input id="password" type="password" placeholder="Нууц үг" className="mt-2" name="password" onChange={handleChange} value={values.password} data-testid="password-input" />
                                 {touched.password && errors.password && <span className="text-red-500">{errors.password}</span>}
                             </div>
+                            <div className='text-gray-400 text-center hover:underline hover:text-black mt-4 cursor-pointer text-sm' onClick={()=> {router.push('/forgotPassword')}} >Нууц үг мартсан</div>
                             <div className='text-gray-200 text-center hover:underline hover:font-bold hover:text-black mt-4' onClick={()=> {router.push('/signup')}} >Бүртгүүлэх</div>
                             <Button type="submit" className="my-6 w-full" disabled={loading} >
                                 {loading && <p className="text-xs">Уншиж байна...</p>}

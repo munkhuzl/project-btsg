@@ -8,6 +8,8 @@ export const MutationTypeDefs = gql`
         checkOTP(email: String!, OTP: String!): OTPResponse!
         sentRequest(input: SendRequestInput!): RequestSentRespone!
         changeReStatus(result: String!, _id: ID!): StatusChangedResponse!
+        forgotPassword(email: String!): ForgotPasswordResponse!
+        resetPassword(email: String!, OTP: String!, newPassword: String!): ResetPasswordResponse!
     }
 
     type Query {
