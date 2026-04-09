@@ -4,7 +4,7 @@
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useGetRequestByUserIdQuery, } from "@/generated";
+import { useGetRequestByUserIdQuery,  } from "@/generated";
 import {
   Dialog,
   DialogClose,
@@ -63,19 +63,6 @@ export function MyRequest() {
                 className="bg-white p-10 text-[14px] text-black leading-relaxed ml-6"
               >
                 <div className="text-center mb-4">
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Хаах</Button>
-                    </DialogClose>
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
-                      }
-                    >
-                      Татах
-                    </Button>
-                  </DialogFooter>
                   <img
                     src="/logo2.png"
                     alt="logo2"
@@ -93,7 +80,7 @@ export function MyRequest() {
                       {String(new Date().getMonth() + 1).padStart(2, "0")}.
                       {String(new Date().getDate()).padStart(2, "0")}
                     </p>
-                    <p>Дугаар 03/{String(index + 1).padStart(2, "135")}</p>
+                    <p>Дугаар 03/{String(index + 1).padStart(2, "136")}</p>
                     <p>Баян-Өндөр сум</p>
                   </div>
                 </div>
@@ -125,7 +112,7 @@ export function MyRequest() {
                 <div className="flex  mt-6 max-w-[680px] ">
                   <div className="flex-1 w-64">
                     <h1 className="text-start relative text-wrap flex-1 w-32 ">
-                      БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
+                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
                     </h1>
                     <h1 className="text-start relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ,
                       СПОРТЫН ХЭЛТСИЙН ДАРГА
@@ -150,7 +137,19 @@ export function MyRequest() {
                   </div>
                 </div>
               </div>
-         
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Хаах</Button>
+                </DialogClose>
+                <Button
+                  type="button"
+                  onClick={() =>
+                    printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
+                  }
+                >
+                  Татах
+                </Button>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         ))}
