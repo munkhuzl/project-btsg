@@ -80,7 +80,7 @@ export function MyRequest() {
                       {String(new Date().getMonth() + 1).padStart(2, "0")}.
                       {String(new Date().getDate()).padStart(2, "0")}
                     </p>
-                    <p>Дугаар 03/{String(index + 1).padStart(2, "60")}</p>
+                    <p>Дугаар 03/{String(index + 1).padStart(2, "136")}</p>
                     <p>Баян-Өндөр сум</p>
                   </div>
                 </div>
