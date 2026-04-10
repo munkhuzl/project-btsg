@@ -97,8 +97,8 @@ export function MyRequest() {
                 <p className="text-justify indent-8">
                   Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
                   дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2,
-                  4.3 дахь заалтыг тус тус үндэслэн {req.lastname} -ийн {" "}
-                  {req.firstname} -д {req.startTime}-ны өдрөөс {req.endTime}{" "}
+                  4.3 дахь заалтыг тус тус үндэслэн {req.position}  ажилтай {req.lastname} -ийн {" "}
+                  {req.firstname} -ыг  {req.startTime}-ны өдрөөс {req.endTime}{" "}
                   хүртэлх хугацаанд ажлаас нь чөлөөлж, хамтран ажиллана уу.{" "}
                 </p>
                 <p className="indent-8 text-justify">
