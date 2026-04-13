@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import Image from "next/image";
-import { ChevronDown, Send, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -63,7 +63,7 @@ const RequestSuccessDiv = ({ setShowSuccess }: { setShowSuccess: React.Dispatch<
 export const CreateNewRequest = ({ user }: { user: User }) => {
     const [sentRequestMutation, { loading }] = useSentRequestMutation();
     const [showSuccess, setShowSuccess] = useState(false);
-
+    const [isCreating, setIsCreating] = useState(false);
     const formik = useFormik<RequestFormValues>({
         initialValues: {
             email: user.email,
@@ -125,7 +125,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
         },
 
         onSubmit: async (values, { resetForm, setSubmitting }) => {
-            if(formik.isSubmitting) return;
+            if (formik.isSubmitting) return;
             try {
                 let optionalFileUrl = "";
                 let optionalFileMeduulegUrl = "";
@@ -165,12 +165,22 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                 console.error("Submission error:", error);
             }
             finally {
-        setSubmitting(false); 
-    }
+                setSubmitting(false);
+            }
         },
     });
 
     const selectedType = formik.values.requestType;
+    const handleCreateRequest = async () => {
+        try {
+            setIsCreating(true);
+
+            await sentRequestMutation(); // эсвэл API call
+
+        } finally {
+            setIsCreating(false);
+        }
+    };
 
     return (
         <>
@@ -256,7 +266,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 required={true}
                             />
                         </div>
-                          <div className="flex">
+                        <div className="flex">
                             <Label>Тамирчны даатгал</Label>
                             <Input
                                 type="file"
@@ -320,8 +330,15 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                         <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20" placeholder="Жишээ нь: Өсвөр үеийн Буудлага спортын улсын аварга шалгаруулах тэмцээн" />
                     </div>
 
-                    <Button className="w-full mt-6" type="submit" disabled={loading}>
-                        {loading ? <p>Таны хүсэлтийг илгээж байна....</p> : <><Send size={14} /> Хүсэлт илгээх</>}
+                    <Button onClick={handleCreateRequest} disabled={isCreating}>
+                        {isCreating ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                                Түр хүлээнэ үү...
+                            </div>
+                        ) : (
+                            "Create request"
+                        )}
                     </Button>
                 </div>
             </form>
