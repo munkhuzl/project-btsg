@@ -124,12 +124,12 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             return errors;
         },
 
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: async (values, { resetForm, setSubmitting }) => {
+            if(formik.isSubmitting) return;
             try {
                 let optionalFileUrl = "";
                 let optionalFileMeduulegUrl = "";
 
-                // Upload files if present
                 if (values.optionalFile) {
                     optionalFileUrl = await uploadFilesInCloudinary(values.optionalFile);
                 }
@@ -164,6 +164,9 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             } catch (error) {
                 console.error("Submission error:", error);
             }
+            finally {
+        setSubmitting(false); 
+    }
         },
     });
 
