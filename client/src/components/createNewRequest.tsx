@@ -163,7 +163,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             } catch (error) {
                 console.error("Submission error:", error);
             }
-           
+
         },
     });
 
@@ -327,7 +327,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                         <Input {...formik.getFieldProps("detailAboutRequest")} required={true} className="h-20" placeholder="Жишээ нь: Өсвөр үеийн Буудлага спортын улсын аварга шалгаруулах тэмцээн" />
                     </div>
 
-                     <Button className="w-full mt-6" type="submit" disabled={loading}>
+                    <Button className="w-full mt-6" type="submit" disabled={loading}>
                         {loading ? <p>Таны хүсэлтийг илгээж байна....</p> : <><Send size={14} /> Хүсэлт илгээх</>}
                     </Button>
                 </div>
