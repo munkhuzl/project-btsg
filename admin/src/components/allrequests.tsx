@@ -130,10 +130,10 @@ const RequestsList = () => {
       </Card>
     );
   }
-
+// {[...requests].reverse().map((request) => (
   return (
     <div className="space-y-4 container mx-auto">
-      {requests.map((request) => (
+      {[...requests].reverse().map((request) => (
         <Card key={String(request._id)} className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 space-y-3">
@@ -141,6 +141,7 @@ const RequestsList = () => {
                 request.startTime &&
                 request.endTime &&
                 request.requestType &&
+                request.firstname &&
                 request.workPlace && (
                   <div className="flex items-center gap-3 flex-wrap">
                     <h3 className="font-semibold text-gray-900">{request.firstname}</h3>

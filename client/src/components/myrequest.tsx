@@ -80,7 +80,7 @@ export function MyRequest() {
                       {String(new Date().getMonth() + 1).padStart(2, "0")}.
                       {String(new Date().getDate()).padStart(2, "0")}
                     </p>
-                    <p>Дугаар 03/{String(index + 1).padStart(2, "60")}</p>
+                    <p>Дугаар 03/{String(index + 1).padStart(2, "136")}</p>
                     <p>Баян-Өндөр сум</p>
                   </div>
                 </div>
@@ -97,9 +97,10 @@ export function MyRequest() {
                 <p className="text-justify indent-8">
                   Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
                   дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2,
-                  4.3 дахь заалтыг тус тус үндэслэн {req.lastname} -ийн {" "}
-                  {req.firstname} -д {req.startTime}-ны өдрөөс {req.endTime}{" "}
-                  хүртэлх хугацаанд ажлаас нь чөлөөлж, хамтран ажиллана уу.{" "}
+                  4.3 дахь заалтыг тус тус үндэслэн {req.position}  ажилтай {req.lastname} -ийн {" "}
+                  {req.firstname} -нь {req.startTime}-ны өдрөөс {req.endTime}{" "}
+                  хүртэлх хугацаанд {req.detailAboutRequest} тэмцээнд оролцох тул  ажил (хичээл)-аас  нь
+                  чөлөөлж, хамтран ажиллана уу.{" "}
                 </p>
                 <p className="indent-8 text-justify">
                   Мөн тус тушаалын 3.2 дахь заалтад, &ldquo;Ажлаас чөлөөлөгдсөн

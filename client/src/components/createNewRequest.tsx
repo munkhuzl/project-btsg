@@ -129,7 +129,6 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                 let optionalFileUrl = "";
                 let optionalFileMeduulegUrl = "";
 
-                // Upload files if present
                 if (values.optionalFile) {
                     optionalFileUrl = await uploadFilesInCloudinary(values.optionalFile);
                 }
@@ -164,10 +163,21 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
             } catch (error) {
                 console.error("Submission error:", error);
             }
+
         },
     });
 
     const selectedType = formik.values.requestType;
+    // const handleCreateRequest = async () => {
+    //     try {
+    //         setIsCreating(true);
+
+    //         await sentRequestMutation(); // эсвэл API call
+
+    //     } finally {
+    //         setIsCreating(false);
+    //     }
+    // };
 
     return (
         <>
@@ -253,7 +263,7 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                 required={true}
                             />
                         </div>
-                          <div className="flex">
+                        <div className="flex">
                             <Label>Тамирчны даатгал</Label>
                             <Input
                                 type="file"
