@@ -20,7 +20,7 @@ const SignUp = () => {
       await signUpMutation({
         variables: {
           input: {
-            email: values.email,
+            email: values.email.toLowerCase(),
             password: values.password,
           },
         },
