@@ -21,7 +21,7 @@ const validationSchema = Yup.object({
 const ForgotPassword = () => {
   const router = useRouter();
   const { setEmail } = useLogin();
-  const [forgotPassword, { loading }] = useForgotPasswordMutation();
+  const [forgotPassword, { loading, error }] = useForgotPasswordMutation();
 
   const handleSubmit = async (values: { email: string }) => {
     try {
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
         router.push("/resetPassword");
       }
     } catch {
-      toast.error("Алдаа гарлаа. Дахин оролдоно уу.");
+      toast.error("Алдаа гарлаа. Дахин оролдоно уу." + error?.message);
     }
   };
 

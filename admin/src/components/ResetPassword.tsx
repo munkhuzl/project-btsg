@@ -19,7 +19,7 @@ import {
 const ResetPassword = () => {
   const router = useRouter();
   const { email } = useLogin();
-  const [resetPassword, { loading }] = useResetPasswordMutation();
+  const [resetPassword, { loading, error }] = useResetPasswordMutation();
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
@@ -43,7 +43,7 @@ const ResetPassword = () => {
         router.push("/login");
       }
     } catch {
-      toast.error("Алдаа гарлаа. Дахин оролдоно уу.");
+      toast.error("Алдаа гарлаа. Дахин оролдоно уу." + error?.message);
     }
   };
 

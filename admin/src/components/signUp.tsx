@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 const SignUp = () => {
   const router = useRouter();
-  const [signUpMutation, { loading }] = useSignUpMutation();
+  const [signUpMutation, { loading, error }] = useSignUpMutation();
 
   const register = async (values: { password: string; email: string }) => {
     try {
@@ -28,9 +28,8 @@ const SignUp = () => {
         toast.success("Хэрэглэгч амжилттай бүртгэгдлээ.");
         router.push("/login");
       });
-    } catch (err) {
-      toast.error("Алдаа гарлаа");
-      console.error("Алдаа гарлаа", err);
+    } catch {
+      toast.error("Алдаа гарлаа" + error?.message);
     }
   };
 

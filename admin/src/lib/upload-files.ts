@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 // const CLOUDINARY_CLOUD_NAME = 'dn1bg3uxr';
 const CLOUDINARY_CLOUD_NAME = 'dozicpox6';
 const CLOUDINARY_UPLOAD_PRESET = 'project-btsg';
@@ -16,7 +18,7 @@ export const uploadFilesInCloudinary = async (file: File) => {
         const info = await res.json();
         return info.secure_url;
     } catch (e) {
-        console.error(e);
+        toast.error("File upload failed: " + e);
         return '';
     }
 };

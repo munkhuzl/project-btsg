@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     // Apollo query: fetch user only if we have a valid userId
-    const { data, loading, error } = useGetUserQuery({skip: !token});
+    const { data, loading, error } = useGetUserQuery({ skip: !token });
     // Handle authentication state
     console.log(data)
     useEffect(() => {
@@ -77,7 +77,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Handle query errors gracefully
     useEffect(() => {
         if (error) {
-            console.error("Error fetching user:", error);
             toast.error("Failed to load user data.");
             setIsAuth(false);
             setUser(null);
@@ -91,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAuth(false);
         setUser(null);
         setIsLoading(false);
-        
+
         await client.resetStore();
         toast.success("Logged out successfully");
     };
