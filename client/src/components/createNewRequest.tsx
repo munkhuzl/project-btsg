@@ -15,6 +15,7 @@ import {
     DropdownMenuTrigger
 } from "@radix-ui/react-dropdown-menu";
 import { uploadFilesInCloudinary } from "@/lib/upload-files"; // keep it in a separate util file
+import { toast } from "react-toastify";
 
 interface RequestFormValues {
     email: string;
@@ -156,12 +157,15 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                             requestId: ""
                         },
                     },
+                    refetchQueries: ["GetRequestByUserId"],
+                    awaitRefetchQueries: true,
                 });
 
                 resetForm();
                 setShowSuccess(true);
             } catch (error) {
                 console.error("Submission error:", error);
+                toast.error("Хүсэлт илгээхэд алдаа гарлаа. Дахин оролдоно уу.");
             }
 
         },

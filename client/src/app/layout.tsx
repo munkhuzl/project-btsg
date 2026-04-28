@@ -2,9 +2,12 @@ import { PropsWithChildren } from 'react';
 import { ApolloWrapper } from '@/components/providers';
 import { LoginProvider } from '@/context/LoginContext';
 import './global.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from "@/context/AuthProvider";
 import { Header } from "@/components/Header";
 import { Theme } from "@radix-ui/themes";
+import { ToastContainer } from 'react-toastify';
+import { PageTransition } from "@/components/PageTransition";
 export const metadata = {
   title: 'Биеийн тамир спортын газар',
   description: 'Биеийн тамир спортын газар',
@@ -19,7 +22,8 @@ const RootLayout = ({ children }: PropsWithChildren) => {
             <LoginProvider>
               <Theme>
                 <Header />
-                {children}
+                <PageTransition>{children}</PageTransition>
+                <ToastContainer />
               </Theme>
             </LoginProvider>
           </AuthProvider>

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useLogin } from "@/context/LoginContext";
+import { useAuth } from "@/context/AuthProvider";
 import { useCheckOtpMutation } from "@/generated";
 import { useEffect, useState, useCallback } from "react";
 
@@ -20,6 +21,7 @@ import { toast } from "react-toastify";
 
 const SendOtp = () => {
   const { email } = useLogin();
+  const { setToken } = useAuth();
   const [checkOtp, { loading, error }] = useCheckOtpMutation();
   const [otp, setOTP] = useState<string>("");
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -30,12 +32,14 @@ const SendOtp = () => {
 
     const response = await checkOtp({ variables: { email, otp } });
     if (response?.data?.checkOTP) {
+      const token = response.data.checkOTP.token;
+      localStorage.setItem("token", token);
+      setToken(token);
       setIsVerified(true);
       toast.success("OTP Verified Successfully");
-      setToken(response.data.checkOTP.token);
       router.replace("/createNewRequest");
     }
-  }, [email, otp, checkOtp, router]);
+  }, [email, otp, checkOtp, router, setToken]);
 
   useEffect(() => {
     if (otp.length === 4) {
@@ -96,11 +100,6 @@ const SendOtp = () => {
       </Card>
     </div>
   );
-};
-
-const setToken = (token: string) => {
-  localStorage.setItem('token', token);
-  fetch(`/token?token=${token}`);
 };
 
 export default SendOtp;
