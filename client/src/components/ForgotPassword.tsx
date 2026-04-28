@@ -26,11 +26,11 @@ const ForgotPassword = () => {
   const handleSubmit = async (values: { email: string }) => {
     try {
       const { data } = await forgotPassword({
-        variables: { email: values.email },
+        variables: { email: values.email.toLowerCase() },
       });
 
       if (data?.forgotPassword?.message) {
-        setEmail(values.email);
+        setEmail(values.email.toLowerCase());
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
         router.push("/resetPassword");
       }
