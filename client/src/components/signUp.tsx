@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useSignUpMutation } from '@/generated';
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 
 const SignUp = () => {
@@ -19,12 +19,14 @@ const SignUp = () => {
     const register = async (values: { password: string, email: string }) => {
 
         try {
-            await signUpMutation({variables: {
+            await signUpMutation({
+                variables: {
                     input: {
-                        email: values.email,
+                        email: values.email.toLowerCase(),
                         password: values.password,
                     }
-                }}).then(()=>{
+                }
+            }).then(() => {
                 toast.success('Хэрэглэгч амжилттай бүртгэгдлээ.');
                 router.push('/login');
             })
@@ -63,7 +65,7 @@ const SignUp = () => {
                                 <Label className="mt-4">И-мэйл хаяг</Label>
                                 <Input id="email" placeholder="Email" className="mt-2" name="email" onChange={handleChange} value={values.email} />
                                 <Label className='mt-3' >Нууц үг</Label>
-                                <Input className="" placeholder='нууц үг' onChange={handleChange} value={values.password} id='password'/>
+                                <Input className="" placeholder='нууц үг' onChange={handleChange} value={values.password} id='password' />
                             </div>
                             <Button type="submit" className="my-6 w-full" disabled={loading} >
                                 Бүртгүүлэх

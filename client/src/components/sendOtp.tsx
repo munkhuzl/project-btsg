@@ -30,7 +30,7 @@ const SendOtp = () => {
   const login = useCallback(async () => {
     if (otp.length !== 4) return;
 
-    const response = await checkOtp({ variables: { email, otp } });
+    const response = await checkOtp({ variables: { email: email.toLowerCase(), otp } });
     if (response?.data?.checkOTP) {
       const token = response.data.checkOTP.token;
       localStorage.setItem("token", token);

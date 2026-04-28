@@ -45,7 +45,7 @@ const Login = () => {
       const { data } = await loginMutation({
         variables: {
           input: {
-            email: values.email,
+            email: values.email.toLowerCase(),
             password: values.password,
           },
         },
@@ -63,17 +63,17 @@ const Login = () => {
     } catch (error: unknown) {  // ✅ unknown type ашигласан
       // ✅ Type guard ашиглан error-ийн төрлийг шалгана
       const apolloError = error as ApolloError;
-      
+
       let errorMessage = "";
-      
+
       // GraphQL errors шалгах
       if (apolloError?.graphQLErrors && apolloError.graphQLErrors.length > 0) {
         errorMessage = apolloError.graphQLErrors[0].message;
-      } 
+      }
       // Network error шалгах
       else if (apolloError?.networkError) {
         errorMessage = apolloError.networkError.message;
-      } 
+      }
       // Бусад error
       else if (apolloError?.message) {
         errorMessage = apolloError.message;
