@@ -26,7 +26,7 @@ const ForgotPassword = () => {
   const handleSubmit = async (values: { email: string }) => {
     try {
       const { data } = await forgotPassword({
-        variables: { email: values.email },
+        variables: { email: values.email.toLowerCase() },
       });
 
       if (data?.forgotPassword?.message) {

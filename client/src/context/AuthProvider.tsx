@@ -41,17 +41,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuth, setIsAuth] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(() => {
+        if (typeof window === "undefined") return null;
+        return localStorage.getItem("token");
+    });
 
     const client = useApolloClient();
 
-    useEffect(() => {
-        if (typeof window === "undefined") return;
-        const storedToken = localStorage.getItem("token");
-        if (storedToken) {
-            setToken(storedToken);
+    const updateToken = (next: string | null) => {
+        if (typeof window !== "undefined") {
+            if (next) localStorage.setItem("token", next);
+            else localStorage.removeItem("token");
         }
-    }, []);
+        setToken(next);
+    };
 
     // Apollo query: fetch user only if we have a valid userId
     const { data, loading, error } = useGetUserQuery({skip: !token});
@@ -70,14 +73,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (data?.getUser) {
             setUser(data.getUser);
         }
-        setIsLoading(loading);
-    }, [data, loading]);
+        // Only "loading" while we have a token and the query is still running.
+        // No token = definitively unauthenticated, not loading.
+        setIsLoading(!!token && loading);
+    }, [data, loading, token]);
 
     // Handle query errors gracefully
     useEffect(() => {
         if (error) {
             console.error("Error fetching user:", error);
-            toast.error("Failed to load user data.");
+            const msg = error.message?.toLowerCase() ?? "";
+            const isAuthError = msg.includes("logged in") || msg.includes("unauthor") || msg.includes("token");
+            if (isAuthError) {
+                if (typeof window !== "undefined") localStorage.removeItem("token");
+                setToken(null);
+            } else {
+                toast.error("Failed to load user data.");
+            }
             setIsAuth(false);
             setUser(null);
             setIsLoading(false);
@@ -95,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuth, user, token, isLoading, setToken, logout }}>
+        <AuthContext.Provider value={{ isAuth, user, token, isLoading, setToken: updateToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
