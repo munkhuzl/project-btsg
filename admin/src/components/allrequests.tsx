@@ -5,7 +5,6 @@ import { Clock, Calendar } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useChangeReStatusMutation, useGetAllRequestsQuery } from "@/generated";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -69,10 +68,6 @@ const RequestsList = () => {
   const { isAuth } = useAuth();
   const { data, loading: queryLoading, error } = useGetAllRequestsQuery();
   const [changeReStatus, { loading: mutationLoading }] = useChangeReStatusMutation();
-
-  useEffect(() => {
-    if (!isAuth) toast.error("User must be logged in");
-  }, [isAuth]);
 
   if (!isAuth) return null;
   if (queryLoading) return <p className="text-center py-12 text-gray-500">Loading requests...</p>;

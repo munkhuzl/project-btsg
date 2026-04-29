@@ -4,7 +4,7 @@
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useGetRequestByUserIdQuery,  } from "@/generated";
+import { useGetRequestByUserIdQuery, } from "@/generated";
 import {
   Dialog,
   DialogClose,
@@ -60,7 +60,7 @@ export function MyRequest() {
             <DialogContent className="sm:max-w-[600px] bg-white">
               <div
                 id={`print-area-${req._id}`} // ✅ unique id
-                className="bg-white p-10 text-[14px] text-black leading-relaxed ml-6"
+                className="bg-white md:p-10 text-[14px] text-black leading-relaxed overflow-hidden"
               >
                 <div className="text-center mb-4">
                   <img
@@ -68,7 +68,7 @@ export function MyRequest() {
                     alt="logo2"
                     width={100}
                     height={100}
-                    className="mx-auto"
+                    className="mx-auto mt-5 lg:mt-0"
                   />
                   <h1 className=" mt-4">
                     БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ
@@ -110,35 +110,35 @@ export function MyRequest() {
                   хамтран ажиллахыг хүсье.
                 </p>
 
-                <div className="flex  mt-6 max-w-[680px] ">
+                <div className="flex mt-6 max-w-[680px] ">
                   <div className="flex-1 w-64">
-                    <h1 className="text-start relative text-wrap flex-1 w-32 ">
-                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
+                    <h1 className="text-start text-xs md:text-sm relative text-wrap flex-1 w-32">
+                      БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
                     </h1>
-                    <h1 className="text-start relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ,
+                    <h1 className="text-start text-xs md:text-sm relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ,
                       СПОРТЫН ХЭЛТСИЙН ДАРГА
                     </h1>
-                    <div className="relative w-[300px] ml-16 mt-3">
+                    <div className="relative md:w-[300px] w-full lg:ml-16 mt-3 pb-7">
                       <img
                         src="/tamga1.svg"
                         alt="tamga"
-                        className="absolute ml-2 inset-0 w-80 h-80 m-auto rotate-8 scale-95  mix-blend-multiply contrast-125 saturate-150"
+                        className="absolute ml-2 inset-0 w-80 h-64 m-auto rotate-8 scale-95 lg:-top-5 -top-24 mix-blend-multiply contrast-125 saturate-150"
                       />
 
                       <img
                         src="/lkham.svg"
                         alt="signature"
-                        className="absolute inset-0 w-40 h-20 m-auto z-10 opacity"
+                        className="absolute inset-0 lg:top-0 -top-16 w-40 h-20 m-auto z-10 opacity"
                       />
 
                     </div>
                   </div>
-                  <div className="flex-row flex-1">
+                  <div className="flex-row flex-1 md:text-sm text-xs">
                     <h1>Э.ЛХАМСҮРЭНБААТАР</h1>
                   </div>
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="hidden lg:flex">
                 <DialogClose asChild>
                   <Button variant="outline">Хаах</Button>
                 </DialogClose>
@@ -150,6 +150,22 @@ export function MyRequest() {
                 >
                   Татах
                 </Button>
+              </DialogFooter>
+              <DialogFooter className="lg:hidden top-5 z-50 bg-white fixed bottom-auto w-full py-2 px-6">
+                <div className="flex gap-2 items-center">
+                  <DialogClose asChild>
+                    <Button variant="outline">Хаах</Button>
+                  </DialogClose>
+                  <Button
+                    type="button"
+                    size="lg"
+                    onClick={() =>
+                      printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
+                    }
+                  >
+                    Татах
+                  </Button>
+                </div>
               </DialogFooter>
             </DialogContent>
           </Dialog>
