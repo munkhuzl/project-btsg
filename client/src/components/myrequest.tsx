@@ -151,7 +151,7 @@ export function MyRequest() {
                   Татах
                 </Button>
               </DialogFooter>
-              <DialogFooter className="lg:hidden top-5 z-50 bg-white fixed bottom-auto w-full py-2 px-6">
+              <DialogFooter className="lg:hidden bottom-20 z-50 bg-white fixed w-full py-2 px-6">
                 <div className="flex gap-2 items-center">
                   <DialogClose asChild>
                     <Button variant="outline">Хаах</Button>

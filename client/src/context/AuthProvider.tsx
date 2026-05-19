@@ -87,11 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (isAuthError) {
                 if (typeof window !== "undefined") localStorage.removeItem("token");
                 setToken(null);
-            } else {
-                toast.error("Failed to load user data.");
+                setIsAuth(false);
+                setUser(null);
             }
-            setIsAuth(false);
-            setUser(null);
+            // Don't flip auth state on transient/network errors — that bounces a
+            // just-logged-in user back to /login.
             setIsLoading(false);
         }
     }, [error]);
