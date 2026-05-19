@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -34,7 +35,14 @@ const Login = () => {
   const router = useRouter();
   const { setEmail } = useLogin();
   const [loginMutation, { loading }] = useLoginMutation();
-  const { setToken } = useAuth();
+  const { setToken, isAuth, token } = useAuth();
+
+  // If already authenticated, leave /login immediately.
+  useEffect(() => {
+    if (isAuth || token) {
+      router.replace("/createNewRequest");
+    }
+  }, [isAuth, token, router]);
 
   const handleLogin = async (
     values: LoginValues,
@@ -55,10 +63,10 @@ const Login = () => {
         localStorage.setItem("token", data.login.token);
         setToken(data.login.token);
         toast.success("Амжилттай нэвтэрлээ.");
-        router.push("/createNewRequest");
+        router.replace("/createNewRequest");
       } else {
         toast.success("Таны имэйл рүү нэг удаагийн код илгээлээ.");
-        router.push("/sendOtp");
+        router.replace("/sendOtp");
       }
     } catch (error: unknown) {  // ✅ unknown type ашигласан
       // ✅ Type guard ашиглан error-ийн төрлийг шалгана
