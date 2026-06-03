@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "https://project-btsg-server.vercel.app/api/graphql",
+  schema: "http://localhost:3002/api/graphql",
   documents: "src/**/*.graphql",
   generates: {
     "src/generated/index.ts": {

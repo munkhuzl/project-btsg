@@ -4,8 +4,9 @@ import { HttpLink } from '@apollo/client';
 import { ApolloNextAppProvider, ApolloClient, InMemoryCache } from '@apollo/experimental-nextjs-app-support';
 import { setContext } from '@apollo/client/link/context';
 
-const uri = "https://project-btsg-server.vercel.app/api/graphql";
+// const uri = "https://project-btsg-server.vercel.app/api/graphql";
 
+const uri = "http://localhost:3002/api/graphql";
 const makeClient = () => {
   const httpLink = new HttpLink({
     uri,

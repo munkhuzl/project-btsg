@@ -8,6 +8,15 @@ import { Header } from "@/components/Header";
 import { Theme } from "@radix-ui/themes";
 import { ToastContainer } from 'react-toastify';
 import { PageTransition } from "@/components/PageTransition";
+import { Nunito_Sans } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const nunitoSans = Nunito_Sans({
+  subsets: ['latin', 'cyrillic', 'cyrillic-ext'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
 export const metadata = {
   title: 'Биеийн тамир спортын газар',
   description: 'Биеийн тамир спортын газар',
@@ -15,7 +24,7 @@ export const metadata = {
 
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", nunitoSans.variable)}>
       <body className="bg-[#F4F4F5] mx-auto">
         <ApolloWrapper>
           <AuthProvider>

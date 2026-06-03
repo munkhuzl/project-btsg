@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Send } from "lucide-react";
+import { Send, FileText, Calendar, CheckCircle2, XCircle, AlertCircle, Printer, Download } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useGetRequestByUserIdQuery, } from "@/generated";
+import { useGetRequestByUserIdQuery } from "@/generated";
 import {
   Dialog,
   DialogClose,
@@ -15,183 +15,257 @@ import {
 import { printDocument } from "@/lib/print-document";
 import { useAuth } from "@/context/AuthProvider";
 
+const getFieldValue = (
+  fieldValues: Array<{ fieldId: string; value: string }> | null | undefined,
+  fieldId: string
+) => {
+  if (!fieldValues) return "";
+  return fieldValues.find((fv) => fv.fieldId === fieldId)?.value || "";
+};
+
+// Parse the GraphQL Date scalar defensively (may be an ISO string or epoch-ms string)
+const parseDate = (value: unknown): Date => {
+  const d = new Date(value as string);
+  if (!isNaN(d.getTime())) return d;
+  const n = new Date(Number(value));
+  return isNaN(n.getTime()) ? new Date(0) : n;
+};
 
 export function MyRequest() {
   const router = useRouter();
   const { isAuth } = useAuth();
-  const { data } = useGetRequestByUserIdQuery();
+  const { data, loading } = useGetRequestByUserIdQuery();
 
-  // ✅ find → filter (array болгоно)
-  const acceptedReqs = data?.getRequestByUserID?.filter(
-    (r) => r.result === "accepted",
+  if (!isAuth) return null;
+
+  const requests = data?.getRequestByUserID || [];
+
+  // Sort newest-first and group by the month the request was sent (createdAt).
+  const sorted = [...requests].sort(
+    (a, b) => parseDate(b.createdAt).getTime() - parseDate(a.createdAt).getTime()
   );
 
-  return (
-    <div className="max-w-[680px] mx-auto">
-      <h1 className="text-start mt-4 font-bold mx-2">
-        Таны өмнөх чөлөөний хуудаснууд:
-      </h1>
+  type MonthGroup = {
+    key: string;
+    label: string;
+    items: Array<{ req: (typeof sorted)[number]; number: number }>;
+  };
+  const monthGroups: MonthGroup[] = [];
+  const groupIndex = new Map<string, MonthGroup>();
+  sorted.forEach((req, i) => {
+    const d = parseDate(req.createdAt);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    let group = groupIndex.get(key);
+    if (!group) {
+      group = {
+        key,
+        label: `${d.getFullYear()} оны ${d.getMonth() + 1}-р сар`,
+        items: [],
+      };
+      groupIndex.set(key, group);
+      monthGroups.push(group);
+    }
+    // Global running number across all requests (newest = 001) for the slip "Дугаар".
+    group.items.push({ req, number: i + 1 });
+  });
 
-      {/* Empty state */}
-      {data?.getRequestByUserID?.length === 0 && (
-        <div className="bg-white my-6 py-4">
-          <p className="text-center text-gray-300">
-            Чөлөөний хуудас байхгүй байна.
-          </p>
+  const getStatusBadge = (status?: string) => {
+    switch (status) {
+      case "accepted":
+        return (
+          <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-100">
+            <CheckCircle2 className="size-3.5" /> Зөвшөөрсөн
+          </span>
+        );
+      case "declined":
+        return (
+          <span className="flex items-center gap-1 bg-rose-50 text-rose-700 px-3 py-1 rounded-full text-xs font-semibold border border-rose-100">
+            <XCircle className="size-3.5" /> Татгалзсан
+          </span>
+        );
+      default:
+        return (
+          <span className="flex items-center gap-1 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold border border-amber-100">
+            <AlertCircle className="size-3.5" /> Хүлээгдэж буй
+          </span>
+        );
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-zinc-950">Миний хүсэлтүүд</h1>
+          <p className="text-sm text-zinc-500 mt-1">Чөлөө хүссэн түүх болон шийдвэрлэлтийн хариу</p>
+        </div>
+        <Button
+          onClick={() => router.push("/createNewRequest")}
+          className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl flex items-center gap-2 text-sm font-medium py-2.5"
+        >
+          <Send size={13} />
+          Хүсэлт илгээх
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <div key={i} className="h-24 bg-zinc-50 animate-pulse border border-zinc-100 rounded-xl" />
+          ))}
+        </div>
+      ) : requests.length === 0 ? (
+        <div className="bg-zinc-50/50 border border-dashed border-zinc-200 rounded-2xl p-12 text-center">
+          <FileText className="size-10 text-zinc-350 mx-auto mb-3" />
+          <p className="text-zinc-500 text-sm">Та чөлөөний хүсэлт илгээгээгүй байна.</p>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {monthGroups.map((group) => (
+            <div key={group.key} className="space-y-4">
+              <div className="flex items-center gap-3 sticky top-0 bg-white/85 backdrop-blur py-2 z-10">
+                <h2 className="text-sm font-semibold text-zinc-700">{group.label}</h2>
+                <span className="text-xs font-medium text-zinc-400">{group.items.length} хүсэлт</span>
+              </div>
+              {group.items.map(({ req, number }) => {
+                const index = number - 1;
+                const templateName = req.requestTypeDetail?.name || "Чөлөөний хүсэлт";
+                const detailText = getFieldValue(req.fieldValues, "detailAboutRequest") || "Чөлөөний хуудас";
+
+                return (
+              <div 
+                key={req._id}
+                className="bg-white border border-zinc-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
+              >
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-zinc-900 text-base">{templateName}</span>
+                    {getStatusBadge(req.result)}
+                  </div>
+                  
+                  {detailText && <p className="text-zinc-600 text-sm">{detailText}</p>}
+                  
+                  <div className="flex items-center gap-2 text-zinc-400 text-xs">
+                    <Calendar className="size-3.5" />
+                    <span>Хугацаа: {req.startTime} - {req.endTime}</span>
+                  </div>
+
+                  {req.comment && (
+                    <div className="mt-2.5 p-3 rounded-xl bg-zinc-50 border border-zinc-100 text-xs text-zinc-600">
+                      <span className="font-semibold text-zinc-800">Хариу тайлбар:</span> {req.comment}
+                    </div>
+                  )}
+
+                  {req.attachments && req.attachments.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      {req.attachments.map((url, i) => (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 rounded-lg border border-zinc-150 bg-zinc-50 px-2.5 py-1 text-[11px] text-zinc-600 hover:text-zinc-950 hover:border-zinc-300 transition-colors"
+                        >
+                          <FileText className="size-3" /> Хавсралт {i + 1}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {req.result === "accepted" && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="rounded-xl border-zinc-200 text-zinc-800 text-xs py-2 flex items-center gap-1.5 self-start md:self-center">
+                        <Printer className="size-3.5" /> Чөлөөний хуудас хэвлэх
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent className="max-w-[650px] bg-white rounded-2xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in-95 duration-200">
+                      <div
+                        id={`print-area-${req._id}`}
+                        className="bg-white p-6 md:p-8 text-[13px] text-zinc-950 leading-relaxed overflow-hidden border border-zinc-100 rounded-xl"
+                      >
+                        <div className="text-center mb-6">
+                          <img
+                            src="/logo2.png"
+                            alt="logo"
+                            width={80}
+                            className="mx-auto"
+                          />
+                          <h1 className="font-bold text-sm text-zinc-950 mt-4 max-w-md mx-auto uppercase">
+                            БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ ЧӨЛӨӨЛӨХ ХУУДАС
+                          </h1>
+                          <div className="flex justify-between mt-6 text-[11px] text-zinc-500 border-b border-zinc-100 pb-2">
+                            <p>Огноо: {new Date().toLocaleDateString('mn-MN')}</p>
+                            <p>Дугаар: {String(index + 1).padStart(3, "0")}</p>
+                            <p>Баян-Өндөр сум</p>
+                          </div>
+                        </div>
+
+                        <p className="text-justify indent-8 text-zinc-800 mb-4 leading-relaxed">
+                          Үндсэн заалтуудыг үндэслэн ажилтан/суралцагч <strong>{req.lastname}</strong> овогтой <strong>{req.firstname}</strong> нь <strong>{req.startTime}</strong>-ны өдрөөс <strong>{req.endTime}</strong>-ны өдрийг хүртэлх хугацаанд <strong>{templateName}</strong> ({detailText}) шалтгаанаар чөлөөлөгдөх зөвшөөрөл олгогдсон тул ажил (хичээл)-ээс нь чөлөөлж, дэмжин ажиллана уу.
+                        </p>
+
+                        {/* Dynamic fields populated inside the printable PDF */}
+                        {req.fieldValues && req.fieldValues.length > 0 && (
+                          <div className="my-6 p-4 bg-zinc-50 border border-zinc-100 rounded-xl space-y-2">
+                            <h3 className="text-xs font-semibold text-zinc-900 uppercase tracking-wider mb-2">Хүсэлтийн нэмэлтүүд</h3>
+                            {req.fieldValues.map(fv => {
+                              const label = req.requestTypeDetail?.fields.find(f => f.id === fv.fieldId)?.label || fv.fieldId;
+                              if (fv.value.startsWith("http")) return null; // Hide links in the printable text
+                              return (
+                                <div key={fv.fieldId} className="flex justify-between text-xs text-zinc-700">
+                                  <span className="font-medium">{label}:</span>
+                                  <span>{fv.value}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        <div className="flex mt-8 items-center justify-between border-t border-zinc-100 pt-6">
+                          <div className="relative w-44 h-24">
+                            <h4 className="text-xs font-semibold text-zinc-950 uppercase leading-snug">Биеийн тамир, спортын газрын даргын үүрэг гүйцэтгэгч</h4>
+                            <img
+                              src="/tamga1.svg"
+                              alt="tamga"
+                              className="absolute -bottom-8 -right-8 w-28 h-28 opacity-80 mix-blend-multiply rotate-6"
+                            />
+                            <img
+                              src="/lkham.svg"
+                              alt="signature"
+                              className="absolute top-2 right-2 w-20 h-10 object-contain"
+                            />
+                          </div>
+                          <div className="text-right text-xs font-semibold text-zinc-950 self-end pb-2">
+                            Э.ЛХАМСҮРЭНБААТАР
+                          </div>
+                        </div>
+                      </div>
+
+                      <DialogFooter className="mt-6 flex justify-end gap-3">
+                        <DialogClose asChild>
+                          <Button variant="outline" className="rounded-xl border-zinc-200">Хаах</Button>
+                        </DialogClose>
+                        <Button
+                          className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl flex items-center gap-1.5"
+                          type="button"
+                          onClick={() => printDocument(`print-area-${req._id}`, `${req.firstname}_chuluu.pdf`)}
+                        >
+                          <Download className="size-4" /> PDF Татах
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       )}
-
-      {/* ✅ Accepted request-ууд */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {acceptedReqs?.map((req, index: number) => (
-          <Dialog key={req._id}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="my-2 flex flex-col items-start justify-between gap-2"
-              >
-                <span>Чөлөөний хуудас</span>
-                <span>
-                  Илгээсэн огноо: {req.startTime} - {req.endTime}
-                </span>
-              </Button>
-            </DialogTrigger>
-
-            <DialogContent className="sm:max-w-[600px] bg-white">
-              <div
-                id={`print-area-${req._id}`} // ✅ unique id
-                className="bg-white md:p-10 text-[14px] text-black leading-relaxed overflow-hidden"
-              >
-                <div className="text-center mb-4">
-                  <img
-                    src="/logo2.png"
-                    alt="logo2"
-                    width={100}
-                    height={100}
-                    className="mx-auto mt-5 lg:mt-0"
-                  />
-                  <h1 className=" mt-4">
-                    БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ
-                    ТАМИРЧИН, (ДАСГАЛЖУУЛАГЧ)-ЫГ ЧӨЛӨӨЛҮҮЛЭХ ХУУДАС
-                  </h1>
-                  <div className="flex justify-between mt-4 text-[12px] px-2">
-                    <p>
-                      {new Date().getFullYear()}.
-                      {String(new Date().getMonth() + 1).padStart(2, "0")}.
-                      {String(new Date().getDate()).padStart(2, "0")}
-                    </p>
-                    <p>Дугаар 03/{String(index + 1).padStart(2, "136")}</p>
-                    <p>Баян-Өндөр сум</p>
-                  </div>
-                </div>
-                <h1 className="font-bold text-center">
-                  {" "}
-                  &ldquo;
-                  {`${req.workPlace?.company_name}-ЫН ДАРГА ${req.workPlace?.principal_name} ТАНАА`.toUpperCase()}
-                  &ldquo;
-                </h1>
-                {/* <p className="font-medium mb-4 text-center">{}</p> */}
-
-                <h3 className="text-center font-semibold mb-4 underline"></h3>
-
-                <p className="text-justify indent-8">
-                  Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009 оны 53/45
-                  дугаар тушаалын нэгдүгээр хавсралтаар батлагдсан журмын 4.2,
-                  4.3 дахь заалтыг тус тус үндэслэн {req.position}  ажилтай {req.lastname} -ийн {" "}
-                  {req.firstname} -нь {req.startTime}-ны өдрөөс {req.endTime}{" "}
-                  хүртэлх хугацаанд {req.detailAboutRequest} тэмцээнд оролцох тул  ажил (хичээл)-аас  нь
-                  чөлөөлж, хамтран ажиллана уу.{" "}
-                </p>
-                <p className="indent-8 text-justify">
-                  Мөн тус тушаалын 3.2 дахь заалтад, &ldquo;Ажлаас чөлөөлөгдсөн
-                  хугацааны цалинг өмчийн хэлбэр харгалзахгүйгээр үндсэн
-                  байгууллагаас нь олгоно.&ldquo; гэж заасан тул тамирчин
-                  (дасгалжуулагч)-ны чөлөөтэй хугацааны цалинг шийдвэрлэж,
-                  хамтран ажиллахыг хүсье.
-                </p>
-
-                <div className="flex mt-6 max-w-[680px] ">
-                  <div className="flex-1 w-64">
-                    <h1 className="text-start text-xs md:text-sm relative text-wrap flex-1 w-32">
-                      БИЕИЙН ТАМИР, СПОРТЫН ГАЗРЫН ДАРГЫН
-                    </h1>
-                    <h1 className="text-start text-xs md:text-sm relative "> ҮҮРГИЙГ ТҮР ОРЛОН ГҮЙЦЭТГЭГЧ,
-                      СПОРТЫН ХЭЛТСИЙН ДАРГА
-                    </h1>
-                    <div className="relative md:w-[300px] w-full lg:ml-16 mt-3 pb-7">
-                      <img
-                        src="/tamga1.svg"
-                        alt="tamga"
-                        className="absolute ml-2 inset-0 w-80 h-64 m-auto rotate-8 scale-95 lg:-top-5 -top-24 mix-blend-multiply contrast-125 saturate-150"
-                      />
-
-                      <img
-                        src="/lkham.svg"
-                        alt="signature"
-                        className="absolute inset-0 lg:top-0 -top-16 w-40 h-20 m-auto z-10 opacity"
-                      />
-
-                    </div>
-                  </div>
-                  <div className="flex-row flex-1 md:text-sm text-xs">
-                    <h1>Э.ЛХАМСҮРЭНБААТАР</h1>
-                  </div>
-                </div>
-              </div>
-              <DialogFooter className="hidden lg:flex">
-                <DialogClose asChild>
-                  <Button variant="outline">Хаах</Button>
-                </DialogClose>
-                <Button
-                  type="button"
-                  onClick={() =>
-                    printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
-                  }
-                >
-                  Татах
-                </Button>
-              </DialogFooter>
-              <DialogFooter className="lg:hidden bottom-20 z-50 bg-white fixed w-full py-2 px-6">
-                <div className="flex gap-2 items-center">
-                  <DialogClose asChild>
-                    <Button variant="outline">Хаах</Button>
-                  </DialogClose>
-                  <Button
-                    type="button"
-                    size="lg"
-                    onClick={() =>
-                      printDocument(`print-area-${req._id}`, "chuluu_olgov.pdf")
-                    }
-                  >
-                    Татах
-                  </Button>
-                </div>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ))}
-      </div>
-
-      {/* Create new request */}
-      <div className="bg-white p-4 text-center mt-6">
-        <h1 className="mt-2">Чөлөөний хүсэлт</h1>
-        <p className="mt-2 text-red-400 italic">
-          Чөлөөний хүсэлт илгээхдээ тэмцээний албан ёсны тамга тэмдэгтэй
-          удирдамж, мэдүүлэгийг заавал хавсаргана.
-        </p>
-        <div className="flex justify-start p-4 mt-2">
-          <Button
-            onClick={() => {
-              if (!isAuth) return router.push("/login");
-
-              router.push("/createNewRequest");
-            }}
-          >
-            <Send size={14} />
-            Чөлөөний хүсэлт илгээх
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }

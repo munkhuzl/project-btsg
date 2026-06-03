@@ -1,27 +1,45 @@
 import gql from "graphql-tag";
 
 export const RequestTypeDefs = gql`
-    type RequestType {
+    type RequestFieldDefinition {
+        id: String!
+        label: String!
+        type: String!
+        required: Boolean!
+    }
+
+    type RequestTypeTemplate {
         _id: ID!
-        email: String!
-        requestId: String!
-        firstname: String!
-        userId: String!
-        lastname: String!
-        workPlace: WorkPlaceType
-        school: SchoolType
-        requestDate: String
-        position: String
-        requestType: String
-        startTime: String
-        endTime: String
-        optionalFile: String
-        optionalFileMeduuleg: String!
-        result: String
-        detailAboutRequest: String!
+        name: String!
+        description: String
+        fields: [RequestFieldDefinition!]!
         createdAt: Date!
         updatedAt: Date!
     }
+
+    type FieldValueType {
+        fieldId: String!
+        value: String!
+    }
+
+    type RequestType {
+        _id: ID!
+        email: String!
+        firstname: String!
+        lastname: String!
+        userId: String!
+        requestTypeId: String!
+        requestTypeDetail: RequestTypeTemplate
+        startTime: String!
+        endTime: String!
+        fieldValues: [FieldValueType!]!
+        attachments: [String!]
+        result: String!
+        comment: String
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
     type RequestTypePop {
         _id: ID!
         email: User!
@@ -56,35 +74,49 @@ export const RequestTypeDefs = gql`
     type GroupedRequests {
         requests: [RequestType]
     }
+
     type AllGroupedRequests {
         year: Int!
         month: Int!
         requests: [RequestType]!
     }
-        
+
+    input RequestFieldDefinitionInput {
+        id: String!
+        label: String!
+        type: String!
+        required: Boolean!
+    }
+
+    input CreateRequestTypeInput {
+        name: String!
+        description: String
+        fields: [RequestFieldDefinitionInput!]!
+    }
+
+    input FieldValueInput {
+        fieldId: String!
+        value: String!
+    }
+
     input SendRequestInput {
-    requestId: String!
         email: String!
         firstname: String!
         lastname: String!
         userId: String!
-        workPlace: WorkPlaceInput
-        requestDate: String
-        school: SchoolInput
-        position: String
-        requestType: String
-        startTime: String
-        endTime: String
-        optionalFile: String
-        optionalFileMeduuleg: String!
-        detailAboutRequest: String!
+        requestTypeId: String!
+        startTime: String!
+        endTime: String!
+        fieldValues: [FieldValueInput!]!
+        attachments: [String!]
     }
-   type RequestSentRespone {
-    message: String!
-    success: Boolean!
-}
+
+    type RequestSentRespone {
+        message: String!
+        success: Boolean!
+    }
+
     type StatusChangedResponse {
         message: String
     }
-`
-    ;
+`;

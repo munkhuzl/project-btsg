@@ -6,3 +6,4 @@ export * from './checkOtp';
 export * from './change-request-status';
 export * from './forgot-password';
 export * from './reset-password';
+export * from './request-types';

@@ -1,6 +1,6 @@
 import { MutationResolvers } from "@/generated/graphql";
 import { RequestModel } from "@/models/request.model";
-import {UserModel} from "@/models";
+import { UserModel } from "@/models";
 
 export const sentRequest: MutationResolvers['sentRequest'] = async (_, { input }, { userId }) => {
     const checkUser = await UserModel.findById(userId);
@@ -15,7 +15,7 @@ export const sentRequest: MutationResolvers['sentRequest'] = async (_, { input }
             success: true
         };
     } catch (e) {
-        console.log(e);
+        console.error("Failed to create request:", e);
 
         return {
             message: "Failed to create request",
