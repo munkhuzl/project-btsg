@@ -12,6 +12,8 @@ export const MutationTypeDefs = gql`
         resetPassword(email: String!, OTP: String!, newPassword: String!): ResetPasswordResponse!
         createRequestType(input: CreateRequestTypeInput!): RequestTypeTemplate!
         deleteRequestType(id: ID!): Boolean!
+        createGlobalField(input: CreateGlobalFieldInput!): GlobalField!
+        deleteGlobalField(id: ID!): Boolean!
     }
 
     type Query {
@@ -26,5 +28,6 @@ export const MutationTypeDefs = gql`
         openRequest(_id: ID): OpenRequestType
         getRequestTypeTemplates: [RequestTypeTemplate!]!
         getRequestTypeTemplate(id: ID!): RequestTypeTemplate
+        getGlobalFields: [GlobalField!]!
     }
 `;

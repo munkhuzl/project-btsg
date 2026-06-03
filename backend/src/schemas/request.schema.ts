@@ -17,6 +17,16 @@ export const RequestTypeDefs = gql`
         updatedAt: Date!
     }
 
+    type GlobalField {
+        _id: ID!
+        id: String!
+        label: String!
+        type: String!
+        required: Boolean!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
     type FieldValueType {
         fieldId: String!
         value: String!
@@ -92,6 +102,13 @@ export const RequestTypeDefs = gql`
         name: String!
         description: String
         fields: [RequestFieldDefinitionInput!]!
+    }
+
+    input CreateGlobalFieldInput {
+        id: String!
+        label: String!
+        type: String!
+        required: Boolean!
     }
 
     input FieldValueInput {
