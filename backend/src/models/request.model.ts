@@ -17,6 +17,14 @@ export type Request = {
   attachments?: string[]; // Cloudinary URLs of files attached to the request
   result: "pending" | "accepted" | "declined";
   comment?: string;
+
+  // Legacy fields from requests created before the requestTypeId/fieldValues
+  // system. Declared (optional) so Mongoose hydrates them on read, letting the
+  // resolvers normalize old requests into the new shape. Not set on new docs.
+  requestType?: string;
+  detailAboutRequest?: string;
+  optionalFile?: string;
+  optionalFileMeduuleg?: string;
 };
 
 const RequestSchema = new Schema<Request>(
@@ -68,7 +76,13 @@ const RequestSchema = new Schema<Request>(
     comment: {
       type: String,
       default: ""
-    }
+    },
+
+    // Legacy fields (read-only for old requests; not set on new ones).
+    requestType: { type: String },
+    detailAboutRequest: { type: String },
+    optionalFile: { type: String },
+    optionalFileMeduuleg: { type: String },
   },
   {
     timestamps: true,

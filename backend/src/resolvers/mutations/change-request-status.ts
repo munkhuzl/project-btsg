@@ -7,13 +7,19 @@ import { sendMail } from "@/utils/send-mail";
 // failure here is logged and swallowed so it never fails the status mutation.
 const sendAcceptanceEmail = async (request: InstanceType<typeof RequestModel>) => {
     try {
+        const LEGACY_TYPE_LABELS: Record<string, string> = {
+            shortterm: "Богино хугацааны чөлөө",
+            longterm: "Урт хугацааны чөлөө",
+        };
+
         const template = await RequestTypeModel.findById(request.requestTypeId);
-        const templateName = template?.name || "Чөлөөний хүсэлт";
+        const templateName =
+            template?.name || LEGACY_TYPE_LABELS[request.requestType ?? ""] || request.requestType || "Чөлөөний хүсэлт";
 
         const fieldDefs: Array<{ id: string; label: string }> = template?.fields || [];
         const detailText =
             request.fieldValues?.find((fv: { fieldId: string; value: string }) => fv.fieldId === "detailAboutRequest")
-                ?.value || "Чөлөөний хуудас";
+                ?.value || request.detailAboutRequest || "Чөлөөний хуудас";
 
         // Same data the client shows, excluding file URLs from the printed fields.
         const fields = (request.fieldValues || [])
