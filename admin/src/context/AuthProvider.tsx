@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { useApolloClient } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useGetUserQuery } from "@/generated";
@@ -57,9 +57,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     // Apollo query: fetch user only if we have a valid userId
-    const { data, loading, error } = useGetUserQuery({ skip: !token });
+    const { data, loading, error, refetch } = useGetUserQuery({
+        skip: !token,
+        fetchPolicy: "network-only",
+        notifyOnNetworkStatusChange: true,
+    });
+
+    // getUser takes no variables (the user id comes from the auth header), so
+    // when the token changes from one truthy value to another (e.g. a stale or
+    // expired token to a fresh login token) Apollo sees identical variables and
+    // does NOT refetch. Force a refetch on every token change so the freshly
+    // logged-in user is actually loaded instead of having to log in twice.
+    const tokenRef = useRef(token);
+    useEffect(() => {
+        if (token && token !== tokenRef.current) refetch();
+        tokenRef.current = token;
+    }, [token, refetch]);
+
     // Handle authentication state
-    console.log(data)
     useEffect(() => {
         if (token) {
             setIsAuth(true);
@@ -77,22 +92,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(!!token && loading);
     }, [data, loading, token]);
 
-    // Handle query errors gracefully
+    // Handle query errors gracefully. Ignore errors while a newer request is in
+    // flight (loading) so a stale token's failure can't wipe the token that a
+    // fresh login just set.
     useEffect(() => {
-        if (error) {
+        if (error && !loading) {
             const msg = error.message?.toLowerCase() ?? "";
             const isAuthError = msg.includes("logged in") || msg.includes("unauthor") || msg.includes("token");
             if (isAuthError) {
                 if (typeof window !== "undefined") localStorage.removeItem("token");
                 setToken(null);
-            } else {
-                toast.error("Failed to load user data.");
+                setIsAuth(false);
+                setUser(null);
             }
-            setIsAuth(false);
-            setUser(null);
+            // Don't flip auth state on transient/network errors — that bounces a
+            // just-logged-in user back to /login.
             setIsLoading(false);
         }
-    }, [error]);
+    }, [error, loading]);
 
     const logout = async () => {
         localStorage.removeItem("token");

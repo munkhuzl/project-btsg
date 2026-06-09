@@ -133,6 +133,16 @@ query GetRequestTypeTemplates {
     }
 }
 
+query GetGlobalFields {
+    getGlobalFields {
+        _id
+        id
+        label
+        type
+        required
+    }
+}
+
 mutation SentRequest($input: SendRequestInput!) {
     sentRequest(input: $input) {
         message

@@ -5,7 +5,7 @@ import { ChevronDown, Send, X, FileText, Upload, CheckCircle, Loader2 } from "lu
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { useSentRequestMutation, useGetRequestTypeTemplatesQuery } from "@/generated";
+import { useSentRequestMutation, useGetRequestTypeTemplatesQuery, useGetGlobalFieldsQuery } from "@/generated";
 import { User } from "@/context/AuthProvider";
 import {
     DropdownMenu,
@@ -53,12 +53,15 @@ const RequestSuccessDiv = ({ setShowSuccess }: { setShowSuccess: React.Dispatch<
 
 export const CreateNewRequest = ({ user }: { user: User }) => {
     const { data: templateData, loading: templatesLoading } = useGetRequestTypeTemplatesQuery();
+    const { data: globalFieldsData } = useGetGlobalFieldsQuery();
     const [sentRequestMutation, { loading: sendingRequest }] = useSentRequestMutation();
     const [showSuccess, setShowSuccess] = useState(false);
     const [uploadingFields, setUploadingFields] = useState<Record<string, boolean>>({});
     const [uploadingAttachments, setUploadingAttachments] = useState(false);
 
     const templates = templateData?.getRequestTypeTemplates || [];
+    // Independent fields shown on every request form regardless of request type.
+    const globalFields = globalFieldsData?.getGlobalFields || [];
 
     const formik = useFormik<RequestFormValues>({
         initialValues: {
@@ -105,19 +108,22 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                 }
             }
 
-            // Dynamic fields validation
+            // Dynamic fields validation — both global (always shown) and the
+            // fields belonging to the selected request type.
             const selectedTemplate = templates.find(t => t._id === values.requestTypeId);
-            if (selectedTemplate) {
-                const fieldsErrors: Record<string, string> = {};
-                selectedTemplate.fields.forEach(field => {
-                    const val = values.fields[field.id];
-                    if (field.required && (!val || val.trim() === "")) {
-                        fieldsErrors[field.id] = `${field.label} талбарыг бөглөнө үү`;
-                    }
-                });
-                if (Object.keys(fieldsErrors).length > 0) {
-                    errors.fields = fieldsErrors;
+            const fieldsErrors: Record<string, string> = {};
+            const validateField = (field: { id: string; label: string; required: boolean }) => {
+                const val = values.fields[field.id];
+                if (field.required && (!val || val.trim() === "")) {
+                    fieldsErrors[field.id] = `${field.label} талбарыг бөглөнө үү`;
                 }
+            };
+            globalFields.forEach(validateField);
+            if (selectedTemplate) {
+                selectedTemplate.fields.forEach(validateField);
+            }
+            if (Object.keys(fieldsErrors).length > 0) {
+                errors.fields = fieldsErrors;
             }
 
             return errors;
@@ -221,6 +227,81 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
 
     const selectedTemplate = templates.find(t => t._id === formik.values.requestTypeId);
 
+    // Renders a single dynamic field control (text/textarea/number/date/file).
+    // Used for both global fields and the selected request type's fields.
+    const renderFieldControl = (field: { id: string; label: string; type: string; required: boolean }) => {
+        const fieldError = (formik.errors.fields as Record<string, string>)?.[field.id];
+        const hasError = !!fieldError && (formik.touched.fields as Record<string, boolean>)?.[field.id];
+
+        return (
+            <div key={field.id} className="flex flex-col">
+                <Label className="text-zinc-700 font-medium flex items-center gap-1">
+                    {field.label}
+                    {field.required && <span className="text-red-500">*</span>}
+                </Label>
+
+                {field.type === "textarea" ? (
+                    <textarea
+                        className="mt-1.5 w-full min-h-24 rounded-xl border border-zinc-200 px-3.5 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-all placeholder:text-zinc-400"
+                        placeholder={`${field.label} оруулна уу`}
+                        value={formik.values.fields[field.id] || ""}
+                        onChange={(e) => formik.setFieldValue(`fields.${field.id}`, e.target.value)}
+                    />
+                ) : field.type === "file" ? (
+                    <div className="mt-1.5 flex items-center gap-4">
+                        <div className="relative flex-1">
+                            <input
+                                type="file"
+                                id={`file-${field.id}`}
+                                className="hidden"
+                                onChange={(e) => handleFileChange(field.id, e.target.files?.[0])}
+                                disabled={uploadingFields[field.id]}
+                            />
+                            <label
+                                htmlFor={`file-${field.id}`}
+                                className="flex items-center justify-center gap-2 h-11 border border-dashed border-zinc-300 hover:border-zinc-500 rounded-xl px-4 text-sm font-medium text-zinc-650 cursor-pointer bg-zinc-50/50 hover:bg-zinc-50 transition-all select-none"
+                            >
+                                {uploadingFields[field.id] ? (
+                                    <>
+                                        <Loader2 className="size-4 animate-spin text-zinc-500" />
+                                        Хуулж байна...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className="size-4 text-zinc-500" />
+                                        Файл сонгох
+                                    </>
+                                )}
+                            </label>
+                        </div>
+                        {formik.values.fields[field.id] && (
+                            <a
+                                href={formik.values.fields[field.id]}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-zinc-500 underline flex items-center gap-1 hover:text-zinc-950 truncate max-w-[200px]"
+                            >
+                                Файл үзэх
+                            </a>
+                        )}
+                    </div>
+                ) : (
+                    <Input
+                        type={field.type}
+                        className="mt-1.5 h-11 rounded-xl"
+                        placeholder={`${field.label} оруулна уу`}
+                        value={formik.values.fields[field.id] || ""}
+                        onChange={(e) => formik.setFieldValue(`fields.${field.id}`, e.target.value)}
+                    />
+                )}
+
+                {hasError && (
+                    <p className="text-red-500 text-xs mt-1">{fieldError}</p>
+                )}
+            </div>
+        );
+    };
+
     return (
         <>
             {showSuccess && <RequestSuccessDiv setShowSuccess={setShowSuccess} />}
@@ -276,7 +357,12 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                                             key={template._id}
                                             onSelect={() => {
                                                 formik.setFieldValue("requestTypeId", template._id);
-                                                formik.setFieldValue("fields", {}); // Reset dynamic fields
+                                                // Reset per-type dynamic fields but keep global field values.
+                                                const globalIds = new Set(globalFields.map(f => f.id));
+                                                const preserved = Object.fromEntries(
+                                                    Object.entries(formik.values.fields).filter(([id]) => globalIds.has(id))
+                                                );
+                                                formik.setFieldValue("fields", preserved);
                                             }}
                                             className="px-4 py-3 text-sm hover:bg-zinc-50 cursor-pointer text-zinc-800 transition-colors focus:bg-zinc-50 focus:outline-none"
                                         >
@@ -384,82 +470,18 @@ export const CreateNewRequest = ({ user }: { user: User }) => {
                         )}
                     </div>
 
-                    {/* Dynamic Fields */}
+                    {/* Global Fields — always shown, independent of request type */}
+                    {globalFields.length > 0 && (
+                        <div className="border-t border-zinc-100 pt-6 mb-8 space-y-6">
+                            {globalFields.map(renderFieldControl)}
+                        </div>
+                    )}
+
+                    {/* Dynamic Fields — belong to the selected request type */}
                     {selectedTemplate && selectedTemplate.fields.length > 0 && (
                         <div className="border-t border-zinc-100 pt-6 mb-8 space-y-6">
                             <h3 className="text-sm font-semibold text-zinc-950 uppercase tracking-wider mb-2">Хүсэлтийн нэмэлт мэдээлэл</h3>
-                            {selectedTemplate.fields.map((field) => {
-                                const fieldError = (formik.errors.fields as Record<string, string>)?.[field.id];
-                                const hasError = !!fieldError && (formik.touched.fields as Record<string, boolean>)?.[field.id];
-
-                                return (
-                                    <div key={field.id} className="flex flex-col">
-                                        <Label className="text-zinc-700 font-medium flex items-center gap-1">
-                                            {field.label}
-                                            {field.required && <span className="text-red-500">*</span>}
-                                        </Label>
-
-                                        {field.type === "textarea" ? (
-                                            <textarea
-                                                className="mt-1.5 w-full min-h-24 rounded-xl border border-zinc-200 px-3.5 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-all placeholder:text-zinc-400"
-                                                placeholder={`${field.label} оруулна уу`}
-                                                value={formik.values.fields[field.id] || ""}
-                                                onChange={(e) => formik.setFieldValue(`fields.${field.id}`, e.target.value)}
-                                            />
-                                        ) : field.type === "file" ? (
-                                            <div className="mt-1.5 flex items-center gap-4">
-                                                <div className="relative flex-1">
-                                                    <input
-                                                        type="file"
-                                                        id={`file-${field.id}`}
-                                                        className="hidden"
-                                                        onChange={(e) => handleFileChange(field.id, e.target.files?.[0])}
-                                                        disabled={uploadingFields[field.id]}
-                                                    />
-                                                    <label
-                                                        htmlFor={`file-${field.id}`}
-                                                        className="flex items-center justify-center gap-2 h-11 border border-dashed border-zinc-300 hover:border-zinc-500 rounded-xl px-4 text-sm font-medium text-zinc-650 cursor-pointer bg-zinc-50/50 hover:bg-zinc-50 transition-all select-none"
-                                                    >
-                                                        {uploadingFields[field.id] ? (
-                                                            <>
-                                                                <Loader2 className="size-4 animate-spin text-zinc-500" />
-                                                                Хуулж байна...
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <Upload className="size-4 text-zinc-500" />
-                                                                Файл сонгох
-                                                            </>
-                                                        )}
-                                                    </label>
-                                                </div>
-                                                {formik.values.fields[field.id] && (
-                                                    <a
-                                                        href={formik.values.fields[field.id]}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-xs text-zinc-500 underline flex items-center gap-1 hover:text-zinc-950 truncate max-w-[200px]"
-                                                    >
-                                                        Файл үзэх
-                                                    </a>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <Input
-                                                type={field.type}
-                                                className="mt-1.5 h-11 rounded-xl"
-                                                placeholder={`${field.label} оруулна уу`}
-                                                value={formik.values.fields[field.id] || ""}
-                                                onChange={(e) => formik.setFieldValue(`fields.${field.id}`, e.target.value)}
-                                            />
-                                        )}
-
-                                        {hasError && (
-                                            <p className="text-red-500 text-xs mt-1">{fieldError}</p>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                            {selectedTemplate.fields.map(renderFieldControl)}
                         </div>
                     )}
 

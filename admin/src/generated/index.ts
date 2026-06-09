@@ -34,6 +34,13 @@ export type AuthResponse = {
   user: User;
 };
 
+export type CreateGlobalFieldInput = {
+  id: Scalars['String']['input'];
+  label: Scalars['String']['input'];
+  required: Scalars['Boolean']['input'];
+  type: Scalars['String']['input'];
+};
+
 export type CreateRequestTypeInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   fields: Array<RequestFieldDefinitionInput>;
@@ -56,6 +63,17 @@ export type ForgotPasswordResponse = {
   message: Scalars['String']['output'];
 };
 
+export type GlobalField = {
+  __typename?: 'GlobalField';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['Date']['output'];
+  id: Scalars['String']['output'];
+  label: Scalars['String']['output'];
+  required: Scalars['Boolean']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['Date']['output'];
+};
+
 export type GroupedRequests = {
   __typename?: 'GroupedRequests';
   requests?: Maybe<Array<Maybe<RequestType>>>;
@@ -71,8 +89,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   changeReStatus: StatusChangedResponse;
   checkOTP: OtpResponse;
+  createGlobalField: GlobalField;
   createRequestType: RequestTypeTemplate;
   createsOTP: OtpType;
+  deleteGlobalField: Scalars['Boolean']['output'];
   deleteRequestType: Scalars['Boolean']['output'];
   forgotPassword: ForgotPasswordResponse;
   login: AuthResponse;
@@ -95,6 +115,11 @@ export type MutationCheckOtpArgs = {
 };
 
 
+export type MutationCreateGlobalFieldArgs = {
+  input: CreateGlobalFieldInput;
+};
+
+
 export type MutationCreateRequestTypeArgs = {
   input: CreateRequestTypeInput;
 };
@@ -102,6 +127,11 @@ export type MutationCreateRequestTypeArgs = {
 
 export type MutationCreatesOtpArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGlobalFieldArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -169,6 +199,7 @@ export type OpenRequestType = {
 export type Query = {
   __typename?: 'Query';
   getAllRequests: Array<RequestType>;
+  getGlobalFields: Array<GlobalField>;
   getRequestById: RequestType;
   getRequestByUserID: Array<RequestType>;
   getRequestTypeTemplate?: Maybe<RequestTypeTemplate>;
@@ -434,6 +465,25 @@ export type DeleteRequestTypeMutationVariables = Exact<{
 
 export type DeleteRequestTypeMutation = { __typename?: 'Mutation', deleteRequestType: boolean };
 
+export type GetGlobalFieldsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGlobalFieldsQuery = { __typename?: 'Query', getGlobalFields: Array<{ __typename?: 'GlobalField', _id: string, id: string, label: string, type: string, required: boolean }> };
+
+export type CreateGlobalFieldMutationVariables = Exact<{
+  input: CreateGlobalFieldInput;
+}>;
+
+
+export type CreateGlobalFieldMutation = { __typename?: 'Mutation', createGlobalField: { __typename?: 'GlobalField', _id: string, id: string, label: string, type: string, required: boolean } };
+
+export type DeleteGlobalFieldMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteGlobalFieldMutation = { __typename?: 'Mutation', deleteGlobalField: boolean };
+
 
 export const GetUserDocument = gql`
     query GetUser {
@@ -506,6 +556,9 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
         }
+// @ts-ignore
+export function useGetUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserQuery, GetUserQueryVariables>): Apollo.UseSuspenseQueryResult<GetUserQuery, GetUserQueryVariables>;
+export function useGetUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserQuery, GetUserQueryVariables>): Apollo.UseSuspenseQueryResult<GetUserQuery | undefined, GetUserQueryVariables>;
 export function useGetUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
@@ -729,6 +782,9 @@ export function useGetAllRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllRequestsQuery, GetAllRequestsQueryVariables>(GetAllRequestsDocument, options);
         }
+// @ts-ignore
+export function useGetAllRequestsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllRequestsQuery, GetAllRequestsQueryVariables>): Apollo.UseSuspenseQueryResult<GetAllRequestsQuery, GetAllRequestsQueryVariables>;
+export function useGetAllRequestsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllRequestsQuery, GetAllRequestsQueryVariables>): Apollo.UseSuspenseQueryResult<GetAllRequestsQuery | undefined, GetAllRequestsQueryVariables>;
 export function useGetAllRequestsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllRequestsQuery, GetAllRequestsQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetAllRequestsQuery, GetAllRequestsQueryVariables>(GetAllRequestsDocument, options);
@@ -807,6 +863,9 @@ export function useGetRequestByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>(GetRequestByUserIdDocument, options);
         }
+// @ts-ignore
+export function useGetRequestByUserIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>;
+export function useGetRequestByUserIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetRequestByUserIdQuery | undefined, GetRequestByUserIdQueryVariables>;
 export function useGetRequestByUserIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetRequestByUserIdQuery, GetRequestByUserIdQueryVariables>(GetRequestByUserIdDocument, options);
@@ -867,6 +926,9 @@ export function useGetRequestTypeTemplatesLazyQuery(baseOptions?: Apollo.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>(GetRequestTypeTemplatesDocument, options);
         }
+// @ts-ignore
+export function useGetRequestTypeTemplatesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>): Apollo.UseSuspenseQueryResult<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>;
+export function useGetRequestTypeTemplatesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>): Apollo.UseSuspenseQueryResult<GetRequestTypeTemplatesQuery | undefined, GetRequestTypeTemplatesQueryVariables>;
 export function useGetRequestTypeTemplatesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetRequestTypeTemplatesQuery, GetRequestTypeTemplatesQueryVariables>(GetRequestTypeTemplatesDocument, options);
@@ -1162,3 +1224,156 @@ export function useDeleteRequestTypeMutation(baseOptions?: Apollo.MutationHookOp
 export type DeleteRequestTypeMutationHookResult = ReturnType<typeof useDeleteRequestTypeMutation>;
 export type DeleteRequestTypeMutationResult = Apollo.MutationResult<DeleteRequestTypeMutation>;
 export type DeleteRequestTypeMutationOptions = Apollo.BaseMutationOptions<DeleteRequestTypeMutation, DeleteRequestTypeMutationVariables>;
+export const GetGlobalFieldsDocument = gql`
+    query GetGlobalFields {
+  getGlobalFields {
+    _id
+    id
+    label
+    type
+    required
+  }
+}
+    `;
+export type GetGlobalFieldsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>
+    } & TChildProps;
+export function withGetGlobalFields<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetGlobalFieldsQuery,
+  GetGlobalFieldsQueryVariables,
+  GetGlobalFieldsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables, GetGlobalFieldsProps<TChildProps, TDataName>>(GetGlobalFieldsDocument, {
+      alias: 'getGlobalFields',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetGlobalFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetGlobalFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGlobalFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGlobalFieldsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGlobalFieldsQuery(baseOptions?: Apollo.QueryHookOptions<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>(GetGlobalFieldsDocument, options);
+      }
+export function useGetGlobalFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>(GetGlobalFieldsDocument, options);
+        }
+// @ts-ignore
+export function useGetGlobalFieldsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>): Apollo.UseSuspenseQueryResult<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>;
+export function useGetGlobalFieldsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>): Apollo.UseSuspenseQueryResult<GetGlobalFieldsQuery | undefined, GetGlobalFieldsQueryVariables>;
+export function useGetGlobalFieldsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>(GetGlobalFieldsDocument, options);
+        }
+export type GetGlobalFieldsQueryHookResult = ReturnType<typeof useGetGlobalFieldsQuery>;
+export type GetGlobalFieldsLazyQueryHookResult = ReturnType<typeof useGetGlobalFieldsLazyQuery>;
+export type GetGlobalFieldsSuspenseQueryHookResult = ReturnType<typeof useGetGlobalFieldsSuspenseQuery>;
+export type GetGlobalFieldsQueryResult = Apollo.QueryResult<GetGlobalFieldsQuery, GetGlobalFieldsQueryVariables>;
+export const CreateGlobalFieldDocument = gql`
+    mutation CreateGlobalField($input: CreateGlobalFieldInput!) {
+  createGlobalField(input: $input) {
+    _id
+    id
+    label
+    type
+    required
+  }
+}
+    `;
+export type CreateGlobalFieldMutationFn = Apollo.MutationFunction<CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables>;
+export type CreateGlobalFieldProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: Apollo.MutationFunction<CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables>
+    } & TChildProps;
+export function withCreateGlobalField<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  CreateGlobalFieldMutation,
+  CreateGlobalFieldMutationVariables,
+  CreateGlobalFieldProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables, CreateGlobalFieldProps<TChildProps, TDataName>>(CreateGlobalFieldDocument, {
+      alias: 'createGlobalField',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useCreateGlobalFieldMutation__
+ *
+ * To run a mutation, you first call `useCreateGlobalFieldMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGlobalFieldMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGlobalFieldMutation, { data, loading, error }] = useCreateGlobalFieldMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGlobalFieldMutation(baseOptions?: Apollo.MutationHookOptions<CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables>(CreateGlobalFieldDocument, options);
+      }
+export type CreateGlobalFieldMutationHookResult = ReturnType<typeof useCreateGlobalFieldMutation>;
+export type CreateGlobalFieldMutationResult = Apollo.MutationResult<CreateGlobalFieldMutation>;
+export type CreateGlobalFieldMutationOptions = Apollo.BaseMutationOptions<CreateGlobalFieldMutation, CreateGlobalFieldMutationVariables>;
+export const DeleteGlobalFieldDocument = gql`
+    mutation DeleteGlobalField($id: ID!) {
+  deleteGlobalField(id: $id)
+}
+    `;
+export type DeleteGlobalFieldMutationFn = Apollo.MutationFunction<DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables>;
+export type DeleteGlobalFieldProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: Apollo.MutationFunction<DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables>
+    } & TChildProps;
+export function withDeleteGlobalField<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteGlobalFieldMutation,
+  DeleteGlobalFieldMutationVariables,
+  DeleteGlobalFieldProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables, DeleteGlobalFieldProps<TChildProps, TDataName>>(DeleteGlobalFieldDocument, {
+      alias: 'deleteGlobalField',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteGlobalFieldMutation__
+ *
+ * To run a mutation, you first call `useDeleteGlobalFieldMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGlobalFieldMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGlobalFieldMutation, { data, loading, error }] = useDeleteGlobalFieldMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteGlobalFieldMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables>(DeleteGlobalFieldDocument, options);
+      }
+export type DeleteGlobalFieldMutationHookResult = ReturnType<typeof useDeleteGlobalFieldMutation>;
+export type DeleteGlobalFieldMutationResult = Apollo.MutationResult<DeleteGlobalFieldMutation>;
+export type DeleteGlobalFieldMutationOptions = Apollo.BaseMutationOptions<DeleteGlobalFieldMutation, DeleteGlobalFieldMutationVariables>;
