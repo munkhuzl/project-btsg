@@ -10,10 +10,25 @@ export async function printDocument(
   if (!input) return;
 
   try {
+    // Rasterize the element at a higher pixel density than the screen so the
+    // text stays sharp once it's scaled up to fill an A4 page. Without this the
+    // DOM is captured at 1x (~screen width) and looks blurry in the PDF.
+    const scale = 3;
+    const width = input.offsetWidth;
+    const height = input.offsetHeight;
+
     const dataUrl = await domtoimage.toPng(input, {
       quality: 1,
       cacheBust: true,
       bgcolor: "#ffffff",
+      width: width * scale,
+      height: height * scale,
+      style: {
+        transform: `scale(${scale})`,
+        transformOrigin: "top left",
+        width: `${width}px`,
+        height: `${height}px`,
+      },
     });
 
     const pdf = new jsPDF({

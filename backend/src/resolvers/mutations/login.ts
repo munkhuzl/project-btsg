@@ -9,13 +9,18 @@ export const login: MutationResolvers["login"] = async (
   _: unknown,
   { input },
 ) => {
-  const { email, password } = input;
+  const { email, password, requiredRole } = input;
   const user = await UserModel.findOne({ email });
 
   if (!user) throw new Error("User not found");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) throw new Error("Invalid password");
+
+  // Restrict login to the required role (e.g. admin app only allows admins)
+  if (requiredRole && user.role !== requiredRole) {
+    throw new Error("Unauthorized: insufficient permissions");
+  }
 
   // If email is already verified, return token directly
   if (user.isEmailVerified) {

@@ -1,92 +1,92 @@
 import { models, model, Schema } from "mongoose";
 
-type Request = {
-    _id: Schema.Types.ObjectId;
-    email: string;
-    firstname: string;
-    lastname: string;
-    userId: string;
-    workPlace: {
-        city: string;
-        state: string;
-        company_name: string;
-        principalName:string,
-    };
-    school: {
-        city: string;
-        state: string;
-        school_number: string;
-        class: string;
-    };
-    position: string;
-    requestDate: string;
-    requestType: string;
-    startTime?: string;
-    endTime?: string;
-    optionalFile: string;
-    optionalFileMeduuleg: string;
-    detailAboutRequest: string;
-    result:string
-    comment: string;
-    supervisorEmail: string;
+interface FieldValue {
+  fieldId: string;
+  value: string; // contains the text input value or Cloudinary URL for files
+}
+
+export type Request = {
+  email: string;
+  firstname: string;
+  lastname: string;
+  userId: string;
+  requestTypeId: Schema.Types.ObjectId; // references RequestType
+  startTime: string;
+  endTime: string;
+  fieldValues: FieldValue[];
+  attachments?: string[]; // Cloudinary URLs of files attached to the request
+  result: "pending" | "accepted" | "declined";
+  comment?: string;
+
+  // Legacy fields from requests created before the requestTypeId/fieldValues
+  // system. Declared (optional) so Mongoose hydrates them on read, letting the
+  // resolvers normalize old requests into the new shape. Not set on new docs.
+  requestType?: string;
+  detailAboutRequest?: string;
+  optionalFile?: string;
+  optionalFileMeduuleg?: string;
 };
 
 const RequestSchema = new Schema<Request>(
-    {
-        email: {
-            type: String,
-            required: true,
-        },
-        firstname: {
-            type: String,
-            required: true,
-        },
-        lastname: {
-            type: String,
-            required: true,
-        },
-        userId: {
-            type: String,
-            required: true,
-        },
-        requestType: {
-            type: String,
-            enum: ['longterm', 'shortterm', 'mediumterm'],
-            default: 'shortterm',
-        },
-        startTime:String,
-        endTime:String,
-        workPlace: {
-            city: String,
-            state: String,
-            company_name: String,
-            principal_name: String,
-        },
-        school: {
-            city: String,
-            state: String,
-            school_number: String,
-            class: String,
-        },
-        position: String,
-        optionalFile: {
-            type: String,
-        },
-        optionalFileMeduuleg: { type: String, required: true},
-        result: {
-            type: String,
-            enum: ['pending', 'declined', 'accepted'],
-            default: 'pending',
-        },
-        supervisorEmail: String,
-        detailAboutRequest: {
-            type: String,
-            required: true,
-        }
+  {
+    email: {
+      type: String,
+      required: true,
     },
-    {
-        timestamps: true,
-    }
+    firstname: {
+      type: String,
+      required: true,
+    },
+    lastname: {
+      type: String,
+      required: true,
+    },
+    userId: {
+      type: String,
+      required: true,
+    },
+    requestTypeId: {
+      type: Schema.Types.ObjectId,
+      ref: "RequestType",
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+    fieldValues: [
+      {
+        fieldId: { type: String, required: true },
+        value: { type: String, default: "" }
+      }
+    ],
+    attachments: {
+      type: [String],
+      default: [],
+    },
+    result: {
+      type: String,
+      enum: ['pending', 'declined', 'accepted'],
+      default: 'pending',
+    },
+    comment: {
+      type: String,
+      default: ""
+    },
+
+    // Legacy fields (read-only for old requests; not set on new ones).
+    requestType: { type: String },
+    detailAboutRequest: { type: String },
+    optionalFile: { type: String },
+    optionalFileMeduuleg: { type: String },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 export const RequestModel = models.Request || model<Request>("Request", RequestSchema);

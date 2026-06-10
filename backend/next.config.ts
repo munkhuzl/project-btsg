@@ -1,5 +1,9 @@
 module.exports = {
   reactStrictMode: true,
+  // Ensure the PDF fonts/images are traced into the serverless function bundle.
+  outputFileTracingIncludes: {
+    '/api/graphql': ['./src/assets/**/*'],
+  },
   async headers() {
     return [
       {

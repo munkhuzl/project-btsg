@@ -53,6 +53,7 @@ input WorkPlaceInput {
 input LoginInput {
   email: String!
   password: String!
+  requiredRole: String
 }
 
 input SignUpInput {

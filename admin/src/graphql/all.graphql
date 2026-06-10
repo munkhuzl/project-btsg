@@ -30,6 +30,7 @@ query GetUser {
         updatedAt
     }
 }
+
 mutation Login($input: LoginInput!) {
     login(input: $input) {
         user {
@@ -39,47 +40,50 @@ mutation Login($input: LoginInput!) {
         token
     }
 }
+
 mutation SignUp($input: SignUpInput!) {
     signUp(input: $input) {
         email
     }
 }
+
 mutation CheckOTP($email: String!, $otp: String!) {
     checkOTP(email: $email, OTP: $otp) {
         message
         token
     }
 }
-## Query to fetch request details based on email
+
 query GetAllRequests {
     getAllRequests {
         _id
         email
         firstname
         lastname
-        requestDate
-        position
-        requestType
+        userId
+        requestTypeId
+        requestTypeDetail {
+            _id
+            name
+            description
+            fields {
+                id
+                label
+                type
+                required
+            }
+        }
         startTime
         endTime
-        optionalFile
-        optionalFileMeduuleg
+        fieldValues {
+            fieldId
+            value
+        }
+        attachments
         result
-        detailAboutRequest
-        school {
-            city
-            state
-            school_number
-            class
-        }
-        updatedAt
+        comment
         createdAt
-        workPlace {
-            city
-            state
-            company_name
-            principal_name
-        }
+        updatedAt
     }
 }
 
@@ -88,43 +92,56 @@ query GetRequestByUserID {
         _id
         email
         firstname
-        userId
         lastname
-        workPlace {
-            city
-            state
-            company_name
-            principal_name
+        userId
+        requestTypeId
+        requestTypeDetail {
+            _id
+            name
+            description
+            fields {
+                id
+                label
+                type
+                required
+            }
         }
-        school {
-            city
-            state
-            school_number
-            class
-        }
-        requestDate
-        position
-        requestType
         startTime
         endTime
-        optionalFile
-        optionalFileMeduuleg
+        fieldValues {
+            fieldId
+            value
+        }
         result
-        detailAboutRequest
+        comment
         createdAt
         updatedAt
     }
 }
 
-# Mutation to create a request
-mutation SentRequest($input: SendRequestInput!) {
-    sentRequest(input: $input) {
-        message
+query GetRequestTypeTemplates {
+    getRequestTypeTemplates {
+        _id
+        name
+        description
+        fields {
+            id
+            label
+            type
+            required
+        }
     }
 }
 
-mutation ChangeReStatus($result: String!, $id: ID!) {
-    changeReStatus(result: $result, _id: $id) {
+mutation SentRequest($input: SendRequestInput!) {
+    sentRequest(input: $input) {
+        message
+        success
+    }
+}
+
+mutation ChangeReStatus($result: String!, $id: ID!, $comment: String) {
+    changeReStatus(result: $result, _id: $id, comment: $comment) {
         message
     }
 }
@@ -139,4 +156,46 @@ mutation ResetPassword($email: String!, $otp: String!, $newPassword: String!) {
     resetPassword(email: $email, OTP: $otp, newPassword: $newPassword) {
         message
     }
+}
+
+mutation CreateRequestType($input: CreateRequestTypeInput!) {
+    createRequestType(input: $input) {
+        _id
+        name
+        description
+        fields {
+            id
+            label
+            type
+            required
+        }
+    }
+}
+
+mutation DeleteRequestType($id: ID!) {
+    deleteRequestType(id: $id)
+}
+
+query GetGlobalFields {
+    getGlobalFields {
+        _id
+        id
+        label
+        type
+        required
+    }
+}
+
+mutation CreateGlobalField($input: CreateGlobalFieldInput!) {
+    createGlobalField(input: $input) {
+        _id
+        id
+        label
+        type
+        required
+    }
+}
+
+mutation DeleteGlobalField($id: ID!) {
+    deleteGlobalField(id: $id)
 }
