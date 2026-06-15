@@ -26,7 +26,9 @@ Font.register({
 
 // Read raster assets once into Buffers (signature converted from SVG to PNG).
 const logo = { data: fs.readFileSync(path.join(imagesDir, "logo2.png")), format: "png" as const };
-const stamp = { data: fs.readFileSync(path.join(imagesDir, "tamga1.jpg")), format: "jpg" as const };
+// Rasterized from tamga1.svg to a transparent PNG (the old .jpg was opaque and
+// painted a white box over the document). @react-pdf Image only decodes raster.
+const stamp = { data: fs.readFileSync(path.join(imagesDir, "tamga1.png")), format: "png" as const };
 const signature = { data: fs.readFileSync(path.join(imagesDir, "lkham.png")), format: "png" as const };
 
 export type LeaveSlipData = {
