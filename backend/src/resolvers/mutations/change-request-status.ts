@@ -1,5 +1,5 @@
 import { MutationResolvers } from "@/generated/graphql";
-import { RequestModel, RequestTypeModel } from "@/models";
+import { RequestModel, RequestTypeModel, getNextSequence } from "@/models";
 import { generateLeaveSlipPdf } from "@/utils/generate-leave-slip-pdf";
 import { sendMail } from "@/utils/send-mail";
 
@@ -29,7 +29,9 @@ const sendAcceptanceEmail = async (request: InstanceType<typeof RequestModel>) =
                 value: fv.value,
             }));
 
-        const number = String((parseInt(String(request._id).slice(-4), 16) % 999) + 1).padStart(3, "0");
+        // Stable number assigned at acceptance and stored on the request, so the
+        // PDF here always matches what the client myrequest page shows.
+        const number = String(request.requestNumber ?? "").padStart(3, "0");
         const dateStr = new Date().toISOString().split("T")[0];
 
         const pdf = await generateLeaveSlipPdf({
@@ -77,9 +79,20 @@ export const changeReStatus: MutationResolvers['changeReStatus'] = async (_, { r
         const existing = await RequestModel.findById(_id);
         const wasAccepted = existing?.result === "accepted";
 
+        // Assign the next global sequential number the first time a request is
+        // accepted (and only if it doesn't already have one). Declined/pending
+        // requests get no number and never consume one.
+        const update: { result: string; comment: string; requestNumber?: number } = {
+            result: result,
+            comment: comment || "",
+        };
+        if (result === "accepted" && !wasAccepted && !existing?.requestNumber) {
+            update.requestNumber = await getNextSequence("requestNumber");
+        }
+
         const updatedRequest = await RequestModel.findOneAndUpdate(
             { _id: _id },
-            { result: result, comment: comment || "" },
+            update,
             { new: true }
         );
 

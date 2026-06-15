@@ -46,6 +46,7 @@ export const RequestTypeDefs = gql`
         attachments: [String!]
         result: String!
         comment: String
+        requestNumber: Int
         createdAt: Date!
         updatedAt: Date!
     }

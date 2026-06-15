@@ -18,6 +18,11 @@ export type Request = {
   result: "pending" | "accepted" | "declined";
   comment?: string;
 
+  // Stable, global, sequential number assigned once when the request is first
+  // accepted (see change-request-status resolver). Absent for pending/declined
+  // requests. Shown identically on the client myrequest page and the emailed PDF.
+  requestNumber?: number;
+
   // Legacy fields from requests created before the requestTypeId/fieldValues
   // system. Declared (optional) so Mongoose hydrates them on read, letting the
   // resolvers normalize old requests into the new shape. Not set on new docs.
@@ -76,6 +81,12 @@ const RequestSchema = new Schema<Request>(
     comment: {
       type: String,
       default: ""
+    },
+    // Sparse + unique: only numbered (accepted) docs are constrained; the many
+    // pending/declined docs carry no requestNumber and never collide.
+    requestNumber: {
+      type: Number,
+      index: { unique: true, sparse: true },
     },
 
     // Legacy fields (read-only for old requests; not set on new ones).
