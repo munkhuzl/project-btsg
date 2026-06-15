@@ -114,6 +114,7 @@ query GetRequestByUserID {
         attachments
         result
         comment
+        requestNumber
         createdAt
         updatedAt
     }

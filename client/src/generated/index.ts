@@ -262,6 +262,7 @@ export type RequestType = {
   fieldValues: Array<FieldValueType>;
   firstname: Scalars['String']['output'];
   lastname: Scalars['String']['output'];
+  requestNumber?: Maybe<Scalars['Int']['output']>;
   requestTypeDetail?: Maybe<RequestTypeTemplate>;
   requestTypeId: Scalars['String']['output'];
   result: Scalars['String']['output'];
@@ -412,7 +413,7 @@ export type GetAllRequestsQuery = { __typename?: 'Query', getAllRequests: Array<
 export type GetRequestByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRequestByUserIdQuery = { __typename?: 'Query', getRequestByUserID: Array<{ __typename?: 'RequestType', _id: string, email: string, firstname: string, lastname: string, userId: string, requestTypeId: string, startTime: string, endTime: string, attachments?: Array<string> | null, result: string, comment?: string | null, createdAt: any, updatedAt: any, requestTypeDetail?: { __typename?: 'RequestTypeTemplate', _id: string, name: string, description?: string | null, fields: Array<{ __typename?: 'RequestFieldDefinition', id: string, label: string, type: string, required: boolean }> } | null, fieldValues: Array<{ __typename?: 'FieldValueType', fieldId: string, value: string }> }> };
+export type GetRequestByUserIdQuery = { __typename?: 'Query', getRequestByUserID: Array<{ __typename?: 'RequestType', _id: string, email: string, firstname: string, lastname: string, userId: string, requestTypeId: string, startTime: string, endTime: string, attachments?: Array<string> | null, result: string, comment?: string | null, requestNumber?: number | null, createdAt: any, updatedAt: any, requestTypeDetail?: { __typename?: 'RequestTypeTemplate', _id: string, name: string, description?: string | null, fields: Array<{ __typename?: 'RequestFieldDefinition', id: string, label: string, type: string, required: boolean }> } | null, fieldValues: Array<{ __typename?: 'FieldValueType', fieldId: string, value: string }> }> };
 
 export type GetRequestTypeTemplatesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -784,6 +785,7 @@ export const GetRequestByUserIdDocument = gql`
     attachments
     result
     comment
+    requestNumber
     createdAt
     updatedAt
   }
