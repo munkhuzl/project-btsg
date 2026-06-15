@@ -1,7 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Send, FileText, Calendar, CheckCircle2, XCircle, AlertCircle, Printer, Download } from "lucide-react";
+import {
+  Send,
+  FileText,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Printer,
+  Download,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { useGetRequestByUserIdQuery } from "@/generated";
@@ -17,7 +26,7 @@ import { useAuth } from "@/context/AuthProvider";
 
 const getFieldValue = (
   fieldValues: Array<{ fieldId: string; value: string }> | null | undefined,
-  fieldId: string
+  fieldId: string,
 ) => {
   if (!fieldValues) return "";
   return fieldValues.find((fv) => fv.fieldId === fieldId)?.value || "";
@@ -42,7 +51,8 @@ export function MyRequest() {
 
   // Sort newest-first and group by the month the request was sent (createdAt).
   const sorted = [...requests].sort(
-    (a, b) => parseDate(b.createdAt).getTime() - parseDate(a.createdAt).getTime()
+    (a, b) =>
+      parseDate(b.createdAt).getTime() - parseDate(a.createdAt).getTime(),
   );
 
   type MonthGroup = {
@@ -97,7 +107,9 @@ export function MyRequest() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-zinc-950">Миний хүсэлтүүд</h1>
-          <p className="text-sm text-zinc-500 mt-1">Чөлөө хүссэн түүх болон шийдвэрлэлтийн хариу</p>
+          <p className="text-sm text-zinc-500 mt-1">
+            Чөлөө хүссэн түүх болон шийдвэрлэлтийн хариу
+          </p>
         </div>
         <Button
           onClick={() => router.push("/createNewRequest")}
@@ -111,103 +123,146 @@ export function MyRequest() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 bg-zinc-50 animate-pulse border border-zinc-100 rounded-xl" />
+            <div
+              key={i}
+              className="h-24 bg-zinc-50 animate-pulse border border-zinc-100 rounded-xl"
+            />
           ))}
         </div>
       ) : requests.length === 0 ? (
         <div className="bg-zinc-50/50 border border-dashed border-zinc-200 rounded-2xl p-12 text-center">
           <FileText className="size-10 text-zinc-350 mx-auto mb-3" />
-          <p className="text-zinc-500 text-sm">Та чөлөөний хүсэлт илгээгээгүй байна.</p>
+          <p className="text-zinc-500 text-sm">
+            Та чөлөөний хүсэлт илгээгээгүй байна.
+          </p>
         </div>
       ) : (
         <div className="space-y-8">
           {monthGroups.map((group) => (
             <div key={group.key} className="space-y-4">
               <div className="flex items-center gap-3 sticky top-0 bg-white/85 backdrop-blur py-2 z-10">
-                <h2 className="text-sm font-semibold text-zinc-700">{group.label}</h2>
-                <span className="text-xs font-medium text-zinc-400">{group.items.length} хүсэлт</span>
+                <h2 className="text-sm font-semibold text-zinc-700">
+                  {group.label}
+                </h2>
+                <span className="text-xs font-medium text-zinc-400">
+                  {group.items.length} хүсэлт
+                </span>
               </div>
               {group.items.map(({ req, number }) => {
                 const index = number - 1;
-                const templateName = req.requestTypeDetail?.name || "Чөлөөний хүсэлт";
-                const detailText = getFieldValue(req.fieldValues, "detailAboutRequest") || "Чөлөөний хуудас";
+                const templateName =
+                  req.requestTypeDetail?.name || "Чөлөөний хүсэлт";
+                const detailText =
+                  getFieldValue(req.fieldValues, "detailAboutRequest") ||
+                  "Чөлөөний хуудас";
 
                 return (
-              <div 
-                key={req._id}
-                className="bg-white border border-zinc-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
-              >
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="font-semibold text-zinc-900 text-base">{templateName}</span>
-                    {getStatusBadge(req.result)}
-                  </div>
-                  
-                  {detailText && <p className="text-zinc-600 text-sm">{detailText}</p>}
-                  
-                  <div className="flex items-center gap-2 text-zinc-400 text-xs">
-                    <Calendar className="size-3.5" />
-                    <span>Хугацаа: {req.startTime} - {req.endTime}</span>
-                  </div>
+                  <div
+                    key={req._id}
+                    className="bg-white border border-zinc-150 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  >
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-zinc-900 text-base">
+                          {templateName}
+                        </span>
+                        {getStatusBadge(req.result)}
+                      </div>
 
-                  {req.comment && (
-                    <div className="mt-2.5 p-3 rounded-xl bg-zinc-50 border border-zinc-100 text-xs text-zinc-600">
-                      <span className="font-semibold text-zinc-800">Хариу тайлбар:</span> {req.comment}
-                    </div>
-                  )}
+                      {detailText && (
+                        <p className="text-zinc-600 text-sm">{detailText}</p>
+                      )}
 
-                  {req.attachments && req.attachments.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 pt-1">
-                      {req.attachments.map((url, i) => (
-                        <a
-                          key={url}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded-lg border border-zinc-150 bg-zinc-50 px-2.5 py-1 text-[11px] text-zinc-600 hover:text-zinc-950 hover:border-zinc-300 transition-colors"
-                        >
-                          <FileText className="size-3" /> Хавсралт {i + 1}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      <div className="flex items-center gap-2 text-zinc-400 text-xs">
+                        <Calendar className="size-3.5" />
+                        <span>
+                          Хугацаа: {req.startTime} - {req.endTime}
+                        </span>
+                      </div>
 
-                {req.result === "accepted" && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="rounded-xl border-zinc-200 text-zinc-800 text-xs py-2 flex items-center gap-1.5 self-start md:self-center">
-                        <Printer className="size-3.5" /> Чөлөөний хуудас хэвлэх
-                      </Button>
-                    </DialogTrigger>
-
-                    <DialogContent className="max-w-[650px] bg-white rounded-2xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in-95 duration-200">
-                      <div
-                        id={`print-area-${req._id}`}
-                        className="bg-white p-6 md:p-8 text-[13px] text-zinc-950 leading-relaxed overflow-hidden border border-zinc-100 rounded-xl"
-                      >
-                        <div className="text-center mb-6">
-                          <img
-                            src="/logo2.png"
-                            alt="logo"
-                            width={80}
-                            className="mx-auto"
-                          />
-                          <h1 className="font-bold text-sm text-zinc-950 mt-4 max-w-md mx-auto uppercase">
-                            БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД ОРОЛЦОХ ЧӨЛӨӨЛӨХ ХУУДАС
-                          </h1>
-                          <div className="flex justify-between mt-6 text-[11px] text-zinc-500 border-b border-zinc-100 pb-2">
-                            <p>Огноо: {new Date().toLocaleDateString('mn-MN')}</p>
-                            <p>Дугаар: {String(index + 1).padStart(3, "0")}</p>
-                            <p>Баян-Өндөр сум</p>
-                          </div>
+                      {req.comment && (
+                        <div className="mt-2.5 p-3 rounded-xl bg-zinc-50 border border-zinc-100 text-xs text-zinc-600">
+                          <span className="font-semibold text-zinc-800">
+                            Хариу тайлбар:
+                          </span>{" "}
+                          {req.comment}
                         </div>
+                      )}
 
-                        <p className="text-justify indent-8 text-zinc-800 mb-4 leading-relaxed">
-                          Үндсэн заалтуудыг үндэслэн ажилтан/суралцагч <strong>{req.lastname}</strong> овогтой <strong>{req.firstname}</strong> нь <strong>{req.startTime}</strong>-ны өдрөөс <strong>{req.endTime}</strong>-ны өдрийг хүртэлх хугацаанд <strong>{templateName}</strong> ({detailText}) шалтгаанаар чөлөөлөгдөх зөвшөөрөл олгогдсон тул ажил (хичээл)-ээс нь чөлөөлж, дэмжин ажиллана уу.
-                        </p>
+                      {req.attachments && req.attachments.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          {req.attachments.map((url, i) => (
+                            <a
+                              key={url}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 rounded-lg border border-zinc-150 bg-zinc-50 px-2.5 py-1 text-[11px] text-zinc-600 hover:text-zinc-950 hover:border-zinc-300 transition-colors"
+                            >
+                              <FileText className="size-3" /> Хавсралт {i + 1}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
-                        {/* Dynamic fields populated inside the printable PDF */}
+                    {req.result === "accepted" && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="rounded-xl border-zinc-200 text-zinc-800 text-xs py-2 flex items-center gap-1.5 self-start md:self-center"
+                          >
+                            <Printer className="size-3.5" /> Чөлөөний хуудас
+                            хэвлэх
+                          </Button>
+                        </DialogTrigger>
+
+                        <DialogContent className="max-w-[650px] bg-white rounded-2xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in-95 duration-200">
+                          <div
+                            id={`print-area-${req._id}`}
+                            className="bg-white p-6 md:p-8 text-[13px] text-zinc-950 leading-relaxed overflow-hidden border border-zinc-100 rounded-xl"
+                          >
+                            <div className="text-center mb-6">
+                              <img
+                                src="/logo2.png"
+                                alt="logo"
+                                width={80}
+                                className="mx-auto"
+                              />
+                              <h1 className="font-bold text-sm text-zinc-950 mt-4 max-w-md mx-auto uppercase">
+                                БИЕИЙН ТАМИР, СПОРТЫН ГАЗАР ТЭМЦЭЭН, УРАЛДААНД
+                                ОРОЛЦОХ ТАМИРЧИН (ДАСГАЛЖУУЛӨГЧ)-ЫГ ЧӨЛӨӨЛҮҮЛЭХ
+                                ХУУДАС
+                              </h1>
+                              <div className="flex justify-between mt-6 text-[11px] text-zinc-500 border-b border-zinc-100 pb-2">
+                                <p>
+                                  Огноо:{" "}
+                                  {new Date().toLocaleDateString("mn-MN")}
+                                </p>
+                                <p>
+                                  Дугаар: {String(index + 1).padStart(3, "0")}
+                                </p>
+                                <p>Баян-Өндөр сум</p>
+                              </div>
+                            </div>
+
+                            <p className="text-justify indent-8 text-zinc-800 mb-4 leading-relaxed">
+                              Эрүүл мэндийн сайд, Сангийн сайдын хамтарсан 2009
+                              оны 53/45 дугаар тушаалын нэгдүгээр хавсралтаар
+                              батлагдан журмын 4.2, 4.3 дахь заалтыг үндэслэн
+                              ажилтай/сурагч <strong>{req.lastname}</strong>{" "}
+                              овогтой <strong>{req.firstname}</strong>
+                              нь <strong>{req.startTime}</strong>-ны өдрөөс{" "}
+                              <strong>{req.endTime}</strong>-ны өдрийг хүртэлх
+                              хугацаанд <strong>{templateName}</strong> (
+                              {detailText}) оролцох тул ажил(хичээл)-ээс нь
+                              чөлөөлж, хамтран ажиллана уу.
+                            </p>
+                            <p className="text-justify indent-8 text-zinc-800 mb-4 leading-relaxed">
+                              Мөн тус тушаалын 3.2 дахь заалтад "Ажлаас чөлөөлөгдсөн хугацааны цалинг өмчийн хэлбэр харгалзахгүйгээр үндсэн байгууллагааас нь олгоно" гэж заасан тул тамирчин (дамгалжуулагч)-ны чөлөөтэй хугацааны цалинг шийдвэрлэж хамтран ажиллахыг хүсье.
+                            </p>
+                            {/* Dynamic fields populated inside the printable PDF
                         {req.fieldValues && req.fieldValues.length > 0 && (
                           <div className="my-6 p-4 bg-zinc-50 border border-zinc-100 rounded-xl space-y-2">
                             <h3 className="text-xs font-semibold text-zinc-900 uppercase tracking-wider mb-2">Хүсэлтийн нэмэлтүүд</h3>
@@ -222,44 +277,57 @@ export function MyRequest() {
                               );
                             })}
                           </div>
-                        )}
+                        )} */}
 
-                        <div className="flex mt-8 items-center justify-between border-t border-zinc-100 pt-6">
-                          <div className="relative w-44 h-24">
-                            <h4 className="text-xs font-semibold text-zinc-950 uppercase leading-snug">Биеийн тамир, спортын газрын даргын үүрэг гүйцэтгэгч</h4>
-                            <img
-                              src="/tamga1.svg"
-                              alt="tamga"
-                              className="absolute -bottom-8 -right-8 w-28 h-28 opacity-80 mix-blend-multiply rotate-6"
-                            />
-                            <img
-                              src="/lkham.svg"
-                              alt="signature"
-                              className="absolute top-2 right-2 w-20 h-10 object-contain"
-                            />
+                            <div className="flex mt-8 items-center justify-between border-t border-zinc-100 pt-6">
+                              <div className="relative w-44 h-24">
+                                <h4 className="text-xs font-semibold text-zinc-950 uppercase leading-snug">
+                                  Биеийн тамир, спортын газрын даргын үүрэг
+                                  гүйцэтгэгч
+                                </h4>
+                                <img
+                                  src="/tamga1.svg"
+                                  alt="tamga"
+                                  className="absolute -bottom-8 -right-8 w-28 h-28 opacity-80 mix-blend-multiply rotate-6"
+                                />
+                                <img
+                                  src="/lkham.svg"
+                                  alt="signature"
+                                  className="absolute top-2 right-2 w-20 h-10 object-contain"
+                                />
+                              </div>
+                              <div className="text-right text-xs font-semibold text-zinc-950 self-end pb-2">
+                                Э.ЛХАМСҮРЭНБААТАР
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-right text-xs font-semibold text-zinc-950 self-end pb-2">
-                            Э.ЛХАМСҮРЭНБААТАР
-                          </div>
-                        </div>
-                      </div>
 
-                      <DialogFooter className="mt-6 flex justify-end gap-3">
-                        <DialogClose asChild>
-                          <Button variant="outline" className="rounded-xl border-zinc-200">Хаах</Button>
-                        </DialogClose>
-                        <Button
-                          className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl flex items-center gap-1.5"
-                          type="button"
-                          onClick={() => printDocument(`print-area-${req._id}`, `${req.firstname}_chuluu.pdf`)}
-                        >
-                          <Download className="size-4" /> PDF Татах
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
+                          <DialogFooter className="mt-6 flex justify-end gap-3">
+                            <DialogClose asChild>
+                              <Button
+                                variant="outline"
+                                className="rounded-xl border-zinc-200"
+                              >
+                                Хаах
+                              </Button>
+                            </DialogClose>
+                            <Button
+                              className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl flex items-center gap-1.5"
+                              type="button"
+                              onClick={() =>
+                                printDocument(
+                                  `print-area-${req._id}`,
+                                  `${req.firstname}_chuluu.pdf`,
+                                )
+                              }
+                            >
+                              <Download className="size-4" /> PDF Татах
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
                 );
               })}
             </div>
