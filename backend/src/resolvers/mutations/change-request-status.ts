@@ -3,6 +3,10 @@ import { RequestModel, RequestTypeModel, getNextSequence } from "@/models";
 import { generateLeaveSlipPdf } from "@/utils/generate-leave-slip-pdf";
 import { sendMail } from "@/utils/send-mail";
 
+// Count of pre-existing paper leave slips. The digital sequence continues from
+// here, so the first accepted request (requestNumber 1) shows as 580.
+const PREVIOUS_SLIP_COUNT = 579;
+
 // Builds the leave-slip PDF and emails it to the requester. Best-effort: any
 // failure here is logged and swallowed so it never fails the status mutation.
 const sendAcceptanceEmail = async (request: InstanceType<typeof RequestModel>) => {
@@ -31,7 +35,11 @@ const sendAcceptanceEmail = async (request: InstanceType<typeof RequestModel>) =
 
         // Stable number assigned at acceptance and stored on the request, so the
         // PDF here always matches what the client myrequest page shows.
-        const number = String(request.requestNumber ?? "").padStart(3, "0");
+        // "03" is a static prefix; numbering continues from the existing paper
+        // leave slips, so the sequence starts at 580 (requestNumber 1 -> 580).
+        const number = request.requestNumber
+            ? `03/${request.requestNumber + PREVIOUS_SLIP_COUNT}`
+            : "";
         const dateStr = new Date().toISOString().split("T")[0];
 
         const pdf = await generateLeaveSlipPdf({

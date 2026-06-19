@@ -38,7 +38,7 @@ export type LeaveSlipData = {
   endTime: string;
   templateName: string;
   detailText: string;
-  number: string; // e.g. "001"
+  number: string; // e.g. "03/589"
   dateStr: string; // e.g. "2026-06-01"
   fields: Array<{ label: string; value: string }>;
 };
@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#18181b",
     paddingVertical: 48,
-    paddingHorizontal: 56,
+    // 3cm gap on both sides (1cm ≈ 28.35pt → 3cm ≈ 85pt).
+    paddingHorizontal: 85,
     lineHeight: 1.6,
   },
   header: { alignItems: "center", marginBottom: 24 },
