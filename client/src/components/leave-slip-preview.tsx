@@ -73,7 +73,7 @@ export function LeaveSlipPreview({
             ref={slipRef}
             id={printId}
             style={{ width: SLIP_WIDTH }}
-            className="bg-white p-8 text-[13px] text-zinc-950 leading-relaxed border border-zinc-100 rounded-xl"
+            className="bg-white py-8 px-[103px] text-[13px] text-zinc-950 leading-relaxed border border-zinc-100 rounded-xl"
           >
             <div className="text-center mb-6">
               <img
@@ -88,7 +88,10 @@ export function LeaveSlipPreview({
               </h1>
               <div className="flex justify-between mt-6 text-[11px] text-zinc-500 border-b border-zinc-100 pb-2">
                 <p>Огноо: {new Date().toLocaleDateString("mn-MN")}</p>
-                <p>Дугаар: {String(req.requestNumber ?? "").padStart(3, "0")}</p>
+                <p>
+                  Дугаар:{" "}
+                  {req.requestNumber ? `03/${req.requestNumber + 579}` : ""}
+                </p>
                 <p>Баян-Өндөр сум</p>
               </div>
             </div>
