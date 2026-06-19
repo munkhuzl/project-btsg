@@ -113,7 +113,7 @@ export function LeaveSlipPreview({
               хугацааны цалинг шийдвэрлэж хамтран ажиллахыг хүсье.
             </p>
 
-            <div className="flex mt-8 justify-between border-t border-zinc-100 pt-6">
+            <div className="w-[74%] flex mt-8 justify-between border-t border-zinc-100 pt-6 mx-auto">
               <div className="relative w-44 h-24">
                 <h4 className="text-xs font-semibold text-zinc-950 uppercase leading-snug">
                   Биеийн тамир, спортын газрын даргын үүрэг гүйцэтгэгч
@@ -121,15 +121,15 @@ export function LeaveSlipPreview({
                 <img
                   src="/tamga1.svg"
                   alt="tamga"
-                  className="absolute -bottom-0 -right-6 w-28 h-28 opacity-80 mix-blend-multiply rotate-6"
+                  className="absolute bottom-4 -right-[88px] w-28 h-28 opacity-80 mix-blend-multiply rotate-6"
                 />
                 <img
                   src="/lkham.svg"
                   alt="signature"
-                  className="absolute top-2 right-2 w-20 h-10 object-contain"
+                  className="absolute top-2 -right-16 w-20 h-10 object-contain"
                 />
               </div>
-              <div className="text-right text-xs font-semibold text-zinc-950 self-end mb-12">
+              <div className="text-right text-xs font-semibold text-zinc-950 self-end mb-12 ml-8">
                 Э.ЛХАМСҮРЭНБААТАР
               </div>
             </div>
