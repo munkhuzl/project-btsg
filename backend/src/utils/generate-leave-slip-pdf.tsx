@@ -98,25 +98,40 @@ const styles = StyleSheet.create({
     color: "#3f3f46",
     marginBottom: 4,
   },
+  // Mirrors the client leave-slip footer (leave-slip-preview.tsx): a narrow,
+  // centered block (~74% width) with the role text on the left, the signature
+  // and stamp overhanging to its right, and the signer name on the far right.
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginTop: 36,
+    alignSelf: "center",
+    width: "74%",
+    marginTop: 28,
     paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: "#e4e4e7",
   },
-  signatureWrap: { position: "relative", width: 200, height: 96 },
+  signatureWrap: { position: "relative", width: 146, height: 80 },
   signatureRole: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: "bold",
     textTransform: "uppercase",
-    maxWidth: 170,
+    maxWidth: 146,
+    lineHeight: 1.3,
   },
-  signatureImg: { position: "absolute", top: 8, right: 30, width: 80, height: 36, objectFit: "contain" },
-  stampImg: { position: "absolute", bottom: -6, right: 0, width: 96, height: 96, objectFit: "contain" },
-  signerName: { fontSize: 10, fontWeight: "bold", paddingBottom: 6 },
+  signatureImg: { position: "absolute", top: 7, right: -53, width: 66, height: 33, objectFit: "contain" },
+  stampImg: {
+    position: "absolute",
+    bottom: 13,
+    right: -73,
+    width: 93,
+    height: 93,
+    objectFit: "contain",
+    opacity: 0.8,
+    transform: "rotate(6deg)",
+  },
+  signerName: { fontSize: 10, fontWeight: "bold", marginBottom: 40, marginLeft: 26, textAlign: "right" },
 });
 
 export const generateLeaveSlipPdf = async (data: LeaveSlipData): Promise<Buffer> => {
